@@ -1,16 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { EyeIcon, EyeOffIcon, HomeIcon } from "lucide-react";
-
+import { EyeIcon, EyeOffIcon, HomeIcon, Loader } from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import AuthContext from "@/context/AuthContext";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -18,25 +16,14 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { login } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
-        {
-          username,
-          password,
-        },
-        { withCredentials: true }
-      );
-
-      if (response.status === 200) {
-        router.push("/");
-      } else {
-        toast.error("Login failed");
-      }
+      await login(username, password);
+      router.push("/");
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "An unexpected error occurred";
@@ -107,7 +94,7 @@ const LoginPage = () => {
               </div>
             </div>
             <Button type="submit" className="w-full h-12">
-              {loading ? <Spinner /> : "Login"}
+              {loading ? <Loader className="animate-spin" /> : "Login"}
             </Button>
             <p className="text-center mt-2">
               Don't have an account? <Link href="/signup">Sign Up</Link>

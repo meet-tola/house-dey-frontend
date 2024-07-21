@@ -1,13 +1,11 @@
 "use client";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { EyeIcon, EyeOffIcon, HomeIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, HomeIcon, Loader } from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import {
@@ -19,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import AuthContext from "@/context/AuthContext";
 
 const SignupPage = () => {
   const [username, setUsername] = useState("");
@@ -28,26 +27,14 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { signup } = useContext(AuthContext);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
-        {
-          username,
-          email,
-          password,
-          role,
-        }
-      );
-
-      if (response.status === 201) {
-        router.push("/login");
-      } else {
-        toast.error("Signup failed");
-      }
+      await signup(username, email, password, role.toUpperCase());
+      router.push("/login");
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "An unexpected error occurred";
@@ -148,8 +135,9 @@ const SignupPage = () => {
             <Button
               type="submit"
               className="w-full h-12 flex items-center justify-center"
+              disabled={loading}
             >
-              {loading ? <Spinner /> : "Sign Up"}
+              {loading ? <Loader className="animate-spin" /> : "Sign Up"}
             </Button>
             <p className="text-center mt-2">
               Already have an account? <Link href="/login">Login</Link>

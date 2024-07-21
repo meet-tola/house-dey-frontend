@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import {
   Sheet,
@@ -21,8 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logout } from "@/utils/auth";
-
+import AuthContext from "@/context/AuthContext";
 
 const navLinks = [
   { href: "#", label: "For Rent" },
@@ -33,27 +32,7 @@ const navLinks = [
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/checkAuth`,
-          { withCredentials: true }
-        );
-        if (response.status === 200) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        setIsAuthenticated(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
+  const { user } = useContext(AuthContext);
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white shadow-sm transition-all duration-300 data-[scrolled=true]:bg-background data-[scrolled=true]:shadow-lg">
@@ -133,7 +112,7 @@ export default function Navbar() {
           ))}
         </nav>
         <div className="flex items-center gap-4">
-          {isAuthenticated ? (
+          {user ? (
             <>
               <Button variant="ghost" size="icon">
                 <BellIcon className="h-5 w-5" />
@@ -158,9 +137,6 @@ export default function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link href="/account" prefetch={false}>My Account</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
