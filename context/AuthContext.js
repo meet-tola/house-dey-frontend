@@ -1,7 +1,7 @@
 "use client";
-import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import React, { createContext, useState, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
@@ -10,65 +10,57 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkAuth();
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get("token")}`;
+    }
+    setLoading(false);
   }, []);
 
   const signup = async (username, email, password, role) => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, { username, email, password, role });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
+        { username, email, password, role }
+      );
       if (response.status === 201) {
         await login(username, password);
       }
     } catch (error) {
-      console.error('Error during signup:', error);
+      console.error("Error during signup:", error);
     }
   };
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, { username, password });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        { username, password }
+      );
       if (response.status === 200) {
-        Cookies.set('token', response.data.token); // Store token in cookies
-        setUser(response.data.user);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`; // Set default authorization header
+        const { token, user } = response.data;
+        Cookies.set("token", token);
+        setUser(user);
+        localStorage.setItem("user", JSON.stringify(user));
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error("Error during login:", error);
     }
   };
 
   const logout = async () => {
     try {
-      const response = await axios.post('/api/auth/logout');
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`);
       if (response.status === 200) {
         setUser(null);
-        Cookies.remove('token');
-        delete axios.defaults.headers.common['Authorization']; // Remove default authorization header
+        Cookies.remove("token");
+        localStorage.removeItem("user");
+        delete axios.defaults.headers.common["Authorization"];
       }
     } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
-
-  const checkAuth = async () => {
-    try {
-      const token = Cookies.get('token');
-      if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/checkAuth`);
-        if (response.status === 200) {
-          setUser(response.data.user);
-        } else {
-          setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
-    } catch (error) {
-      console.error('Error during auth check:', error);
-      setUser(null);
-    } finally {
-      setLoading(false);
+      console.error("Error during logout:", error);
     }
   };
 

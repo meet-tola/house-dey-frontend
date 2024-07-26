@@ -2,8 +2,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useEffect, useState, useContext } from "react";
-import axios from "axios";
+import { useState, useContext } from "react";
 import {
   Sheet,
   SheetContent,
@@ -58,7 +57,7 @@ export default function Navbar() {
                       prefetch={false}
                     >
                       <Image
-                        src="/logo2.svg"
+                        src="/logo.svg"
                         width={160}
                         height={40}
                         alt="house-dey-logo"
@@ -82,7 +81,7 @@ export default function Navbar() {
               </SheetContent>
             </Sheet>
           </div>
-          <Link href="#" className="flex items-center gap-2" prefetch={false}>
+          <Link href="/" className="flex items-center gap-2" prefetch={false}>
             <Image
               src="/logo.svg"
               width={160}
@@ -133,10 +132,10 @@ export default function Navbar() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                    <Link href="/profile" prefetch={false}>Profile</Link>
+                    <Link href="/account" prefetch={false}>My Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link href="/account" prefetch={false}>My Account</Link>
+                    <Link href="/account" prefetch={false}>Logout</Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

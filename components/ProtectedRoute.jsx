@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { checkAuth } from '@/utils/auth';
-import PageLoader from '@/components/PageLoader'; // Assume you have a loading spinner component
+import PageLoader from '@/components/PageLoader'; 
 
 const ProtectedRoute = ({ children }) => {
   const router = useRouter();
