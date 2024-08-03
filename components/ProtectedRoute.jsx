@@ -1,5 +1,4 @@
 // components/ProtectedRoute.js
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { checkAuth } from '@/utils/auth';
 import PageLoader from '@/components/PageLoader'; 
@@ -24,14 +23,14 @@ const ProtectedRoute = ({ children }) => {
   }, [router]);
 
   if (isLoading) {
-    return <PageLoader />; // Display a loading spinner while checking authentication
+    return <PageLoader />;
   }
 
   if (!isAuthenticated) {
-    return null; // Return null if not authenticated (or redirect to login)
+    return null; 
   }
 
-  return children; // Render the protected component if authenticated
+  return children; 
 };
 
 export default ProtectedRoute;

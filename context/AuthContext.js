@@ -7,15 +7,18 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get("token")}`;
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get("token")}`;
+      } catch (error) {
+        console.error("Error parsing stored user data:", error);
+      }
     }
-    setLoading(false);
   }, []);
 
   const signup = async (username, email, password, role) => {
@@ -25,10 +28,10 @@ export const AuthProvider = ({ children }) => {
         { username, email, password, role }
       );
       if (response.status === 201) {
-        await login(username, password);
+        console.log("Signup successful. Please login to continue.");
       }
     } catch (error) {
-      console.error("Error during signup:", error);
+      console.error("Error during signup:", error.response?.data || error.message);
     }
   };
 
@@ -46,7 +49,7 @@ export const AuthProvider = ({ children }) => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Error during login:", error.response?.data || error.message);
     }
   };
 
@@ -60,12 +63,22 @@ export const AuthProvider = ({ children }) => {
         delete axios.defaults.headers.common["Authorization"];
       }
     } catch (error) {
-      console.error("Error during logout:", error);
+      console.error("Error during logout:", error.response?.data || error.message);
+    }
+  };
+
+  const updateUser = (updatedUser) => {
+    if (updatedUser) {
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      console.log("User updated successfully.");
+    } else {
+      console.error("Invalid user data:", updatedUser);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signup, login, logout }}>
+    <AuthContext.Provider value={{ user, signup, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

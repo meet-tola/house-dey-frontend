@@ -124,18 +124,27 @@ export default function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarImage
+                      src={user?.avatar || "/placeholder-user.jpg"}
+                      alt="User Avatar"
+                    />
+                    <AvatarFallback>
+                      {user.email[0]}
+                    </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                    <Link href="/account" prefetch={false}>My Profile</Link>
+                    <Link href="/account" prefetch={false}>
+                      My Profile
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link href="/account" prefetch={false}>Logout</Link>
+                    <Link href="/account" prefetch={false}>
+                      Logout
+                    </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -143,10 +152,14 @@ export default function Navbar() {
           ) : (
             <>
               <Button variant="ghost">
-                <Link href="/login" prefetch={false}>Login</Link>
+                <Link href="/login" prefetch={false}>
+                  Login
+                </Link>
               </Button>
               <Button>
-                <Link href="/signup" prefetch={false}>Sign Up</Link>
+                <Link href="/signup" prefetch={false}>
+                  Sign Up
+                </Link>
               </Button>
             </>
           )}

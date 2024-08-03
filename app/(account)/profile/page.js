@@ -1,10 +1,10 @@
 "use client";
+
 import React, { useContext, useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
   SelectTrigger,
@@ -12,50 +12,59 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { UploadIcon } from "lucide-react";
-import AuthContext from "@/context/AuthContext"; // Import your AuthContext
-import axios from "axios"; // Import axios
-import toast from "react-hot-toast"; // Import toast
+import AuthContext from "@/context/AuthContext";
+import axios from "axios";
+import toast from "react-hot-toast";
+import Image from "next/image";
+import ImageUploader from "@/components/ui/ImageUploader";
 
 const Profile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, updateUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    mobile: "",
-    street: "",
-    locality: "",
-    state: "",
-    role: "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    email: user?.email || "",
+    mobile: user?.mobile || "",
+    street: user?.street || "",
+    locality: user?.locality || "",
+    state: user?.state || "",
+    role: user?.role || "",
+    avatar: user?.avatar || "",
   });
 
   useEffect(() => {
-    if (user) {
-      // Populate form with user data
-      setFormData({
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
-        email: user.email || "",
-        mobile: user.mobile || "",
-        street: user.street || "",
-        locality: user.locality || "",
-        state: user.state || "",
-        role: user.role || "",
-      });
-    }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
+      mobile: user?.mobile || "",
+      street: user?.street || "",
+      locality: user?.locality || "",
+      state: user?.state || "",
+      role: user?.role || "",
+      avatar: user?.avatar || "",
+    }));
   }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: value,
-    });
+    }));
+  };
+
+  const handleImageUpload = (imageUrl) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      avatar: imageUrl,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/api/user/${user.id}`,
@@ -63,6 +72,10 @@ const Profile = () => {
       );
       if (response.status === 200) {
         toast.success("Profile updated successfully!");
+        updateUser(response.data.user);
+      } else {
+        console.error("Unexpected response status:", response.status);
+        toast.error("Failed to update profile.");
       }
     } catch (error) {
       console.error("Error updating user data:", error);
@@ -77,8 +90,10 @@ const Profile = () => {
       </div>
       <div className="p-6">
         <div className="flex items-center mb-6">
-          <img
-            src={user?.avatar || "https://via.placeholder.com/80"}
+          <Image
+            src={formData.avatar || ""}
+            width={100}
+            height={100}
             alt="User Profile"
             className="rounded-full h-20 w-20 mr-4"
           />
@@ -90,23 +105,25 @@ const Profile = () => {
         </div>
         <Separator />
         <h2 className="text-xl font-semibold my-4">My Details</h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-4">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-4"
+        >
           <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src={user?.avatar || "/placeholder-user.jpg"} />
-              <AvatarFallback>JD</AvatarFallback>
-            </Avatar>
-            <div>
-              <Button variant="outline">
-                <UploadIcon className="mr-2 h-4 w-4" />
-                Upload New Image
-              </Button>
-              <Input type="file" className="sr-only" />
-            </div>
+            <ImageUploader onImageUpload={handleImageUpload} />
           </div>
           <div className="mt-1 block w-full">
             <Label htmlFor="role">Role</Label>
-            <Select id="role" name="role" value={formData.role} onChange={handleInputChange}>
+            <Select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={(e) =>
+                handleInputChange({
+                  target: { name: "role", value: e.target.value },
+                })
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
@@ -117,7 +134,10 @@ const Profile = () => {
             </Select>
           </div>
           <div>
-            <Label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+            <Label
+              htmlFor="firstName"
+              className="block text-sm font-medium text-gray-700"
+            >
               First Name*
             </Label>
             <Input
@@ -131,7 +151,10 @@ const Profile = () => {
             />
           </div>
           <div>
-            <Label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+            <Label
+              htmlFor="lastName"
+              className="block text-sm font-medium text-gray-700"
+            >
               Last Name
             </Label>
             <Input
@@ -145,7 +168,10 @@ const Profile = () => {
             />
           </div>
           <div>
-            <Label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <Label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email
             </Label>
             <Input
@@ -159,7 +185,10 @@ const Profile = () => {
             />
           </div>
           <div>
-            <Label htmlFor="mobile" className="block text-sm font-medium text-gray-700">
+            <Label
+              htmlFor="mobile"
+              className="block text-sm font-medium text-gray-700"
+            >
               Mobile
             </Label>
             <Input
@@ -172,7 +201,10 @@ const Profile = () => {
             />
           </div>
           <div>
-            <Label htmlFor="street" className="block text-sm font-medium text-gray-700">
+            <Label
+              htmlFor="street"
+              className="block text-sm font-medium text-gray-700"
+            >
               Street*
             </Label>
             <Input
@@ -180,13 +212,16 @@ const Profile = () => {
               id="street"
               name="street"
               className="mt-1 block w-full"
-              placeholder="Enter your street"
+              placeholder="Your street address"
               value={formData.street}
               onChange={handleInputChange}
             />
           </div>
           <div>
-            <Label htmlFor="locality" className="block text-sm font-medium text-gray-700">
+            <Label
+              htmlFor="locality"
+              className="block text-sm font-medium text-gray-700"
+            >
               Locality
             </Label>
             <Input
@@ -194,12 +229,16 @@ const Profile = () => {
               id="locality"
               name="locality"
               className="mt-1 block w-full"
+              placeholder="Your locality"
               value={formData.locality}
               onChange={handleInputChange}
             />
           </div>
           <div>
-            <Label htmlFor="state" className="block text-sm font-medium text-gray-700">
+            <Label
+              htmlFor="state"
+              className="block text-sm font-medium text-gray-700"
+            >
               State
             </Label>
             <Input
@@ -207,27 +246,14 @@ const Profile = () => {
               id="state"
               name="state"
               className="mt-1 block w-full"
+              placeholder="Your state"
               value={formData.state}
               onChange={handleInputChange}
             />
           </div>
           <div>
-            <Label htmlFor="country" className="block text-sm font-medium text-gray-700">
-              Country
-            </Label>
-            <Input
-              type="text"
-              id="country"
-              name="country"
-              className="mt-1 block w-full"
-              value="Nigeria"
-              readOnly
-            />
-          </div>
-          <div className="mt-6 flex justify-between items-center sm:col-span-2">
-            <Button className="text-blue-600">Privacy Policy</Button>
-            <Button type="submit">
-              Save Changes
+            <Button type="submit" className="mt-4 w-full">
+              Update Profile
             </Button>
           </div>
         </form>
