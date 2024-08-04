@@ -34,14 +34,14 @@ const ImageUploader = ({ onImageUpload }) => {
   return (
     <div>
       {image && (
-        <div className="h-20 w-20 rounded-full">
+        <div className="h-[10rem] w-[10rem] border-2 mb-2">
           <Image cloudName="dvvirefzi" publicId={image} />
         </div>
       )}
-      <div className="grid w-full max-w-sm items-center gap-1.5">
-        <Label htmlFor="picture">Upload Profile</Label>
+      <>
+        <Label htmlFor="picture">Upload Image/Images</Label>
         <Input id="file" type="file" onChange={uploadImage} />
-      </div>
+      </>
     </div>
   );
 };

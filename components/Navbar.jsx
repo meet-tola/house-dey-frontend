@@ -23,9 +23,9 @@ import {
 import AuthContext from "@/context/AuthContext";
 
 const navLinks = [
-  { href: "#", label: "For Rent" },
-  { href: "#", label: "For Shop" },
-  { href: "#", label: "Services" },
+  { href: "#", label: "House" },
+  { href: "#", label: "Shop" },
+  { href: "#", label: "Hostel" },
   { href: "#", label: "Contact" },
 ];
 

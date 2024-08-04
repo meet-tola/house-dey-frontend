@@ -17,9 +17,13 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import ImageUploader from "@/components/ui/ImageUploader";
+import { Loader } from "lucide-react";
 
 const Profile = () => {
+  const [loading, setLoading] = useState(false);
   const { user, updateUser } = useContext(AuthContext);
+  const userId = user?.id;
+
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
@@ -33,8 +37,7 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
+    setFormData({
       firstName: user?.firstName || "",
       lastName: user?.lastName || "",
       email: user?.email || "",
@@ -44,7 +47,7 @@ const Profile = () => {
       state: user?.state || "",
       role: user?.role || "",
       avatar: user?.avatar || "",
-    }));
+    });
   }, [user]);
 
   const handleInputChange = (e) => {
@@ -64,6 +67,12 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    if (!userId) {
+      toast.error("User ID is missing. Please try again.");
+      return;
+    }
 
     try {
       const response = await axios.put(
@@ -80,6 +89,8 @@ const Profile = () => {
     } catch (error) {
       console.error("Error updating user data:", error);
       toast.error("Failed to update profile.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -253,7 +264,7 @@ const Profile = () => {
           </div>
           <div>
             <Button type="submit" className="mt-4 w-full">
-              Update Profile
+              {loading ? <Loader className="animate-spin" /> : "Update Profile"}
             </Button>
           </div>
         </form>
