@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,12 +16,17 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ImageUploader from "@/components/ui/ImageUploader";
+import AuthContext from "@/context/AuthContext";
+import { Loader } from "lucide-react";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function CreatePost() {
+  const { user } = useContext(AuthContext);
+  const userId = user?.id;
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     price: "",
-    desc: "",
     images: [],
     address: "",
     city: "",
@@ -31,9 +36,9 @@ export default function CreatePost() {
     longitude: "",
     property: "",
     type: "",
+    desc: "",
     utilities: "",
     size: "",
-    income: "",
   });
 
   const handleInputChange = (e) => {
@@ -44,38 +49,50 @@ export default function CreatePost() {
     }));
   };
 
-  const handleImageUpload = (url) => {
+  const handleImageUpload = (urls) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-      images: [...prevFormData.images, url],
+      images: urls,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formDataObj = new FormData();
-    for (const key in formData) {
-      if (key === "images") {
-        formData[key].forEach((image, index) => {
-          formDataObj.append(`images[${index}]`, image);
-        });
-      } else {
-        formDataObj.append(key, formData[key]);
-      }
-    }
+    setLoading(true);
+
+    const postDetail = {
+      desc: formData.desc,
+      utilities: formData.utilities,
+      size: parseInt(formData.size, 10),
+    };
+
+    const postPayload = {
+      title: formData.title,
+      price: parseInt(formData.price, 10),
+      images: formData.images,
+      address: formData.address,
+      city: formData.city,
+      bedroom: parseInt(formData.bedrooms, 10),
+      bathroom: parseInt(formData.bathrooms, 10),
+      latitude: formData.latitude,
+      longitude: formData.longitude,
+      property: formData.property,
+      type: formData.type,
+      postDetail,
+      userId: userId,
+    };
 
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/posts`,
-        formDataObj
+        postPayload
       );
       if (response.status === 200) {
         toast.success("Post created successfully!");
         setFormData({
           title: "",
           price: "",
-          desc: "",
-          images: [],
+          images: "",
           address: "",
           city: "",
           bedrooms: "",
@@ -84,6 +101,7 @@ export default function CreatePost() {
           longitude: "",
           property: "",
           type: "",
+          desc: "",
           utilities: "",
           size: "",
         });
@@ -93,6 +111,8 @@ export default function CreatePost() {
     } catch (error) {
       toast.error("An error occurred while creating the post.");
       console.error("Error creating post:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,7 +131,7 @@ export default function CreatePost() {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Title</Label>
+                <Label htmlFor="title">Title**</Label>
                 <Input
                   id="title"
                   placeholder="Enter a title"
@@ -120,7 +140,7 @@ export default function CreatePost() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="price">Price</Label>
+                <Label htmlFor="price">Price**</Label>
                 <Input
                   id="price"
                   type="number"
@@ -131,7 +151,7 @@ export default function CreatePost() {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="desc">Description</Label>
+              <Label htmlFor="desc">Description**</Label>
               <Textarea
                 id="desc"
                 rows={6}
@@ -141,11 +161,14 @@ export default function CreatePost() {
               />
             </div>
             <div className="space-y-2">
-              <ImageUploader onImageUpload={handleImageUpload} />
+              <ImageUploader
+                onImageUpload={handleImageUpload}
+                multiple={true}
+              />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">Address**</Label>
                 <Input
                   id="address"
                   placeholder="Enter an address"
@@ -154,7 +177,7 @@ export default function CreatePost() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">City**</Label>
                 <Input
                   id="city"
                   placeholder="Enter a city"
@@ -165,7 +188,7 @@ export default function CreatePost() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="property">Property</Label>
+                <Label htmlFor="property">Property**</Label>
                 <Select
                   id="property"
                   value={formData.property}
@@ -188,7 +211,7 @@ export default function CreatePost() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="property">Type</Label>
+                <Label htmlFor="property">Type**</Label>
                 <Select
                   id="property"
                   value={formData.type}
@@ -211,7 +234,7 @@ export default function CreatePost() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="bedrooms">Bedrooms</Label>
+                <Label htmlFor="bedrooms">Bedrooms(Optional)</Label>
                 <Input
                   id="bedrooms"
                   type="number"
@@ -221,7 +244,7 @@ export default function CreatePost() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="bathrooms">Bathrooms</Label>
+                <Label htmlFor="bathrooms">Bathrooms(Optional)</Label>
                 <Input
                   id="bathrooms"
                   type="number"
@@ -255,7 +278,7 @@ export default function CreatePost() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="utilities">Utilities</Label>
+                <Label htmlFor="utilities">Utilities(Optional)</Label>
                 <Input
                   id="utilities"
                   placeholder="Enter utilities"
@@ -273,18 +296,16 @@ export default function CreatePost() {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="income">Income</Label>
-                <Input
-                  id="income"
-                  type="number"
-                  placeholder="Enter income"
-                  value={formData.income}
-                  onChange={handleInputChange}
-                />
-              </div>
             </div>
-            <Button type="submit">Create Post</Button>
+            <Button type="submit">
+              {loading ? (
+                <>
+                  <Loader className="animate-spin" /> Creating Post
+                </>
+              ) : (
+                "Create Post"
+              )}
+            </Button>
           </form>
         </div>
         <div className="space-y-6">
@@ -295,7 +316,7 @@ export default function CreatePost() {
             <CardContent className="space-y-2">
               <div className="bg-muted rounded-lg overflow-hidden">
                 <img
-                  src="/placeholder.svg"
+                  src={formData.images[0]}
                   alt="Property Image"
                   width={800}
                   height={500}
@@ -304,11 +325,23 @@ export default function CreatePost() {
               </div>
               <div className="space-y-2">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
-                  Showcase Your Property
+                  {formData.title || "HouseDey"}
                 </h2>
                 <p className="text-muted-foreground text-lg">
-                  List your property on our platform to reach a wide audience of
-                  potential buyers and renters.
+                  Address: {formData.address || "123 Main Street"}
+                </p>
+                <p className="text-muted-foreground text-lg">
+                  Bedrooms: {formData.bedrooms || 32} | Bathrooms:{" "}
+                  {formData.bathrooms || 24}
+                </p>
+                <p className="text-muted-foreground text-lg">
+                  Property Type: {formData.property || "Apartment"} | Type:{" "}
+                  {formData.type || "Rent"}
+                </p>
+                <p className="text-muted-foreground text-lg">
+                  Description:{" "}
+                  {formData.desc ||
+                    "beautiful family house with spacious rooms and a large garden."}
                 </p>
               </div>
             </CardContent>

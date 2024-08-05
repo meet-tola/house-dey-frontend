@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/context/AuthContext";
 import Footer from "@/components/Footer";
+import { Toaster } from "react-hot-toast";
 
 const plus = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -14,6 +15,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <Toaster />
       <AuthProvider>
         <body className={plus.className}>
           <Navbar />

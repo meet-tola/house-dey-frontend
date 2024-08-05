@@ -81,7 +81,8 @@ const Profile = () => {
       );
       if (response.status === 200) {
         toast.success("Profile updated successfully!");
-        updateUser(response.data.user);
+        console.log("Response data:", response.data); 
+        updateUser(response.data);
       } else {
         console.error("Unexpected response status:", response.status);
         toast.error("Failed to update profile.");
@@ -121,7 +122,7 @@ const Profile = () => {
           className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-4"
         >
           <div className="flex items-center gap-4">
-            <ImageUploader onImageUpload={handleImageUpload} />
+          <ImageUploader onImageUpload={handleImageUpload} multiple={false} />
           </div>
           <div className="mt-1 block w-full">
             <Label htmlFor="role">Role</Label>

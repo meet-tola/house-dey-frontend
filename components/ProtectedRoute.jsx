@@ -1,7 +1,8 @@
-// components/ProtectedRoute.js
-import { useRouter } from 'next/navigation';
-import { checkAuth } from '@/utils/auth';
-import PageLoader from '@/components/PageLoader'; 
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { checkAuth } from "@/utils/auth";
+import PageLoader from "@/components/PageLoader";
 
 const ProtectedRoute = ({ children }) => {
   const router = useRouter();
@@ -10,9 +11,10 @@ const ProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     const authenticate = async () => {
+      setIsLoading(true);
       const auth = await checkAuth();
       if (!auth) {
-        router.push('/login');
+        router.push("/login");
       } else {
         setIsAuthenticated(true);
       }
@@ -27,10 +29,10 @@ const ProtectedRoute = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    return null; 
+    return null;
   }
 
-  return children; 
+  return children;
 };
 
 export default ProtectedRoute;

@@ -1,7 +1,15 @@
 "use client";
 import Link from "next/link";
 import React, { useContext } from "react";
-import { User, Heart, Home, FileText, Bell, Settings } from "lucide-react";
+import {
+  User,
+  Heart,
+  Home,
+  FileText,
+  Bell,
+  Settings,
+  MessageCircle,
+} from "lucide-react";
 import AuthContext from "@/context/AuthContext";
 
 const MyAccount = () => {
@@ -16,74 +24,83 @@ const MyAccount = () => {
           <p className="text-lg mt-4">Manage your account and preferences</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {role === "CLIENT" && (
-            <>
-              <Card
-                title="My Profile"
-                description="Update your personal details and property goals"
-                icon={<User className="text-3xl" />}
-                link="/profile"
-              />
-              <Card
-                title="My Shortlisted Properties"
-                description="Saved buy and rental properties"
-                icon={<Heart className="text-3xl" />}
-                link="/shortlisted-properties"
-              />
-              <Card
-                title="Follow Locations"
-                description="Following off-market properties, streets or suburbs"
-                icon={<Home className="text-3xl" />}
-                link="/follow-locations"
-              />
-              <Card
-                title="My Enquiries and Offers"
-                description="View all property enquiries & offers you have made"
-                icon={<FileText className="text-3xl" />}
-                link="/enquiries-offers"
-              />
-              <Card
-                title="Searches and Alerts"
-                description="Custom searches and auction alerts"
-                icon={<Bell className="text-3xl" />}
-                link="/searches-alerts"
-              />
-            </>
-          )}
-          {role === "AGENT" && (
-            <>
-              <Card
-                title="My Listings"
-                description="Manage your property listings"
-                icon={<Home className="text-3xl" />}
-                link="/my-listings"
-              />
-              <Card
-                title="Enquiries Received"
-                description="View all enquiries received for your properties"
-                icon={<FileText className="text-3xl" />}
-                link="/enquiries-received"
-              />
-              <Card
-                title="Client Offers"
-                description="Manage offers received from clients"
-                icon={<Heart className="text-3xl" />}
-                link="/client-offers"
-              />
-              <Card
-                title="Notifications"
-                description="Manage your notifications and alerts"
-                icon={<Bell className="text-3xl" />}
-                link="/notifications"
-              />
-              <Card
-                title="Account Settings"
-                description="Manage your login details and notification preferences"
-                icon={<Settings className="text-primary text-3xl" />}
-                link="/account-settings"
-              />
-            </>
-          )}
+          <>
+            <Card
+              title="My Profile"
+              description="Update your personal details and property goals"
+              icon={<User className="text-3xl" />}
+              link="/profile"
+            />
+
+            {role === "CLIENT" && (
+              <>
+                <Card
+                  title="My Shortlisted Properties"
+                  description="Saved buy and rental properties"
+                  icon={<Heart className="text-3xl" />}
+                  link="/shortlisted-properties"
+                />
+                <Card
+                  title="Follow Locations"
+                  description="Following off-market properties, streets or suburbs"
+                  icon={<Home className="text-3xl" />}
+                  link="/follow-locations"
+                />
+                <Card
+                  title="Messages"
+                  description="View all incoming/outcoming message received for your properties"
+                  icon={<MessageCircle className="text-3xl" />}
+                  link="/messages"
+                />
+                <Card
+                  title="Notifications"
+                  description="Manage your notifications and alerts"
+                  icon={<Bell className="text-3xl" />}
+                  link="/notifications"
+                />
+                <Card
+                  title="Searches and Alerts"
+                  description="Custom searches and auction alerts"
+                  icon={<Bell className="text-3xl" />}
+                  link="/searches-alerts"
+                />
+              </>
+            )}
+            {role === "AGENT" && (
+              <>
+                <Card
+                  title="My Listings"
+                  description="Manage your property listings"
+                  icon={<Home className="text-3xl" />}
+                  link="/my-listings"
+                />
+                <Card
+                  title="Messages "
+                  description="View all incoming/outcoming message received for your properties"
+                  icon={<MessageCircle className="text-3xl" />}
+                  link="/messages"
+                />
+                <Card
+                  title="Client Offers"
+                  description="Manage offers received from clients"
+                  icon={<Heart className="text-3xl" />}
+                  link="/client-offers"
+                />
+                <Card
+                  title="Notifications"
+                  description="Manage your notifications and alerts"
+                  icon={<Bell className="text-3xl" />}
+                  link="/notifications"
+                />
+                <Card
+                  title="Account Settings"
+                  description="Manage your login details and notification preferences"
+                  icon={<Settings className="text-primary text-3xl" />}
+                  link="/account-settings"
+                />
+              </>
+            )}
+          </>
         </div>
       </div>
     </div>
