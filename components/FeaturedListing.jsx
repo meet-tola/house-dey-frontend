@@ -1,54 +1,98 @@
-import React from 'react';
-import { Button } from './ui/button';
+import React from "react";
+import { Button } from "./ui/button";
+import { Bed, Bath, Car, Home } from "lucide-react";
 
 const properties = [
   {
-    id: 1,
-    image: 'house.png',
-    price: '$2,120,000',
-    address: '103 High Street, Glen Iris, VIC 3146',
-    agency: 'Marshall White',
+    image: "/path/to/image.jpg",
+    title: "Listing Title",
+    price: "₦155,000",
+    address: "1/498 Toorak Road, Toorak, VI",
+    beds: 3,
+    baths: 3,
+    cars: 3,
+    type: "Shop",
   },
   {
-    id: 2,
-    image: 'house.png',
-    price: '$6,595,000',
-    address: '11 Tivoli Place, South Yarra, VIC 3141',
-    agency: 'Marshall White',
+    image: "/path/to/image.jpg",
+    title: "Listing Title",
+    price: "₦650,000",
+    address: "39 Albert Street, Apapa Port",
+    beds: 3,
+    baths: 2,
+    cars: 2,
+    type: "House",
   },
   {
-    id: 3,
-    image: 'house.png',
-    price: '$2,200,000 - $2,400,000',
-    address: '12A Lowe Street, Mount Eliza, VIC 3930',
-    agency: 'Marshall White',
+    image: "/path/to/image.jpg",
+    title: "Listing Title",
+    price: "₦200,000",
+    address: "13 Watersedge Terrace, New road",
+    beds: 5,
+    baths: 2,
+    type: "Apartment",
   },
   {
-    id: 4,
-    image: 'house.png',
-    price: '$2,900,000 - $3,100,000',
-    address: '208 Pigdon Street, Princes Hill, VIC 3054',
-    agency: 'Z Real Estate',
+    image: "/path/to/image.jpg",
+    title: "Listing Title",
+    price: "₦355,000",
+    address: "22 Lockhart Street, Camberwell,",
+    beds: 3,
+    baths: 2,
+    cars: 2,
+    type: "Hostel",
   },
 ];
 
-const PropertyCard = ({ property }) => (
-  <div className="max-w-[20rem] rounded-2xl shadow-lg m-4">
-    <img className="w-full rounded-2xl p-2" src={property.image} alt="Property" />
-    <div className="px-6 py-4">
-      <div className="flex justify-between w-full font-bold text-xl mb-2">{property.agency} <Button variant="outline">Rent</Button> </div>
-      <p className="text-gray-700 text-base">{property.price}</p>
-      <p className="text-gray-700 text-base">{property.address}</p>
+const PropertyCard = ({ image, title, price, address, beds, baths, cars, type }) => {
+  return (
+    <div className="min-w-[300px] lg:min-w-[250px] w-full rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white">
+      <img className="w-full h-48 object-cover" src={image} alt={address} />
+      <div className="p-4 flex flex-col justify-between flex-grow">
+        <div>
+          <div className="text-lg font-semibold mb-2 flex items-center justify-between">
+            {title}
+            <Button className="ml-2 bg-blue-100 text-blue-700 px-2" variant="outline">
+              Rent
+            </Button>
+          </div>
+          <div className="text-gray-600 mb-2">{address}</div>
+          <div className="text-xl font-semibold mb-4">{price}</div>
+        </div>
+        <div className="flex items-center text-gray-600 mt-auto bg-gray-100 p-2 rounded-md">
+          <span className="flex items-center mr-4">
+            <Bed className="h-5 w-5 mr-1" />
+            {beds}
+          </span>
+          <span className="flex items-center mr-4">
+            <Bath className="h-5 w-5 mr-1" />
+            {baths}
+          </span>
+          <span className="flex items-center mr-4">
+            <Car className="h-5 w-5 mr-1" />
+            {cars}
+          </span>
+          <span className="flex items-center">
+            <Home className="h-5 w-5 mr-1" />
+            {type}
+          </span>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-const FeaturedProperties = () => (
-  <div className="flex flex-wrap justify-center">
-    {properties.map((property) => (
-      <PropertyCard key={property.id} property={property} />
-    ))}
-  </div>
-);
+const FeaturedProperties = () => {
+  return (
+    <div className="py-10 px-4 md:px-16">
+      <h2 className="text-2xl font-semibold mb-4">Featured Properties for Rent</h2>
+      <div className="flex gap-6 overflow-x-auto scrollbar-none">
+        {properties.map((property, index) => (
+          <PropertyCard key={index} {...property} />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default FeaturedProperties;

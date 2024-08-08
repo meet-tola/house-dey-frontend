@@ -14,7 +14,9 @@ export const AuthProvider = ({ children }) => {
       try {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get("token")}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
+          "token"
+        )}`;
       } catch (error) {
         console.error("Error parsing stored user data:", error);
       }
@@ -31,7 +33,10 @@ export const AuthProvider = ({ children }) => {
         console.log("Signup successful. Please login to continue.");
       }
     } catch (error) {
-      console.error("Error during signup:", error.response?.data || error.message);
+      console.error(
+        "Error during signup:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -49,13 +54,16 @@ export const AuthProvider = ({ children }) => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error("Error during login:", error.response?.data || error.message);
+      const errorMessage = "You're not a registered user. Sign up";
+      throw new Error(errorMessage);
     }
   };
 
   const logout = async () => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`
+      );
       if (response.status === 200) {
         setUser(null);
         Cookies.remove("token");
@@ -63,7 +71,10 @@ export const AuthProvider = ({ children }) => {
         delete axios.defaults.headers.common["Authorization"];
       }
     } catch (error) {
-      console.error("Error during logout:", error.response?.data || error.message);
+      console.error(
+        "Error during logout:",
+        error.response?.data || error.message
+      );
     }
   };
 

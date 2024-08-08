@@ -299,9 +299,9 @@ export default function CreatePost() {
             </div>
             <Button type="submit">
               {loading ? (
-                <>
+                <div>
                   <Loader className="animate-spin" /> Creating Post
-                </>
+                </div>
               ) : (
                 "Create Post"
               )}

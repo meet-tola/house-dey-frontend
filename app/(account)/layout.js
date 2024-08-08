@@ -6,7 +6,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function ProtectedLayout({ children }) {
   return (
-    <html lang="en">
+    <>
       <Toaster />
       <AuthProvider>
         <ProtectedRoute>
@@ -17,7 +17,7 @@ export default function ProtectedLayout({ children }) {
           </body>
         </ProtectedRoute>
       </AuthProvider>
-    </html>
+    </>
   );
 }
 

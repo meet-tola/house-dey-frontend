@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import AuthContext from "@/context/AuthContext";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { Loader } from "lucide-react";
@@ -22,7 +22,13 @@ import { Loader } from "lucide-react";
 const Profile = () => {
   const [loading, setLoading] = useState(false);
   const { user, updateUser } = useContext(AuthContext);
-  const userId = user?.id;
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      setUserId(user.id);
+    }
+  }, [user]);
 
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
@@ -81,7 +87,6 @@ const Profile = () => {
       );
       if (response.status === 200) {
         toast.success("Profile updated successfully!");
-        console.log("Response data:", response.data); 
         updateUser(response.data);
       } else {
         console.error("Unexpected response status:", response.status);
@@ -96,6 +101,8 @@ const Profile = () => {
   };
 
   return (
+    <>
+    <Toaster />
     <div className="max-w-7xl mx-auto p-6 mt-20">
       <div className="bg-blue-100 p-12 rounded-2xl mb-6">
         <h1 className="text-4xl lg:text-6xl font-bold">My Profile</h1>
@@ -271,6 +278,8 @@ const Profile = () => {
         </form>
       </div>
     </div>
+    </>
+    
   );
 };
 

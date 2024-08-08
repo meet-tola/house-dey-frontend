@@ -25,9 +25,8 @@ const LoginPage = () => {
       await login(username, password);
       router.push("/");
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "An unexpected error occurred";
-      toast.error("Error: " + errorMessage);
+      toast.error(error.message); 
+      router.push("/signup");
     } finally {
       setLoading(false);
     }

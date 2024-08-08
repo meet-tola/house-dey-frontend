@@ -13,7 +13,7 @@ const services = [
 
 const Services = () => {
   return (
-    <div className="container py-10 px-4 md:px-10">
+    <div className="container py-10 px-4 md:px-16">
       <div className="flex gap-16 overflow-x-auto scrollbar-none pb-10 border-b-2 border-gray-200">
         {services.map((service, index) => (
           <div key={index} className="flex flex-col items-center w-full">
