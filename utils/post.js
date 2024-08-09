@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const fetchPosts = async () => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`);
     if (response.status === 200) {
       return response.data; 
     }
@@ -15,7 +15,7 @@ export const fetchPosts = async () => {
 
 export const fetchPost = async (id) => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${id}`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`);
     if (response.status === 200) {
       return response.data;
     }

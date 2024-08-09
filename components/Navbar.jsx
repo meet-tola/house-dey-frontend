@@ -129,7 +129,7 @@ export default function Navbar() {
                       alt="User Avatar"
                     />
                     <AvatarFallback>
-                      {user.email[0]}
+                      {user.email[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
