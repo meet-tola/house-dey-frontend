@@ -41,7 +41,7 @@ const MyAccount = () => {
           />
           <Card
             title="Messages"
-            description="View all incoming/outcoming message received for your properties"
+            description="View all incoming/outgoing messages received for your properties"
             icon={<MessageCircle className="text-3xl" />}
             link="/messages"
           />
@@ -70,7 +70,7 @@ const MyAccount = () => {
           />
           <Card
             title="Messages"
-            description="View all incoming/outcoming message received for your properties"
+            description="View all incoming/outgoing messages received for your properties"
             icon={<MessageCircle className="text-3xl" />}
             link="/messages"
           />
@@ -122,7 +122,7 @@ const MyAccount = () => {
 const Card = ({ title, description, icon, link }) => {
   return (
     <Link href={link} passHref>
-      <div className="bg-white p-8 rounded-lg shadow-md">
+      <div className="bg-white p-8 rounded-lg shadow-md cursor-pointer">
         <div className="flex flex-col items-start justify-center gap-4">
           <div>{icon}</div>
           <div>

@@ -18,7 +18,6 @@ import toast from "react-hot-toast";
 import ImageUploader from "@/components/ui/ImageUploader";
 import AuthContext from "@/context/AuthContext";
 import { Loader } from "lucide-react";
-import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function CreatePost() {
   const { user } = useContext(AuthContext);
