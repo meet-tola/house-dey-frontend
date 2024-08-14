@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AuthContext from "@/context/AuthContext";
+import Cookies from "js-cookie";
 
 const navLinks = [
   { href: "#", label: "House" },
@@ -32,6 +33,7 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
+  const token = Cookies.get("token");
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white shadow-sm transition-all duration-300 data-[scrolled=true]:bg-background data-[scrolled=true]:shadow-lg">
@@ -111,7 +113,7 @@ export default function Navbar() {
           ))}
         </nav>
         <div className="flex items-center gap-4">
-          {user ? (
+          {user && token ? (
             <>
               <Button variant="ghost" size="icon">
                 <BellIcon className="h-5 w-5" />

@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { useSearchParams, useRouter } from "next/navigation";
 import { fetchPosts } from "@/utils/post";
+import PageLoader from "@/components/PageLoader";
 
 export default function PropertiesPage() {
   const searchParams = useSearchParams();
@@ -50,6 +51,7 @@ export default function PropertiesPage() {
       setLoading(true);
       try {
         const data = await fetchPosts(filters);
+        console.log(data);
         setProperties(data);
       } catch (error) {
         console.error("Error fetching properties:", error);
@@ -59,7 +61,9 @@ export default function PropertiesPage() {
     };
 
     fetchProperties();
-  }, []); // Only fetch properties on component mount, not on filter change
+  }, [filters]);
+
+  console.log("Current properties:", properties);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -73,7 +77,6 @@ export default function PropertiesPage() {
     const query = new URLSearchParams(filters).toString();
     router.push(`/properties?${query}`);
 
-    // Fetch properties based on new filters
     setLoading(true);
     fetchPosts(filters)
       .then((data) => {
@@ -231,7 +234,6 @@ export default function PropertiesPage() {
 
         {/* Filter Button for Small Screens */}
         <div className="md:hidden flex items-center justify-between w-full file:placeholder:backdrop:before:after:first:last:">
-          
           <div className="flex items-center border rounded-lg px-2 py-1 h-10">
             <MapPinIcon className="h-4 w-4 text-gray-400 mr-2" />
             <Input
@@ -392,7 +394,6 @@ export default function PropertiesPage() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-            
           </div>
         </div>
       </div>
@@ -403,24 +404,26 @@ export default function PropertiesPage() {
         <div className="w-full md:w-1/2 p-4 mt-4">
           <h2 className="text-xl font-semibold mb-4">{getHeaderText()}</h2>{" "}
           <div className="space-y-4">
-            {properties.map((property) => (
-              <div
-                key={property.id}
-                className="border rounded-lg p-4 shadow-sm"
-              >
-                <img
-                  src={property.images[0]}
-                  alt={property.title}
-                  className="w-full h-48 object-cover rounded-lg mb-4"
-                />
-                <h3 className="text-lg font-semibold">{property.title}</h3>
-                <p className="text-gray-600">{property.address}</p>
-                <p className="text-blue-600">${property.price}</p>
-                <p>
-                  {property.bedroom} Bedrooms | {property.bathroom} Bathrooms
-                </p>
-              </div>
-            ))}
+          {properties.length ? (
+  properties.map((property) => (
+    <div key={property._id} className="border rounded-lg p-4 shadow-sm">
+      <img
+        src={property.images[0]}
+        alt={property.title}
+        className="w-full h-48 object-cover rounded-lg mb-4"
+      />
+      <h3 className="text-lg font-semibold">{property.title}</h3>
+      <p className="text-gray-600">{property.address}</p>
+      <p className="text-blue-600">${property.price}</p>
+      <p>
+        {property.bedroom} Bedrooms | {property.bathroom} Bathrooms
+      </p>
+    </div>
+  ))
+) : (
+  <p>No properties found.</p>
+)}
+
           </div>
         </div>
 

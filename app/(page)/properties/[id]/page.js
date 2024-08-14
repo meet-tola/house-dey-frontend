@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/carousel";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useParams } from "next/navigation";
-import { fetchPost } from "@/utils/post";
+import { fetchPost, savePost } from "@/utils/post";
 import { useEffect, useState } from "react";
 import PageLoader from "@/components/PageLoader";
 import {
@@ -39,13 +39,15 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import toast from "react-hot-toast";
 
-export default function Component() {
+export default function PropertiesDetails() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [error, setError] = useState(null);
   const [isDescriptionOpen, setDescriptionOpen] = useState(true);
   const [isFeaturesOpen, setFeaturesOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   // State for image modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,6 +67,22 @@ export default function Component() {
       getPost();
     }
   }, [id]);
+
+  const handleSavePost = async () => {
+    try {
+      const response = await savePost(id);
+      console.log(response);
+      if (response) {
+        setIsSaved((prev) => !prev);
+        toast.success("This properties has been saved");
+
+      } else {
+        toast.error("Failed to save properties");
+      }
+    } catch (error) {
+      console.error("Error saving the post:", error);
+    }
+  };
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -183,9 +201,11 @@ export default function Component() {
                 | <div>{post.property}</div>
               </div>
               <div className="flex items-center gap-2">
-                <Button size="icon" variant="ghost">
-                  <HeartIcon className="w-5 h-5" />
-                  <span className="sr-only">Favorite</span>
+                <Button size="icon" variant="ghost" onClick={handleSavePost}>
+                  <HeartIcon
+                    className={`w-5 h-5 ${isSaved ? "text-red-500" : ""}`}
+                  />
+                  <span className="sr-only">{isSaved ? "Unsave" : "Save"}</span>
                 </Button>
                 <Button size="icon" variant="ghost">
                   <ShareIcon className="w-5 h-5" />

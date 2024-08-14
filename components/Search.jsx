@@ -10,7 +10,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { SearchIcon, MapPinIcon, DollarSignIcon } from "lucide-react";
+import { SearchIcon, MapPinIcon, DollarSignIcon, Loader2 } from "lucide-react";
 
 export default function Search() {
   const [activeTab, setActiveTab] = useState("buy");
@@ -18,9 +18,12 @@ export default function Search() {
   const [city, setCity] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
   const router = useRouter();
 
   const handleSearch = () => {
+    setLoading(true);
+
     const query = {
       city: city || undefined,
       type: activeTab,
@@ -36,7 +39,9 @@ export default function Search() {
       )
       .join("&");
 
-    router.push(`/properties?${queryString}`);
+    router.push(`/properties?${queryString}`).finally(() => {
+      setLoading(false);
+    });
   };
 
   return (
@@ -76,36 +81,40 @@ export default function Search() {
             />
           </div>
           <div className="flex w-full md:w-auto gap-2">
-          <div className="flex items-center w-full md:w-auto border rounded-lg px-2 py-1">
-            <DollarSignIcon className="h-5 w-5 text-gray-400 mr-2" />
-            <Select onValueChange={(value) => setMinPrice(value)}>
-              <SelectTrigger className="w-full border-none focus:ring-0">
-                <SelectValue placeholder="Min Price" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="100000">$100,000</SelectItem>
-                <SelectItem value="150000">$150,000</SelectItem>
-                <SelectItem value="200000">$200,000</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex items-center w-full md:w-auto border rounded-lg px-2 py-1">
+              <DollarSignIcon className="h-5 w-5 text-gray-400 mr-2" />
+              <Select onValueChange={(value) => setMinPrice(value)}>
+                <SelectTrigger className="w-full border-none focus:ring-0">
+                  <SelectValue placeholder="Min Price" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="100000">$100,000</SelectItem>
+                  <SelectItem value="150000">$150,000</SelectItem>
+                  <SelectItem value="200000">$200,000</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center w-full md:w-auto border rounded-lg px-2 py-1">
+              <DollarSignIcon className="h-5 w-5 text-gray-400 mr-2" />
+              <Select onValueChange={(value) => setMaxPrice(value)}>
+                <SelectTrigger className="w-full border-none focus:ring-0">
+                  <SelectValue placeholder="Max Price" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="150000">$150,000</SelectItem>
+                  <SelectItem value="200000">$200,000</SelectItem>
+                  <SelectItem value="250000">$250,000</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          <div className="flex items-center w-full md:w-auto border rounded-lg px-2 py-1">
-            <DollarSignIcon className="h-5 w-5 text-gray-400 mr-2" />
-            <Select onValueChange={(value) => setMaxPrice(value)}>
-              <SelectTrigger className="w-full border-none focus:ring-0">
-                <SelectValue placeholder="Max Price" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="150000">$150,000</SelectItem>
-                <SelectItem value="200000">$200,000</SelectItem>
-                <SelectItem value="250000">$250,000</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          </div>
-          
-          <Button className="w-full md:w-auto h-auto" onClick={handleSearch}>
-            Search
+
+          <Button className="w-full md:w-auto h-auto" onClick={handleSearch} disabled={loading}>
+            {loading ? (
+              <Loader2 className="animate-spin h-5 w-5 text-white" /> 
+            ) : (
+              "Search"
+            )}
           </Button>
         </div>
       </div>

@@ -10,11 +10,11 @@ export default function ProtectedLayout({ children }) {
       <Toaster />
       <AuthProvider>
         <ProtectedRoute>
-          <body>
+          <div>
             <Navbar />
             {children}
             <Footer />
-          </body>
+          </div>
         </ProtectedRoute>
       </AuthProvider>
     </>

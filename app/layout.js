@@ -15,10 +15,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Toaster />
       <AuthProvider>
         <body className={plus.className}>
-          <Navbar />
+          <Toaster /> <Navbar />
           {children}
           <Footer />
         </body>
