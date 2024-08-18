@@ -127,7 +127,7 @@ const Profile = () => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <div className="bg-blue-100 p-12 rounded-2xl mb-6">
+        <div className="bg-blue-100 p-12 rounded-2xl mb-6 mt-4">
           <h1 className="text-4xl lg:text-6xl font-bold">My Profile</h1>
         </div>
         <div className="p-6">

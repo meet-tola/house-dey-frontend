@@ -404,26 +404,28 @@ export default function PropertiesPage() {
         <div className="w-full md:w-1/2 p-4 mt-4">
           <h2 className="text-xl font-semibold mb-4">{getHeaderText()}</h2>{" "}
           <div className="space-y-4">
-          {properties.length ? (
-  properties.map((property) => (
-    <div key={property._id} className="border rounded-lg p-4 shadow-sm">
-      <img
-        src={property.images[0]}
-        alt={property.title}
-        className="w-full h-48 object-cover rounded-lg mb-4"
-      />
-      <h3 className="text-lg font-semibold">{property.title}</h3>
-      <p className="text-gray-600">{property.address}</p>
-      <p className="text-blue-600">${property.price}</p>
-      <p>
-        {property.bedroom} Bedrooms | {property.bathroom} Bathrooms
-      </p>
-    </div>
-  ))
-) : (
-  <p>No properties found.</p>
-)}
-
+            {properties.length ? (
+              properties.map((property) => (
+                <div
+                  key={property._id}
+                  className="border rounded-lg p-4 shadow-sm"
+                >
+                  <img
+                    src={property.images[0]}
+                    alt={property.title}
+                    className="w-full h-48 object-cover rounded-lg mb-4"
+                  />
+                  <h3 className="text-lg font-semibold">{property.title}</h3>
+                  <p className="text-gray-600">{property.address}</p>
+                  <p className="text-blue-600">${property.price}</p>
+                  <p>
+                    {property.bedroom} Bedrooms | {property.bathroom} Bathrooms
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>No properties found.</p>
+            )}
           </div>
         </div>
 
