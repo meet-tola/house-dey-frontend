@@ -9,17 +9,18 @@ export default function ProtectedLayout({ children }) {
   return (
     <>
       <Toaster />
-      <SocketContextProvider>
-        <AuthProvider>
-          <ProtectedRoute>
+
+      <AuthProvider>
+        <ProtectedRoute>
+          <SocketContextProvider>
             <div>
               <Navbar />
               {children}
               <Footer />
             </div>
-          </ProtectedRoute>
-        </AuthProvider>
-      </SocketContextProvider>
+          </SocketContextProvider>
+        </ProtectedRoute>
+      </AuthProvider>
     </>
   );
 }

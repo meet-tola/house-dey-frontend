@@ -30,6 +30,7 @@ import {
 import { fetchAgents } from "@/utils/user";
 import { fetchChats, fetchChat, addChat, addMessage } from "@/utils/message";
 import AuthContext from "@/context/AuthContext";
+import { SocketContext } from "@/context/SocketContext";
 
 const ChatList = ({ chats, onSelectChat, selectedChatId }) => (
   <Card className="h-full">
@@ -75,14 +76,43 @@ const MessageUI = ({
   onBack,
   chatReceiver,
   currentUser,
+  onlineUsers,
 }) => {
   const [messageText, setMessageText] = useState("");
+  const { socket } = useContext(SocketContext);
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
+
+    const messageData = {
+      chatId,
+      userId: currentUser.id,
+      text: messageText,
+      createdAt: new Date().toISOString(),
+    };
+
+    socket.emit("sendMessage", {
+      receiverId: chatReceiver.id,
+      message: messageData,
+    });
+
     await onSendMessage(messageText);
     setMessageText("");
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("getMessage", (message) => {
+        if (message.chatId === chatId) {
+          onSendMessage(message.text);
+        }
+      });
+    }
+    return () => socket?.off("getMessage");
+  }, [socket, chatId]);
+
+  const isOnline =
+    chatReceiver && onlineUsers.some((user) => user.userId === chatReceiver.id);
 
   return (
     <div className="flex flex-col h-full border-2 rounded-lg">
@@ -108,6 +138,9 @@ const MessageUI = ({
         )}
         <h2 className="text-xl font-semibold">
           {chatReceiver?.username || "Unknown User"}
+          {isOnline && (
+            <span className="ml-2 text-sm text-green-500">(Online)</span>
+          )}
         </h2>
       </div>
       <ScrollArea className="flex-1 p-4">
@@ -182,6 +215,7 @@ const MessageUI = ({
 
 export default function ResponsiveMessagingApp() {
   const { user } = useContext(AuthContext);
+  const { socket } = useContext(SocketContext);
   const [agents, setAgents] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [chats, setChats] = useState([]);
@@ -189,6 +223,7 @@ export default function ResponsiveMessagingApp() {
   const [messages, setMessages] = useState({});
   const [isMobile, setIsMobile] = useState(false);
   const [chatReceiver, setChatReceiver] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
     const fetchAgentsAndChats = async () => {
@@ -211,6 +246,15 @@ export default function ResponsiveMessagingApp() {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("getUsers", (users) => {
+        setOnlineUsers(users);
+      });
+    }
+    return () => socket?.off("getUsers");
+  }, [socket]);
 
   const handleSearch = (query) => {
     const filteredAgents = agents.filter((agent) =>
@@ -245,15 +289,18 @@ export default function ResponsiveMessagingApp() {
   };
 
   const handleSendMessage = async (chatId, body) => {
-    if (!chatId) return;
-  
-    const newMessage = await addMessage(chatId, body);  
+    const newMessage = await addMessage(chatId, body);
     setMessages((prevMessages) => ({
       ...prevMessages,
       [chatId]: [...(prevMessages[chatId] || []), newMessage],
     }));
+    if (socket) {
+      socket.emit("sendMessage", {
+        receiverId: chatReceiver.id,
+        message: newMessage,
+      });
+    }
   };
-  
 
   const handleBack = () => {
     setSelectedChatId(null);
@@ -353,13 +400,16 @@ export default function ResponsiveMessagingApp() {
         >
           {selectedChatId ? (
             <MessageUI
-            chatId={selectedChatId}
-            messages={messages[selectedChatId] || []}
-            onSendMessage={(body) => handleSendMessage(selectedChatId, body)}
-            onBack={handleBack}
-            chatReceiver={chatReceiver}
-            currentUser={user}
-          />
+              chatId={selectedChatId}
+              messages={messages[selectedChatId] || []}
+              onSendMessage={(messageText) =>
+                handleSendMessage(selectedChatId, messageText)
+              }
+              onBack={handleBack}
+              chatReceiver={chatReceiver}
+              currentUser={user}
+              onlineUsers={onlineUsers}
+            />
           ) : (
             <div className="h-full flex items-center justify-center">
               <p className="text-muted-foreground">

@@ -16,15 +16,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <SocketContextProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <SocketContextProvider>
           <body className={plus.className}>
             <Toaster /> <Navbar />
             {children}
             <Footer />
           </body>
-        </AuthProvider>
-      </SocketContextProvider>
+        </SocketContextProvider>
+      </AuthProvider>
     </html>
   );
 }
