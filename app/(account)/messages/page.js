@@ -26,6 +26,7 @@ import {
   SendIcon,
   UserIcon,
   SearchIcon,
+  MessageSquare,
 } from "lucide-react";
 import { fetchAgents } from "@/utils/user";
 import { fetchChats, fetchChat, addChat, addMessage } from "@/utils/message";
@@ -35,10 +36,10 @@ import { SocketContext } from "@/context/SocketContext";
 const ChatList = ({ chats, onSelectChat, selectedChatId }) => (
   <Card className="h-full">
     <CardHeader>
-      <CardTitle>Chats</CardTitle>
+      <CardTitle>All Chats</CardTitle>
     </CardHeader>
     <CardContent>
-      <ScrollArea className="h-[calc(100vh-120px)]">
+      <ScrollArea className="h-[500px]">
         {chats.map((chat) => (
           <div
             key={chat.id}
@@ -115,7 +116,7 @@ const MessageUI = ({
     chatReceiver && onlineUsers.some((user) => user.userId === chatReceiver.id);
 
   return (
-    <div className="flex flex-col h-full border-2 rounded-lg">
+    <div className="flex flex-col h-[600px] border-[1.5px] rounded-lg border-gray-200">
       <div className="p-4 border-b flex items-center space-x-4">
         <Button
           variant="ghost"
@@ -194,7 +195,9 @@ const MessageUI = ({
             );
           })
         ) : (
-          <p>No messages available.</p>
+          <div className="h-full flex items-center justify-center text-center">
+            No messages available.
+          </div>
         )}
       </ScrollArea>
       <div className="p-4 border-t flex space-x-2">
@@ -224,6 +227,7 @@ export default function ResponsiveMessagingApp() {
   const [isMobile, setIsMobile] = useState(false);
   const [chatReceiver, setChatReceiver] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchAgentsAndChats = async () => {
@@ -272,6 +276,9 @@ export default function ResponsiveMessagingApp() {
     }
     setSelectedChatId(newChat.id);
     await handleSelectChat(newChat.id);
+
+    setDialogOpen(false);
+    window.location.reload();
   };
 
   const handleSelectChat = async (chatId) => {
@@ -306,7 +313,7 @@ export default function ResponsiveMessagingApp() {
     setSelectedChatId(null);
   };
   return (
-    <div className="max-w-7xl mx-auto p-6 mt-20">
+    <div className="max-w-7xl mx-auto p-6 mt-20 min-h-200vh">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -327,16 +334,16 @@ export default function ResponsiveMessagingApp() {
       </div>
       <div className="p-6 flex justify-between items-center bg-gray-100 rounded-2xl">
         <div className="flex items-center gap-3 font-semiBold text-xl">
-          <div>
-            <MessageCircle />
+          <div className="p-2 bg-white rounded-full">
+            <MessageSquare />
           </div>
-          Chat with an Agent
+          Start a chat
         </div>
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <SearchIcon className="mr-2 h-4 w-4" />
-              Search Users
+              Search Agents
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -384,7 +391,7 @@ export default function ResponsiveMessagingApp() {
               selectedChatId={selectedChatId}
             />
           ) : (
-            <div className="h-full flex items-center justify-center text-center">
+            <div className="h-[600px] flex items-center justify-center text-center border-[1.5px] rounded-lg px-5 border-gray-200">
               <p className="text-muted-foreground">
                 No chats yet, find a nearby agent to start a conversation
               </p>
@@ -411,7 +418,7 @@ export default function ResponsiveMessagingApp() {
               onlineUsers={onlineUsers}
             />
           ) : (
-            <div className="h-full flex items-center justify-center">
+            <div className="h-[600px] flex items-center justify-center border-[1.5px] rounded-lg px-5 border-gray-200">
               <p className="text-muted-foreground">
                 Select a chat to start messaging
               </p>

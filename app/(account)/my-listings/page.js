@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { HouseIcon, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const properties = [
   {
@@ -71,18 +72,18 @@ const Profile = () => {
 
         <div className="p-6 flex justify-between items-center bg-gray-100 rounded-2xl">
           <div className="flex items-center gap-3 font-bold text-xl">
-            <div>
+            <div className="p-2 bg-white rounded-full">
               <HouseIcon />
             </div>
             All Listing
           </div>
-          <Button>Create a Post</Button>
+          <Button>
+            <Link href="create-post">Create a Post</Link>
+          </Button>
         </div>
 
         <div className="mt-8">
-          <h2 className="text-2xl font-semibold mb-4">
-           Properties for Rent
-          </h2>
+          <h2 className="text-2xl font-semibold mb-4">Properties for Rent</h2>
           <div className="flex gap-6 overflow-x-auto scrollbar-none">
             {properties.map((property, index) => (
               <div

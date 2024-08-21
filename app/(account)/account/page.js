@@ -122,7 +122,7 @@ const MyAccount = () => {
 const Card = ({ title, description, icon, link }) => {
   return (
     <Link href={link} passHref>
-      <div className="bg-white p-8 rounded-lg shadow-md cursor-pointer">
+      <div className="bg-white p-8 rounded-lg h-[11rem] shadow-md cursor-pointer">
         <div className="flex flex-col items-start justify-center gap-4">
           <div>{icon}</div>
           <div>

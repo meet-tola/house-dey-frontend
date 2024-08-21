@@ -136,11 +136,11 @@ export default function Navbar() {
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuLabel>User Profile</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <Link href="/account" prefetch={false}>
-                      My Profile
+                      My Account
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>

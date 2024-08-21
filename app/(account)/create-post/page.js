@@ -299,7 +299,7 @@ export default function CreatePost() {
             <Button type="submit">
               {loading ? (
                 <div>
-                  <Loader className="animate-spin" /> Creating Post
+                  <Loader className="animate-spin" />
                 </div>
               ) : (
                 "Create Post"
@@ -323,7 +323,7 @@ export default function CreatePost() {
                 />
               </div>
               <div className="space-y-2">
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
+                <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold">
                   {formData.title || "HouseDey"}
                 </h2>
                 <p className="text-muted-foreground text-lg">
