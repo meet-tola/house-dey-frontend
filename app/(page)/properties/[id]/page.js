@@ -7,7 +7,6 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   HeartIcon,
@@ -18,20 +17,12 @@ import {
   ChevronUp,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ZoomInIcon,
   XIcon,
 } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useParams } from "next/navigation";
 import { fetchPost, savePost } from "@/utils/post";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import PageLoader from "@/components/PageLoader";
 import {
   Collapsible,
@@ -52,6 +43,14 @@ export default function PropertiesDetails() {
   // State for image modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = useRef(null);
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (carousel) {
+      carousel.style.transition = "transform 0.3s ease-in-out";
+      carousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+    }
+  }, [currentIndex]);
 
   useEffect(() => {
     if (id) {
@@ -75,7 +74,6 @@ export default function PropertiesDetails() {
       if (response) {
         setIsSaved((prev) => !prev);
         toast.success("This properties has been saved");
-
       } else {
         toast.error("Failed to save properties");
       }
@@ -92,7 +90,6 @@ export default function PropertiesDetails() {
     return <PageLoader />;
   }
 
-  // Image Modal Handlers
   const handleImageClick = (index) => {
     setCurrentIndex(index);
     setIsModalOpen(true);
@@ -112,6 +109,24 @@ export default function PropertiesDetails() {
     setCurrentIndex((prevIndex) =>
       prevIndex === post.images.length - 1 ? 0 : prevIndex + 1
     );
+  };
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStart - touchEnd > 150) {
+      handleNext();
+    }
+
+    if (touchStart - touchEnd < -150) {
+      handlePrevious();
+    }
   };
 
   return (
@@ -138,7 +153,7 @@ export default function PropertiesDetails() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <div className="text-lg font-medium mb-4">${post.address}</div>
+        <div className="text-lg font-medium mb-4">{post.address}</div>
         <div className="hidden md:grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="relative flex-grow">
             <img
@@ -151,7 +166,7 @@ export default function PropertiesDetails() {
             />
           </div>
           <div className="hidden md:grid grid-cols-2 gap-4">
-            {post.images.slice(1).map((image, index) => (
+            {post.images.slice(1, 5).map((image, index) => (
               <div
                 key={index}
                 className="relative overflow-hidden rounded-lg transition-all after:opacity-0 after:absolute after:inset-0 after:bg-black hover:after:opacity-20 focus:after:opacity-20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
@@ -164,56 +179,92 @@ export default function PropertiesDetails() {
                   alt={`Property image ${index + 1}`}
                   className="w-full h-full object-cover aspect-[4/3]"
                 />
+                {index === 3 && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
+                    <span className="text-white text-2xl font-bold">
+                      +{post.images.length - 4}
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
 
-        <div className="md:hidden w-full h-auto object-cover aspect-[4/3]">
-          <Carousel>
-            <CarouselContent>
-              {post.images.map((image, index) => (
-                <CarouselItem key={index}>
-                  <Link href="#">
-                    <img
-                      src={image}
-                      width={400}
-                      height={300}
-                      alt={`Property image ${index + 1}`}
-                      className="w-full h-auto object-cover aspect-[4/3]"
-                    />
-                  </Link>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
+        {/* Mobile Carousel */}
+        <div className="md:hidden relative h-[calc(100vh-4rem)] max-h-[600px] overflow-hidden">
+          <div
+            ref={carouselRef}
+            className="flex h-full"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            {post.images.map((image, index) => (
+              <div key={index} className="w-full h-full flex-shrink-0">
+                <img
+                  src={image}
+                  alt={`Property image ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+            {post.images.map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full mx-1 ${
+                  index === currentIndex ? "bg-white" : "bg-gray-400"
+                }`}
+              />
+            ))}
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute top-1/2 left-2 transform -translate-y-1/2"
+            onClick={handlePrevious}
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+            <span className="sr-only">Previous image</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="absolute top-1/2 right-2 transform -translate-y-1/2"
+            onClick={handleNext}
+          >
+            <ChevronRightIcon className="h-4 w-4" />
+            <span className="sr-only">Next image</span>
+          </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-8 mt-5">
           <div className="bg-white">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
+                <div className="bg-blue-100 text-blue-700 px-4 py-1 rounded-full">
                   {post.type.charAt(0).toUpperCase() + post.type.slice(1)}
-                </Button>
-                | <div>{post.property}</div>
+                </div>
+                <div className="bg-blue-100 text-blue-700 px-4 py-1 rounded-full">
+                  {post.property}
+                </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button size="icon" variant="ghost" onClick={handleSavePost}>
+                <Button size="icon" variant="outline" onClick={handleSavePost}>
                   <HeartIcon
                     className={`w-5 h-5 ${isSaved ? "text-red-500" : ""}`}
                   />
                   <span className="sr-only">{isSaved ? "Unsave" : "Save"}</span>
                 </Button>
-                <Button size="icon" variant="ghost">
+                <Button size="icon" variant="outline">
                   <ShareIcon className="w-5 h-5" />
                   <span className="sr-only">Share</span>
                 </Button>
               </div>
             </div>
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-wrap justify-between items-center mb-4">
               <div>
                 <div className="text-2xl font-bold">${post.price}</div>
                 <p className="text-gray-500">{post.address}</p>
@@ -286,7 +337,7 @@ export default function PropertiesDetails() {
         </div>
       </div>
 
-      <div className="sticky inset-x-0 bottom-0 z-10 flex items-center justify-between bg-primary px-20 py-4">
+      <div className="sticky inset-x-0 bottom-0 z-10 flex items-center justify-between bg-primary px-4 lg:px-20 py-3">
         <div className="flex items-center">
           <img
             src={post.user.avatar}
