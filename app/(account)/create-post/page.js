@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import ImageUploader from "@/components/ui/ImageUploader";
 import AuthContext from "@/context/AuthContext";
 import { Loader } from "lucide-react";
+import AddressAutocomplete from "@/components/AddressAutoComplete";
 
 export default function CreatePost() {
   const { user } = useContext(AuthContext);
@@ -52,6 +53,13 @@ export default function CreatePost() {
     setFormData((prevFormData) => ({
       ...prevFormData,
       images: urls,
+    }));
+  };
+
+  const handleAddressSelect = (address) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      address: address,
     }));
   };
 
@@ -168,12 +176,7 @@ export default function CreatePost() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="address">Address**</Label>
-                <Input
-                  id="address"
-                  placeholder="Enter an address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                />
+                <AddressAutocomplete onAddressSelect={handleAddressSelect} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="city">City**</Label>

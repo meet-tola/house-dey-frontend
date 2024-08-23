@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { fetchUserPosts } from "@/utils/post";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
-import AgentProtectedRoute from "@/components/AgentProtectedRoute";
+import AgentProtectedRoute from "@/protected/AgentProtectedRoute";
 
 const MyListings = () => {
   const [properties, setProperties] = useState([]);

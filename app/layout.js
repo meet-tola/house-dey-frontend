@@ -5,6 +5,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
 import { SocketContext, SocketContextProvider } from "@/context/SocketContext";
+import { MapProvider } from "@/provider/map-provider";
 
 const plus = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -19,8 +20,9 @@ export default function RootLayout({ children }) {
       <AuthProvider>
         <SocketContextProvider>
           <body className={plus.className}>
-            <Toaster /> <Navbar />
-            {children}
+            <Toaster />
+            <Navbar />
+            <MapProvider>{children}</MapProvider>
             <Footer />
           </body>
         </SocketContextProvider>

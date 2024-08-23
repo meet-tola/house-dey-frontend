@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
+import GoogleMapComponent from "@/components/GoogleMap";
 
 export default function PropertiesDetails() {
   const { id } = useParams();
@@ -332,8 +333,8 @@ export default function PropertiesDetails() {
             </div>
           </div>
           <div>
-            <div className="w-full h-[400px] rounded-lg" />
-          </div>
+          <GoogleMapComponent address={post.address} />
+        </div>
         </div>
       </div>
 
