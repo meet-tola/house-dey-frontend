@@ -32,7 +32,9 @@ const AddressAutocomplete = ({ onAddressSelect }) => {
     try {
       const results = await getGeocode({ address: description });
       const { lat, lng } = await getLatLng(results[0]);
-      onAddressSelect({ address: description, lat, lng });
+
+      // Call onAddressSelect with just the address string
+      onAddressSelect(description);
     } catch (error) {
       console.error('Error fetching address details:', error);
     }
@@ -63,6 +65,7 @@ const AddressAutocomplete = ({ onAddressSelect }) => {
         onChange={handleInput}
         disabled={!ready}
         placeholder="Enter an address"
+        className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
       />
       {status === 'OK' && (
         <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">

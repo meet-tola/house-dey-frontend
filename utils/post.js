@@ -1,8 +1,10 @@
 import axios from 'axios';
 
-export const fetchPosts = async () => {
+export const fetchPosts = async (query = {}) => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts`);
+    const queryString = new URLSearchParams(query).toString();
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?${queryString}`);
+    
     if (response.status === 200) {
       return response.data;
     }
