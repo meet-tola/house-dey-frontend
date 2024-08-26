@@ -1,5 +1,5 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { login } = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -26,11 +26,16 @@ const LoginPage = () => {
       router.push("/");
     } catch (error) {
       toast.error(error.message); 
-      router.push("/signup");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      router.push("/"); 
+    }
+  }, [user]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -38,11 +43,6 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between absolute w-full h-20 pl-8 md:pl-12 lg:pl-16 xl:pl-20 border-b-2 border-gray-200">
-        <Link href="#" className="flex items-center gap-2" prefetch={false}>
-          <Image src="logo.svg" width={160} height={40} alt="house-dey-logo" />
-        </Link>
-      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 w-full min-h-screen">
         <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-16 xl:p-20 space-y-6 mt-10">
           <div className="space-y-2 text-left">
@@ -96,7 +96,7 @@ const LoginPage = () => {
               {loading ? <Loader className="animate-spin" /> : "Login"}
             </Button>
             <p className="text-center mt-2">
-              Don't have an account? <Link href="/signup">Sign Up</Link>
+              Don't have an account? <Link href="/signup" className="underline hover:text-slate-800">Sign Up</Link>
             </p>
           </form>
         </div>

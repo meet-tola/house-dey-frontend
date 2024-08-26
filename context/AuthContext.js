@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         { username, email, password, role }
       );
       if (response.status === 201) {
-        console.log("Signup successful. Please login to continue.");
+        console.log("Signup successful. Please check your email to verify your account.");
       }
     } catch (error) {
       console.error(
@@ -50,14 +50,17 @@ export const AuthProvider = ({ children }) => {
       );
       if (response.status === 200) {
         const { token, user } = response.data;
+        if (!user.verified) {
+          throw new Error("Please verify your email before logging in.");
+        }
         Cookies.set("token", token);
         setUser(user);
         localStorage.setItem("user", JSON.stringify(user));
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
-      const errorMessage = "You're not a registered user. Sign up";
-      throw new Error(errorMessage);
+      console.error("Error during login:", error.response?.data || error.message);
+      throw new Error(error.response?.data?.message || "Failed to login.");
     }
   };
 
@@ -80,6 +83,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const verifyEmail = async (token) => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify/${token}`
+      );
+      if (response.status === 200) {
+        console.log("Email verified successfully. You can now log in.");
+        const verifiedUser = response.data.user;
+        setUser(verifiedUser);
+        localStorage.setItem("user", JSON.stringify(verifiedUser));
+      }
+    } catch (error) {
+      console.error(
+        "Error during email verification:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   const updateUser = (updatedUser) => {
     if (updatedUser) {
       setUser(updatedUser);
@@ -91,7 +113,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, signup, login, logout, verifyEmail, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

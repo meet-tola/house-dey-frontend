@@ -17,6 +17,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import AuthContext from "@/context/AuthContext";
 
 const SignupPage = () => {
@@ -26,6 +34,7 @@ const SignupPage = () => {
   const [role, setRole] = useState("client");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const { signup } = useContext(AuthContext);
 
@@ -34,7 +43,7 @@ const SignupPage = () => {
     setLoading(true);
     try {
       await signup(username, email, password, role.toUpperCase());
-      router.push("/login");
+      setIsModalOpen(true);
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "An unexpected error occurred";
@@ -48,13 +57,13 @@ const SignupPage = () => {
     setShowPassword(!showPassword);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    router.push("/login");
+  };
+
   return (
     <>
-      <div className="flex items-center justify-between absolute w-full h-20 pl-8 md:pl-12 lg:pl-16 xl:pl-20 border-b-2 border-gray-200">
-        <Link href="#" className="flex items-center gap-2" prefetch={false}>
-          <Image src="logo.svg" width={160} height={40} alt="house-dey-logo" />
-        </Link>
-      </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 w-full min-h-screen">
         <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-16 xl:p-20 space-y-6 mt-10">
           <div className="space-y-2 text-left">
@@ -154,6 +163,21 @@ const SignupPage = () => {
           />
         </div>
       </div>
+
+      {/* Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Check Your Email</DialogTitle>
+            <DialogDescription>
+              A verification link has been sent to your email address. Please check your inbox and click the link to verify your account.
+            </DialogDescription>
+            <Button onClick={closeModal} className="mt-6">
+              Go to Login
+            </Button>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
