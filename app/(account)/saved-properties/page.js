@@ -28,6 +28,15 @@ const SavedProperties = () => {
     getSavedPosts();
   }, []);
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
+
+
   return (
     <div className="max-w-7xl mx-auto p-6 mt-20">
       <Breadcrumb>
@@ -68,7 +77,7 @@ const SavedProperties = () => {
             {savedProperties.map((property, index) => (
               <div
                 key={index}
-                className="min-w-[300px] lg:min-w-[250px] w-full rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white relative"
+                className="min-w-[300px] lg:min-w-[250px] w-[300px] rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white relative"
               >
                 <img
                   className="w-full h-48 object-cover"
@@ -96,7 +105,7 @@ const SavedProperties = () => {
                       <span className="truncate">{property.address}</span>
                     </div>
                     <div className="text-xl font-semibold truncate">
-                      ₦{property.price}
+                    {formatPrice(property.price)}
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "react-hot-toast";
-import ProtectedRoute from "@/protected/ProtectedRoute";
+import ProtectedRoute from "@/components/protected/ProtectedRoute";
 import { SocketContextProvider } from "@/context/SocketContext";
 
 export default function ProtectedLayout({ children }) {

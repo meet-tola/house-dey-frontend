@@ -2,7 +2,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,201 +19,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  ArrowLeftIcon,
-  MessageCircle,
-  SendIcon,
-  UserIcon,
-  SearchIcon,
-  MessageSquare,
-} from "lucide-react";
+import { UserIcon, SearchIcon, MessageSquare } from "lucide-react";
 import { fetchAgents } from "@/utils/user";
 import { fetchChats, fetchChat, addChat, addMessage } from "@/utils/message";
 import AuthContext from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
-
-const ChatList = ({ chats, onSelectChat, selectedChatId }) => (
-  <Card className="h-full">
-    <CardHeader>
-      <CardTitle>All Chats</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <ScrollArea className="h-[500px]">
-        {chats.map((chat) => (
-          <div
-            key={chat.id}
-            className={`flex items-center space-x-4 py-2 px-2 cursor-pointer rounded ${
-              selectedChatId === chat.id ? "bg-accent" : "hover:bg-accent/50"
-            }`}
-            onClick={() => onSelectChat(chat.id)}
-          >
-            <Avatar>
-              <AvatarImage
-                src={chat?.receiver?.avatar || ""}
-                alt={chat?.receiver?.username}
-              />
-              <AvatarFallback>
-                <UserIcon />
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h3 className="font-medium">{chat?.receiver?.username}</h3>
-              <p className="text-sm text-muted-foreground">
-                {chat?.lastMessage}
-              </p>
-            </div>
-          </div>
-        ))}
-      </ScrollArea>
-    </CardContent>
-  </Card>
-);
-
-const MessageUI = ({
-  chatId,
-  messages,
-  onSendMessage,
-  onBack,
-  chatReceiver,
-  currentUser,
-  onlineUsers,
-}) => {
-  const [messageText, setMessageText] = useState("");
-  const { socket } = useContext(SocketContext);
-
-  const handleSendMessage = async () => {
-    if (!messageText.trim()) return;
-
-    const messageData = {
-      chatId,
-      userId: currentUser.id,
-      text: messageText,
-      createdAt: new Date().toISOString(),
-    };
-
-    socket.emit("sendMessage", {
-      receiverId: chatReceiver.id,
-      message: messageData,
-    });
-
-    await onSendMessage(messageText);
-    setMessageText("");
-  };
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("getMessage", (message) => {
-        if (message.chatId === chatId) {
-          onSendMessage(message.text);
-        }
-      });
-    }
-    return () => socket?.off("getMessage");
-  }, [socket, chatId]);
-
-  const isOnline =
-    chatReceiver && onlineUsers.some((user) => user.userId === chatReceiver.id);
-
-  return (
-    <div className="flex flex-col h-[600px] border-[1.5px] rounded-lg border-gray-200">
-      <div className="p-4 border-b flex items-center space-x-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onBack}
-          className="md:hidden"
-        >
-          <ArrowLeftIcon className="h-4 w-4" />
-        </Button>
-        {chatReceiver && (
-          <Avatar>
-            <AvatarImage
-              src={chatReceiver.avatar || ""}
-              alt={chatReceiver.username || "User"}
-            />
-            <AvatarFallback>
-              <UserIcon />
-            </AvatarFallback>
-          </Avatar>
-        )}
-        <h2 className="text-xl font-semibold">
-          {chatReceiver?.username || "Unknown User"}
-          {isOnline && (
-            <span className="ml-2 text-sm text-green-500">(Online)</span>
-          )}
-        </h2>
-      </div>
-      <ScrollArea className="flex-1 p-4">
-        {messages && messages.length > 0 ? (
-          messages.map((message) => {
-            const isSender = message.userId === currentUser.id;
-            return (
-              <div
-                key={message.id}
-                className={`flex flex-col ${
-                  isSender ? "items-end" : "items-start"
-                } mb-6`}
-              >
-                <div
-                  className={`flex ${
-                    isSender ? "flex-row-reverse" : "flex-row"
-                  } items-end`}
-                >
-                  {!isSender && (
-                    <Avatar className="mr-2">
-                      <AvatarImage
-                        src={chatReceiver.avatar || ""}
-                        alt={chatReceiver.username || "User"}
-                      />
-                      <AvatarFallback>
-                        <UserIcon />
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-                  <div className="flex flex-col gap-2 ">
-                    <div
-                      className={`p-3 rounded-lg ${
-                        isSender
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-accent"
-                      }`}
-                    >
-                      {!isSender && (
-                        <p className="font-semibold text-sm mb-1">
-                          {chatReceiver.username}
-                        </p>
-                      )}
-                      <p className="text-sm">{message.text}</p>
-                    </div>
-                    <span className="text-xs text-muted-foreground mb-1">
-                      {new Date(message.createdAt).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div className="h-full flex items-center justify-center text-center">
-            No messages available.
-          </div>
-        )}
-      </ScrollArea>
-      <div className="p-4 border-t flex space-x-2">
-        <Input
-          className="flex-1"
-          placeholder="Type a message..."
-          value={messageText}
-          onChange={(e) => setMessageText(e.target.value)}
-        />
-        <Button size="icon" onClick={handleSendMessage}>
-          <SendIcon className="h-4 w-4" />
-          <span className="sr-only">Send message</span>
-        </Button>
-      </div>
-    </div>
-  );
-};
+import ChatList from "@/components/message/ChatList";
+import MessageUI from "@/components/message/MessageUI";
 
 export default function ResponsiveMessagingApp() {
   const { user } = useContext(AuthContext);
@@ -312,6 +123,7 @@ export default function ResponsiveMessagingApp() {
   const handleBack = () => {
     setSelectedChatId(null);
   };
+
   return (
     <div className="max-w-7xl mx-auto p-6 mt-20 min-h-200vh">
       <Breadcrumb>
@@ -339,44 +151,47 @@ export default function ResponsiveMessagingApp() {
           </div>
           Start a chat
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <SearchIcon className="mr-2 h-4 w-4" />
-              Search Agents
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Search Agents</DialogTitle>
-            </DialogHeader>
-            <div className="flex gap-2 mb-4">
-              <Input
-                placeholder="Enter user name..."
-                onChange={(e) => handleSearch(e.target.value)}
-              />
-            </div>
-            <ScrollArea className="h-[400px]">
-              {searchResults.map((agent) => (
-                <div
-                  key={agent.id}
-                  className="flex items-center space-x-4 py-2 px-2 cursor-pointer rounded hover:bg-accent/50"
-                  onClick={() => handleAgentClick(agent.id)}
-                >
-                  <Avatar>
-                    <AvatarImage src={agent.avatar} alt={agent.username} />
-                    <AvatarFallback>
-                      <UserIcon />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-medium">{agent.username}</h3>
+        {/* Only render the Search Agents button if the user is not an agent */}
+        {user.role !== "AGENT" && (
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <SearchIcon className="mr-2 h-4 w-4" />
+                Search Agents
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Search Agents</DialogTitle>
+              </DialogHeader>
+              <div className="flex gap-2 mb-4">
+                <Input
+                  placeholder="Enter user name..."
+                  onChange={(e) => handleSearch(e.target.value)}
+                />
+              </div>
+              <ScrollArea className="h-[400px]">
+                {searchResults.map((agent) => (
+                  <div
+                    key={agent.id}
+                    className="flex items-center space-x-4 py-2 px-2 cursor-pointer rounded hover:bg-accent/50"
+                    onClick={() => handleAgentClick(agent.id)}
+                  >
+                    <Avatar>
+                      <AvatarImage src={agent.avatar} alt={agent.username} />
+                      <AvatarFallback>
+                        <UserIcon />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="font-medium">{agent.username}</h3>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
+                ))}
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
       <div className="grid grid-cols-12 gap-4 mt-6">
         <div

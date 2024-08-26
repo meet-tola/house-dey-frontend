@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { fetchUserPosts } from "@/utils/post";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
-import AgentProtectedRoute from "@/protected/AgentProtectedRoute";
+import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
 
 const MyListings = () => {
   const [properties, setProperties] = useState([]);
@@ -28,6 +28,14 @@ const MyListings = () => {
 
     getUserPosts();
   }, []);
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
 
   return (
       <AgentProtectedRoute>
@@ -73,7 +81,7 @@ const MyListings = () => {
                 {properties.map((property, index) => (
                   <div
                     key={index}
-                    className="min-w-[300px] lg:min-w-[250px] w-full rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white relative"
+                    className="min-w-[300px] lg:min-w-[250px] w-[300px] rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white relative"
                   >
                     <img
                       className="w-full h-48 object-cover"
@@ -101,7 +109,7 @@ const MyListings = () => {
                           <span className="truncate">{property.address}</span>
                         </div>
                         <div className="text-xl font-semibold truncate">
-                          ₦{property.price}
+                        {formatPrice(property.price)}
                         </div>
                       </div>
                     </div>

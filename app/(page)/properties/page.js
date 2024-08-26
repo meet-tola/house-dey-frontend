@@ -33,10 +33,10 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useSearchParams, useRouter } from "next/navigation";
-import { fetchPosts } from "@/utils/post";
+import { fetchPosts, savePost } from "@/utils/post";
 import { toast } from "react-hot-toast";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
-import GoogleMapComponent from "@/components/GoogleMap";
+import GoogleMapComponent from "@/components/map/GoogleMap";
 
 export default function PropertiesPage() {
   const searchParams = useSearchParams();
@@ -53,7 +53,6 @@ export default function PropertiesPage() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -73,9 +72,7 @@ export default function PropertiesPage() {
     setLoading(true);    
     fetchPosts(filters)
       .then((data) => {
-        console.log(data);
         setProperties(data);
-        console.log(query)
       })
       .catch((error) => {
         console.error("Error fetching properties:", error);
@@ -107,7 +104,6 @@ export default function PropertiesPage() {
   }, [filters]);
 
   const handleSavePost = async (postId) => {
-    setSaving(true);
     try {
       const result = await savePost(postId);
       if (result) {
@@ -116,9 +112,8 @@ export default function PropertiesPage() {
         toast.error("Failed to save property.");
       }
     } catch (error) {
+      console.error("An error occurred while saving the property:", error.response ? error.response.data : error.message);
       toast.error("An error occurred while saving the property.");
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -137,6 +132,14 @@ export default function PropertiesPage() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
 
   const getHeaderText = () => {
     if (filters.type && filters.city) {
@@ -500,7 +503,7 @@ export default function PropertiesPage() {
                         <Home className="mr-1 h-4 w-4" /> {property.size} sqft
                       </span>
                     </div>
-                    <p className="font-bold text-xl">₦{property.price}</p>
+                    <p className="font-bold text-xl">{formatPrice(property.price)}</p>
                   </div>
                   <div className="flex justify-between items-center">
                     <Button

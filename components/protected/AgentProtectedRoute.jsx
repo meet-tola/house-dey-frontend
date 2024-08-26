@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import AuthContext from "@/context/AuthContext";
 import PageLoader from "@/components/PageLoader";
 import { HomeIcon } from "lucide-react";
+import { Button } from "../ui/button";
 
 
 const AgentProtectedRoute = ({ children }) => {
@@ -23,7 +24,7 @@ const AgentProtectedRoute = ({ children }) => {
     return <PageLoader />;
   }
 
-  if (user && user.role !== "agent") {
+  if (user && user.role !== "AGENT") {
     return (
       <div className="w-full max-w-md mx-auto h-screen">
         <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-4">
@@ -36,6 +37,7 @@ const AgentProtectedRoute = ({ children }) => {
           <p className="text-sm text-muted-foreground">
             Switch to agents on your profile settings.
           </p>
+          <Button>Go to Profile</Button>
         </div>
       </div>
     );

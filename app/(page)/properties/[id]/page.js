@@ -20,7 +20,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { fetchPost, savePost } from "@/utils/post";
 import { useEffect, useState, useRef } from "react";
 import PageLoader from "@/components/PageLoader";
@@ -31,7 +31,8 @@ import {
 } from "@/components/ui/collapsible";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
-import GoogleMapComponent from "@/components/GoogleMap";
+import GoogleMapComponent from "@/components/map/GoogleMap";
+import { addChat } from "@/utils/message";
 
 export default function PropertiesDetails() {
   const { id } = useParams();
@@ -40,6 +41,7 @@ export default function PropertiesDetails() {
   const [isDescriptionOpen, setDescriptionOpen] = useState(true);
   const [isFeaturesOpen, setFeaturesOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const router = useRouter();
 
   // State for image modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -127,6 +129,23 @@ export default function PropertiesDetails() {
 
     if (touchStart - touchEnd < -150) {
       handlePrevious();
+    }
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const handleSendMessage = async (userId) => {
+    try {
+      await addChat(userId);
+      router.push("/messages");
+    } catch (error) {
+      console.error("Error sending message:", error);
     }
   };
 
@@ -267,7 +286,9 @@ export default function PropertiesDetails() {
             </div>
             <div className="flex flex-wrap justify-between items-center mb-4">
               <div>
-                <div className="text-2xl font-bold">${post.price}</div>
+                <div className="text-2xl font-bold">
+                  {formatPrice(post.price)}
+                </div>
                 <p className="text-gray-500">{post.address}</p>
               </div>
               <div className="text-sm text-muted-foreground">
@@ -333,8 +354,8 @@ export default function PropertiesDetails() {
             </div>
           </div>
           <div>
-          <GoogleMapComponent address={post.address} />
-        </div>
+            <GoogleMapComponent address={post.address} />
+          </div>
         </div>
       </div>
 
@@ -350,7 +371,11 @@ export default function PropertiesDetails() {
             <p className="text-white">Real Estate Agent</p>
           </div>
         </div>
-        <Button variant="outline" className="gap-3 text-primary">
+        <Button
+          variant="outline"
+          className="gap-3 text-primary"
+          onClick={() => handleSendMessage(post.user.id)}
+        >
           <MailIcon />
           Send a Message
         </Button>

@@ -1,14 +1,14 @@
 import React from 'react';
-import { Home, MapPin, Gavel, User, DollarSign, Shield, Newspaper } from 'lucide-react';
+import { Home, MapPin, Gavel, User, DollarSign, MessageCircle, Newspaper, PlusCircle } from 'lucide-react';
 
 const services = [
-  { icon: Home, text: 'Estimate your property value' },
-  { icon: MapPin, text: 'Explore location profiles' },
-  { icon: Gavel, text: 'View auction results' },
+  { icon: Home, text: 'Show properties' },
   { icon: User, text: 'Find a real estate agent' },
-  { icon: DollarSign, text: 'Find a home loan' },
-  { icon: Shield, text: 'Get home insurance' },
-  { icon: Newspaper, text: 'Latest property news' }
+  { icon: MapPin, text: 'View location results' },
+  { icon: DollarSign, text: 'Find a desire home property' },
+  { icon: MessageCircle, text: 'Message communication' },
+  { icon: PlusCircle, text: 'Post a house request' },
+  { icon: Newspaper, text: 'Blog' },
 ];
 
 const Services = () => {

@@ -119,10 +119,12 @@ export default function Navbar() {
                 <BellIcon className="h-5 w-5" />
                 <span className="sr-only">Notifications</span>
               </Button>
-              <Button variant="ghost" size="icon">
-                <MessageCircleMore className="h-5 w-5" />
-                <span className="sr-only">Messages</span>
-              </Button>
+              <Link href="/messages">
+                <Button variant="ghost" size="icon">
+                  <MessageCircleMore className="h-5 w-5" />
+                  <span className="sr-only">Messages</span>
+                </Button>
+              </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
@@ -144,7 +146,15 @@ export default function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link href="/account" onClick={logout} prefetch={false}>
+                    <Link
+                      href="/login"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        logout();
+                        window.location.href = "/login";
+                      }}
+                      prefetch={false}
+                    >
                       Logout
                     </Link>
                   </DropdownMenuItem>

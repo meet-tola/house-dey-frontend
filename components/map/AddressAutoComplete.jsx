@@ -1,7 +1,7 @@
 import React from 'react';
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 import useOnclickOutside from 'react-cool-onclickoutside';
-import { Input } from './ui/input';
+import { Input } from '../ui/input';
 
 const AddressAutocomplete = ({ onAddressSelect }) => {
   const {

@@ -6,7 +6,6 @@ import {
   User,
   Heart,
   Home,
-  FileText,
   Bell,
   Settings,
   MessageCircle,
@@ -28,16 +27,16 @@ const MyAccount = () => {
       return (
         <>
           <Card
-            title="My Shortlisted Properties"
+            title="My Saved Properties"
             description="Saved buy and rental properties"
             icon={<Heart className="text-3xl" />}
-            link="/shortlisted-properties"
+            link="/saved-properties"
           />
           <Card
-            title="Follow Locations"
-            description="Following off-market properties, streets or suburbs"
-            icon={<Home className="text-3xl" />}
-            link="/follow-locations"
+            title="Searches for Properties"
+            description="Custom searches for properties"
+            icon={<Bell className="text-3xl" />}
+            link="/searches-alerts"
           />
           <Card
             title="Messages"
@@ -52,10 +51,10 @@ const MyAccount = () => {
             link="/notifications"
           />
           <Card
-            title="Searches and Alerts"
-            description="Custom searches and auction alerts"
-            icon={<Bell className="text-3xl" />}
-            link="/searches-alerts"
+            title="Account Settings"
+            description="Manage your login details and notification preferences"
+            icon={<Settings className="text-primary text-3xl" />}
+            link="/account-settings"
           />
         </>
       );
@@ -75,10 +74,10 @@ const MyAccount = () => {
             link="/messages"
           />
           <Card
-            title="Client Offers"
-            description="Manage offers received from clients"
+            title="My Saved Properties"
+            description="Saved buy and rental properties"
             icon={<Heart className="text-3xl" />}
-            link="/client-offers"
+            link="/saved-properties"
           />
           <Card
             title="Notifications"
