@@ -21,22 +21,28 @@ const MessageUI = ({
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
-
+  
+    if (!chatReceiver?.id) {
+      console.error("Cannot send message, chatReceiver is not set.");
+      return;
+    }
+  
     const messageData = {
       chatId,
       userId: currentUser.id,
       text: messageText,
       createdAt: new Date().toISOString(),
     };
-
+  
     socket.emit("sendMessage", {
       receiverId: chatReceiver.id,
       message: messageData,
     });
-
+  
     await onSendMessage(messageText);
     setMessageText("");
   };
+  
 
   useEffect(() => {
     if (socket) {
@@ -100,8 +106,8 @@ const MessageUI = ({
                   {!isSender && (
                     <Avatar className="mr-2">
                       <AvatarImage
-                        src={chatReceiver.avatar || ""}
-                        alt={chatReceiver.username || "User"}
+                        src={chatReceiver?.avatar || ""}
+                        alt={chatReceiver?.username || "User"}
                       />
                       <AvatarFallback>
                         <UserIcon />
@@ -118,7 +124,7 @@ const MessageUI = ({
                     >
                       {!isSender && (
                         <p className="font-semibold text-sm mb-1">
-                          {chatReceiver.username}
+                          {chatReceiver?.username}
                         </p>
                       )}
                       <p className="text-sm">{message.text}</p>

@@ -45,8 +45,6 @@ export default function EditPost() {
     city: "",
     bedrooms: "",
     bathrooms: "",
-    latitude: "",
-    longitude: "",
     property: "",
     type: "",
     desc: "",
@@ -70,8 +68,6 @@ export default function EditPost() {
             city: postData.city || "",
             bedrooms: postData.bedroom?.toString() || "",
             bathrooms: postData.bathroom?.toString() || "",
-            latitude: postData.latitude || "",
-            longitude: postData.longitude || "",
             property: postData.property || "",
             type: postData.type || "",
             desc: postData.postDetail?.desc || "",
@@ -123,8 +119,6 @@ export default function EditPost() {
       city: formData.city,
       bedroom: parseInt(formData.bedrooms, 10),
       bathroom: parseInt(formData.bathrooms, 10),
-      latitude: formData.latitude,
-      longitude: formData.longitude,
       property: formData.property,
       type: formData.type,
       postDetail,
@@ -338,28 +332,7 @@ export default function EditPost() {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="latitude">Latitude</Label>
-                  <Input
-                    id="latitude"
-                    type="number"
-                    placeholder="Enter latitude"
-                    value={formData.latitude}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="longitude">Longitude</Label>
-                  <Input
-                    id="longitude"
-                    type="number"
-                    placeholder="Enter longitude"
-                    value={formData.longitude}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="utilities">Utilities(Optional)</Label>

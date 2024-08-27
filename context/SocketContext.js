@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import AuthContext  from "./AuthContext";
+import AuthContext from "./AuthContext";
 
 export const SocketContext = createContext();
 
@@ -14,7 +14,13 @@ export const SocketContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    user && socket?.emit("newUser", user.id);
+    if (user && socket) {
+      socket.emit("newUser", user.id);
+    }
+
+    return () => {
+      socket?.off("newUser");
+    };
   }, [user, socket]);
 
   return (

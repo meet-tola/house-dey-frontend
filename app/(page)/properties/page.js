@@ -72,6 +72,7 @@ export default function PropertiesPage() {
     setLoading(true);    
     fetchPosts(filters)
       .then((data) => {
+        console.log(data);
         setProperties(data);
       })
       .catch((error) => {
@@ -84,7 +85,6 @@ export default function PropertiesPage() {
 
   useEffect(() => {
     const fetchProperties = async () => {
-      setLoading(true);
       try {
         const data = await fetchPosts(filters);
         if (!Array.isArray(data)) {
@@ -95,8 +95,6 @@ export default function PropertiesPage() {
         }
       } catch (error) {
         console.error("Error fetching properties:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -527,7 +525,7 @@ export default function PropertiesPage() {
         </div>
 
         {/* Map Section */}
-        <div className=" hidden md:block md:w-1/2 relative">
+        <div className=" hidden md:block md:w-1/2 relative mt-4">
           <div className="absolute inset-0">
             {selectedAddress ? (
               <GoogleMapComponent address={selectedAddress} />

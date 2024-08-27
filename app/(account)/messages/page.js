@@ -27,7 +27,7 @@ import { SocketContext } from "@/context/SocketContext";
 import ChatList from "@/components/message/ChatList";
 import MessageUI from "@/components/message/MessageUI";
 
-export default function ResponsiveMessagingApp() {
+export default function Messages() {
   const { user } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
   const [agents, setAgents] = useState([]);
@@ -103,6 +103,7 @@ export default function ResponsiveMessagingApp() {
       [chatId]: message,
     }));
 
+    
     setChatReceiver(receiver);
   };
 
@@ -114,7 +115,7 @@ export default function ResponsiveMessagingApp() {
     }));
     if (socket) {
       socket.emit("sendMessage", {
-        receiverId: chatReceiver.id,
+        receiverId: chatReceiver?.id,
         message: newMessage,
       });
     }
@@ -151,7 +152,6 @@ export default function ResponsiveMessagingApp() {
           </div>
           Start a chat
         </div>
-        {/* Only render the Search Agents button if the user is not an agent */}
         {user.role !== "AGENT" && (
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>

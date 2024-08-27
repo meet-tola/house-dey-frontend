@@ -24,11 +24,52 @@ import AuthContext from "@/context/AuthContext";
 import Cookies from "js-cookie";
 
 const navLinks = [
-  { href: "#", label: "House" },
-  { href: "#", label: "Shop" },
-  { href: "#", label: "Hostel" },
-  { href: "#", label: "Contact" },
+  {
+    href: `/properties?${new URLSearchParams({
+      city: "lagos",
+      minPrice: "",
+      maxPrice: "",
+      bedrooms: "",
+      bathrooms: "",
+      type: "rent",
+      property: "house",
+    }).toString()}`,
+    label: "House",
+  },
+  {
+    href: `/properties?${new URLSearchParams({
+      city: "",
+      minPrice: "",
+      maxPrice: "",
+      bedrooms: "",
+      bathrooms: "",
+      type: "rent",
+      property: "shop",
+    }).toString()}`,
+    label: "Shop",
+  },
+  {
+    href: `/properties?${new URLSearchParams({
+      city: "",
+      minPrice: "",
+      maxPrice: "",
+      bedrooms: "",
+      bathrooms: "",
+      type: "rent",
+      property: "hostel",
+    }).toString()}`,
+    label: "Hostel",
+  },
+  {
+    href: "#",
+    label: "Request",
+  },
+  {
+    href: "#",
+    label: "Blogs",
+  },
 ];
+
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
