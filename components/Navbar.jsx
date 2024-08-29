@@ -156,10 +156,10 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           {user && token ? (
             <>
-              <Button variant="ghost" size="icon">
+              {/* <Button variant="ghost" size="icon">
                 <BellIcon className="h-5 w-5" />
                 <span className="sr-only">Notifications</span>
-              </Button>
+              </Button> */}
               <Link href="/messages">
                 <Button variant="ghost" size="icon">
                   <MessageCircleMore className="h-5 w-5" />

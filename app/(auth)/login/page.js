@@ -6,6 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon, HomeIcon, Loader } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import AuthContext from "@/context/AuthContext";
@@ -15,6 +22,9 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+  useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const router = useRouter();
   const { login, user } = useContext(AuthContext);
 
@@ -25,7 +35,7 @@ const LoginPage = () => {
       await login(username, password);
       router.push("/");
     } catch (error) {
-      toast.error(error.message); 
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -33,12 +43,19 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (user) {
-      router.push("/"); 
+      router.push("/");
     }
   }, [user]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleForgotPassword = (e) => {
+    e.preventDefault();
+    console.log("Forgot password for:", forgotPasswordEmail);
+    toast.success("Password reset link sent to your email");
+    setIsForgotPasswordModalOpen(false);
   };
 
   return (
@@ -52,52 +69,68 @@ const LoginPage = () => {
                 Finding Your Dream Home
               </p>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold">
-              Login to your account
-            </h1>
+            <h1 className="text-3xl md:text-4xl font-bold">Welcome Back!</h1>
             <p className="text-muted-foreground">
-              Welcome back! Please login to your account.
+              Fill the inputs to login your account.
             </p>
           </div>
-          <form className="w-full max-w-md space-y-4" onSubmit={handleLogin}>
-            <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full h-12"
-              />
-            </div>
-            <div className="grid gap-2 relative">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-12"
-              />
-              <div
-                className="absolute right-3 top-[70%] transform text-muted-foreground text-[5px] -translate-y-1/2 cursor-pointer"
-                onClick={togglePasswordVisibility}
-              >
-                {showPassword ? (
-                  <EyeOffIcon size={20} />
-                ) : (
-                  <EyeIcon size={20} />
-                )}
+          <form className="w-full max-w-md space-y-2" onSubmit={handleLogin}>
+            <div className="w-full space-y-4">
+              <div className="grid gap-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full h-12"
+                />
               </div>
+              <div className="grid gap-2 relative">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-12"
+                />
+                <div
+                  className="absolute right-3 top-[70%] transform text-muted-foreground text-[5px] -translate-y-1/2 cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? (
+                    <EyeOffIcon size={20} />
+                  ) : (
+                    <EyeIcon size={20} />
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="w-full text-sm">
+              <Button
+                type="button"
+                variant="link"
+                className=" text-blue-600 hover:underline p-0"
+                onClick={() => setIsForgotPasswordModalOpen(true)}
+              >
+                Forgot your Password?
+              </Button>
+              {" "} Let get you back in.
             </div>
             <Button type="submit" className="w-full h-12">
               {loading ? <Loader className="animate-spin" /> : "Login"}
             </Button>
-            <p className="text-center mt-2">
-              Don't have an account? <Link href="/signup" className="underline hover:text-slate-800">Sign Up</Link>
-            </p>
+            <div className="w-full flex items-center justify-center">
+              <p className="">
+                Not yet part of the family?{" "}
+                <Link href="/signup" className="text-blue-600 hover:underline">
+                  Sign Up
+                </Link>
+              </p>
+            </div>
           </form>
         </div>
         <div className="hidden lg:block relative">
@@ -110,6 +143,39 @@ const LoginPage = () => {
           />
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      <Dialog
+        open={isForgotPasswordModalOpen}
+        onOpenChange={setIsForgotPasswordModalOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Forgot Password</DialogTitle>
+            <DialogDescription>
+              Enter your email address and we'll send you a link to reset your
+              password.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div className="grid gap-2">
+              <Label htmlFor="forgot-password-email">Email</Label>
+              <Input
+                id="forgot-password-email"
+                type="email"
+                placeholder="Enter your email"
+                value={forgotPasswordEmail}
+                onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                className="w-full h-12"
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              Send Reset Link
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

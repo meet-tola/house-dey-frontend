@@ -40,7 +40,7 @@ const MyAccount = () => {
           />
           <Card
             title="Messages"
-            description="View all incoming/outgoing messages received for your properties"
+            description="View all messages received from agent"
             icon={<MessageCircle className="text-3xl" />}
             link="/messages"
           />
@@ -69,7 +69,7 @@ const MyAccount = () => {
           />
           <Card
             title="Messages"
-            description="View all incoming/outgoing messages received for your properties"
+            description="View all messages received for your properties"
             icon={<MessageCircle className="text-3xl" />}
             link="/messages"
           />
@@ -100,7 +100,7 @@ const MyAccount = () => {
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-7xl mx-auto mt-20">
-        <div className="bg-blue-100 p-12 rounded-2xl mb-6">
+        <div className="bg-blue-100 p-10 md:p-12 rounded-2xl mb-6">
           <h1 className="text-4xl lg:text-6xl font-bold">My Account</h1>
           <p className="text-lg mt-4">Manage your account and preferences</p>
         </div>
