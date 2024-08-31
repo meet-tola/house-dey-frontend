@@ -10,7 +10,8 @@ export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    setSocket(io("http://localhost:4000"));
+    const backendURL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";  // Use environment variable or fallback to localhost
+    setSocket(io(backendURL));
   }, []);
 
   useEffect(() => {

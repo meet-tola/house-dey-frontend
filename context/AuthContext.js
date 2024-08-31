@@ -4,21 +4,19 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const AuthContext = createContext();
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8800";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const token = Cookies.get("token");
-    
+
     if (storedUser && token) {
       try {
         const parsedUser = JSON.parse(storedUser);
         setUser(parsedUser);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${Cookies.get(
-          "token"
-        )}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       } catch (error) {
         console.error("Error parsing stored user data:", error);
       }
@@ -28,11 +26,13 @@ export const AuthProvider = ({ children }) => {
   const signup = async (username, email, password, role) => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
+        `${API_URL}/api/auth/register`,
         { username, email, password, role }
       );
       if (response.status === 201) {
-        console.log("Signup successful. Please check your email to verify your account.");
+        console.log(
+          "Signup successful. Please check your email to verify your account."
+        );
       }
     } catch (error) {
       console.error(
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        `${API_URL}/api/auth/login`,
         { username, password }
       );
       if (response.status === 200) {
@@ -59,7 +59,10 @@ export const AuthProvider = ({ children }) => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error("Error during login:", error.response?.data || error.message);
+      console.error(
+        "Error during login:",
+        error.response?.data || error.message
+      );
       throw new Error(error.response?.data?.message || "Failed to login.");
     }
   };
@@ -67,7 +70,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`
+        `${API_URL}/api/auth/logout`
       );
       if (response.status === 200) {
         setUser(null);
@@ -86,18 +89,22 @@ export const AuthProvider = ({ children }) => {
   const verifyEmail = async (token) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify/${token}`
+        `${API_URL}/api/auth/verify/${token}`
       );
       if (response.status === 200) {
-        console.log("Email verified successfully. You can now log in.");
-        const verifiedUser = response.data.user;
-        setUser(verifiedUser);
-        localStorage.setItem("user", JSON.stringify(verifiedUser));
+        const { token, user } = response.data;
+        Cookies.set("token", token);
+        setUser(user);
+        localStorage.setItem("user", JSON.stringify(user));
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
       console.error(
         "Error during email verification:",
         error.response?.data || error.message
+      );
+      throw new Error(
+        error.response?.data?.message || "Failed to verify email."
       );
     }
   };
@@ -112,8 +119,59 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const requestPasswordReset = async (email) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/auth/request-password-reset`,
+        { email }
+      );
+      if (response.status === 200) {
+        console.log("Password reset link has been sent to your email.");
+      }
+    } catch (error) {
+      console.error(
+        "Error during password reset request:",
+        error.response?.data || error.message
+      );
+      throw new Error(
+        error.response?.data?.message || "Failed to request password reset."
+      );
+    }
+  };
+
+  const resetPassword = async (token, newPassword) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/auth/reset-password`,
+        { token, newPassword }
+      );
+      if (response.status === 200) {
+        console.log("Password has been reset successfully.");
+      }
+    } catch (error) {
+      console.error(
+        "Error during password reset:",
+        error.response?.data || error.message
+      );
+      throw new Error(
+        error.response?.data?.message || "Failed to reset password."
+      );
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout, verifyEmail, updateUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        signup,
+        login,
+        logout,
+        verifyEmail,
+        updateUser,
+        requestPasswordReset,
+        resetPassword,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

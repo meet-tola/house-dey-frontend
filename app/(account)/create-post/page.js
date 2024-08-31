@@ -21,6 +21,8 @@ import { Loader } from "lucide-react";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
 import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8800";
+
 export default function CreatePost() {
   const { user } = useContext(AuthContext);
   const userId = user?.id;
@@ -88,7 +90,7 @@ export default function CreatePost() {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/posts`,
+        `${API_URL}/api/posts`,
         postPayload
       );
       if (response.status === 200) {

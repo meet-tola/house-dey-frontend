@@ -31,6 +31,8 @@ import AuthContext from "@/context/AuthContext";
 import { Edit3, Loader } from "lucide-react";
 import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8800";
+
 export default function EditPost() {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
@@ -56,7 +58,7 @@ export default function EditPost() {
     const fetchPostData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`
+          `${API_URL}/api/posts/${id}`
         );
         if (response.status === 200) {
           const postData = response.data;

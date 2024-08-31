@@ -13,7 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Image from "next/image";
 import toast from "react-hot-toast";
 import AuthContext from "@/context/AuthContext";
 
@@ -22,11 +21,11 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
-  useState(false);
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [emailSent, setEmailSent] = useState(false);
   const router = useRouter();
-  const { login, user } = useContext(AuthContext);
+  const { login, user, requestPasswordReset } = useContext(AuthContext);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -51,11 +50,17 @@ const LoginPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleForgotPassword = (e) => {
+  const handleForgotPassword = async (e) => {
     e.preventDefault();
-    console.log("Forgot password for:", forgotPasswordEmail);
-    toast.success("Password reset link sent to your email");
-    setIsForgotPasswordModalOpen(false);
+    setLoading(true);
+    try {
+      await requestPasswordReset(forgotPasswordEmail);
+      setEmailSent(true); // Indicate that the email has been sent
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -147,33 +152,39 @@ const LoginPage = () => {
       {/* Forgot Password Modal */}
       <Dialog
         open={isForgotPasswordModalOpen}
-        onOpenChange={setIsForgotPasswordModalOpen}
+        onOpenChange={(open) => {
+          setIsForgotPasswordModalOpen(open);
+          if (!open) setEmailSent(false); // Reset email sent state when closing modal
+        }}
       >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Forgot Password</DialogTitle>
             <DialogDescription>
-              Enter your email address and we'll send you a link to reset your
-              password.
+              {emailSent
+                ? "A password reset link has been sent to your email. Please check your inbox."
+                : "Enter your email address and we'll send you a link to reset your password."}
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleForgotPassword} className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="forgot-password-email">Email</Label>
-              <Input
-                id="forgot-password-email"
-                type="email"
-                placeholder="Enter your email"
-                value={forgotPasswordEmail}
-                onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                className="w-full h-12"
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              Send Reset Link
-            </Button>
-          </form>
+          {!emailSent && (
+            <form onSubmit={handleForgotPassword} className="space-y-4">
+              <div className="grid gap-2">
+                <Label htmlFor="forgot-password-email">Email</Label>
+                <Input
+                  id="forgot-password-email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={forgotPasswordEmail}
+                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                  className="w-full h-12"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                {loading ? <Loader className="animate-spin" /> : "Send Reset Link"}
+              </Button>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
     </>

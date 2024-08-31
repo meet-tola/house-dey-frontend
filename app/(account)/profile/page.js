@@ -27,6 +27,8 @@ import Image from "next/image";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { Loader } from "lucide-react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8800";
+
 const Profile = () => {
   const [loading, setLoading] = useState(false);
   const { user, updateUser } = useContext(AuthContext);
@@ -90,7 +92,7 @@ const Profile = () => {
 
     try {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/user/${user.id}`,
+        `${API_URL}/api/user/${user.id}`,
         formData
       );
       if (response.status === 200) {

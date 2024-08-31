@@ -1,9 +1,11 @@
 import axios from 'axios';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8800";
+
 export const fetchPosts = async (query = {}) => {
   try {
     const queryString = new URLSearchParams(query).toString();
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts?${queryString}`);
+    const response = await axios.get(`${API_URL}/api/posts?${queryString}`);
     
     if (response.status === 200) {
       return response.data;
@@ -17,7 +19,7 @@ export const fetchPosts = async (query = {}) => {
 
 export const fetchAllPosts = async () => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/all`);
+    const response = await axios.get(`${API_URL}/api/posts/all`);
     if (response.status === 200) {
       return response.data;
     }
@@ -30,7 +32,7 @@ export const fetchAllPosts = async () => {
 
 export const fetchPost = async (id) => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`);
+    const response = await axios.get(`${API_URL}/api/posts/${id}`);
     if (response.status === 200) {
       return response.data;
     }
@@ -43,7 +45,7 @@ export const fetchPost = async (id) => {
 
 export const fetchUserPosts = async () => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/user/posts`);
+    const response = await axios.get(`${API_URL}/api/posts/user/posts`);
     if (response.status === 200) {
       return response.data;
     }
@@ -58,7 +60,7 @@ export const fetchUserPosts = async () => {
 
 export const savePost = async (postId) => {
   try {
-    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/save`, { postId });
+    const response = await axios.post(`${API_URL}/api/posts/save`, { postId });
     if (response.status === 200) {
       return response.data;
     }
@@ -71,7 +73,7 @@ export const savePost = async (postId) => {
 
 export const fetchSavedPosts = async () => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/posts/saved`);
+    const response = await axios.get(`${API_URL}/api/posts/saved`);
     if (response.status === 200) {
       return response.data;
     }

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { UserIcon } from "lucide-react";
-import NotificationBadge from "./NotificationBadge";
+// import NotificationBadge from "./NotificationBadge";
 
 const ChatList = ({ chats, onSelectChat, selectedChatId }) => {
   
@@ -12,7 +12,7 @@ const ChatList = ({ chats, onSelectChat, selectedChatId }) => {
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>All Chats</CardTitle>
-          <NotificationBadge count={totalUnreadMessages} />
+          {/* <NotificationBadge count={totalUnreadMessages} /> */}
         </div>
       </CardHeader>
       <CardContent>
@@ -40,11 +40,11 @@ const ChatList = ({ chats, onSelectChat, selectedChatId }) => {
                   {chat?.lastMessage || "No messages yet"}
                 </p>
               </div>
-              {unreadMessages[chat.id] > 0 && (
+              {/* {unreadMessages[chat.id] > 0 && (
                 <span className="ml-auto text-xs bg-red-500 text-white rounded-full px-2 py-1">
                   {unreadMessages[chat.id]}
                 </span>
-              )}
+              )} */}
             </div>
           ))}
         </ScrollArea>
