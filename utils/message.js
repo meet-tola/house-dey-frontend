@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8800" || process.env.NEXT_PUBLIC_API_URL;
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "http://localhost:8800";
 
 export const fetchChats = async () => {
   try {
@@ -8,9 +11,9 @@ export const fetchChats = async () => {
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error('Failed to fetch chats');
+    throw new Error("Failed to fetch chats");
   } catch (error) {
-    console.error('Error fetching chats:', error);
+    console.error("Error fetching chats:", error);
     return null;
   }
 };
@@ -21,9 +24,9 @@ export const fetchChat = async (chatId) => {
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error('Failed to fetch chat');
+    throw new Error("Failed to fetch chat");
   } catch (error) {
-    console.error('Error fetching chat:', error);
+    console.error("Error fetching chat:", error);
     return null;
   }
 };
@@ -34,22 +37,24 @@ export const addChat = async (receiverId) => {
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error('Failed to add chat');
+    throw new Error("Failed to add chat");
   } catch (error) {
-    console.error('Error adding chat:', error);
+    console.error("Error adding chat:", error);
     return null;
   }
 };
 
 export const addMessage = async (chatId, text) => {
   try {
-    const response = await axios.post(`${API_URL}/api/messages/${chatId}`, { text });
+    const response = await axios.post(`${API_URL}/api/messages/${chatId}`, {
+      text,
+    });
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error('Failed to add message');
+    throw new Error("Failed to add message");
   } catch (error) {
-    console.error('Error adding message:', error);
+    console.error("Error adding message:", error);
     return null;
   }
 };

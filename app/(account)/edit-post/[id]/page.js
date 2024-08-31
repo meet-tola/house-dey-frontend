@@ -31,8 +31,9 @@ import AuthContext from "@/context/AuthContext";
 import { Edit3, Loader } from "lucide-react";
 import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
 
-const API_URL = "http://localhost:8800" || process.env.NEXT_PUBLIC_API_URL;
-
+const API_URL = process.env.NODE_ENV === "production"
+  ? process.env.NEXT_PUBLIC_API_URL
+  : "http://localhost:8800";
 export default function EditPost() {
   const { id } = useParams();
   const { user } = useContext(AuthContext);

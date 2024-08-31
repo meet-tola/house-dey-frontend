@@ -1,18 +1,21 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL =  "http://localhost:8800" || process.env.NEXT_PUBLIC_API_URL;
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "http://localhost:8800";
 
 export const fetchPosts = async (query = {}) => {
   try {
     const queryString = new URLSearchParams(query).toString();
     const response = await axios.get(`${API_URL}/api/posts?${queryString}`);
-    
+
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error('Failed to fetch posts');
+    throw new Error("Failed to fetch posts");
   } catch (error) {
-    console.error('Error fetching posts:', error);
+    console.error("Error fetching posts:", error);
     return null;
   }
 };
@@ -23,9 +26,9 @@ export const fetchAllPosts = async () => {
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error('Failed to fetch user posts');
+    throw new Error("Failed to fetch user posts");
   } catch (error) {
-    console.error('Error fetching user posts:', error);
+    console.error("Error fetching user posts:", error);
     return null;
   }
 };
@@ -36,7 +39,7 @@ export const fetchPost = async (id) => {
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error('Failed to fetch post');
+    throw new Error("Failed to fetch post");
   } catch (error) {
     console.error(`Error fetching post with ID ${id}:`, error);
     return null;
@@ -49,14 +52,12 @@ export const fetchUserPosts = async () => {
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error('Failed to fetch user posts');
+    throw new Error("Failed to fetch user posts");
   } catch (error) {
-    console.error('Error fetching user posts:', error);
+    console.error("Error fetching user posts:", error);
     return null;
   }
 };
-
-
 
 export const savePost = async (postId) => {
   try {
@@ -64,7 +65,7 @@ export const savePost = async (postId) => {
     if (response.status === 200) {
       return response.data;
     }
-    throw new Error('Failed to save post');
+    throw new Error("Failed to save post");
   } catch (error) {
     console.error(`Error saving post with ID ${postId}:`, error);
     return null;
