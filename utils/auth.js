@@ -3,7 +3,7 @@ import axios from 'axios';
 const API_URL = process.env.NODE_ENV === "production"
   ? process.env.NEXT_PUBLIC_API_URL
   : "http://localhost:8800";
-  
+
 export const checkAuth = async () => {
   try {
     const response = await axios.get(
@@ -12,6 +12,8 @@ export const checkAuth = async () => {
     );
     return response.status === 200;
   } catch (error) {
+    console.log(error);
+    
     return false;
   }
 };
