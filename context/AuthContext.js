@@ -4,7 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 const AuthContext = createContext();
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8800";
+const API_URL = "http://localhost:8800" || process.env.NEXT_PUBLIC_API_URL;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);

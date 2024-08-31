@@ -192,7 +192,7 @@ export default function Navbar() {
                       onClick={(e) => {
                         e.preventDefault();
                         logout();
-                        window.location.href = "/login";
+                        window.location.href = "/";
                       }}
                       prefetch={false}
                     >

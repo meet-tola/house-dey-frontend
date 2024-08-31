@@ -27,7 +27,7 @@ import Image from "next/image";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { Loader } from "lucide-react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8800";
+const API_URL = "http://localhost:8800" || process.env.NEXT_PUBLIC_API_URL;
 
 const Profile = () => {
   const [loading, setLoading] = useState(false);

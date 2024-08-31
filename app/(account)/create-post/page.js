@@ -21,7 +21,7 @@ import { Loader } from "lucide-react";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
 import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8800";
+const API_URL = "http://localhost:8800" || process.env.NEXT_PUBLIC_API_URL;
 
 export default function CreatePost() {
   const { user } = useContext(AuthContext);

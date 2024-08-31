@@ -31,7 +31,7 @@ import AuthContext from "@/context/AuthContext";
 import { Edit3, Loader } from "lucide-react";
 import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8800";
+const API_URL = "http://localhost:8800" || process.env.NEXT_PUBLIC_API_URL;
 
 export default function EditPost() {
   const { id } = useParams();
