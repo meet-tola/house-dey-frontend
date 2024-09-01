@@ -1,10 +1,22 @@
 import axios from 'axios';
+import cookie from 'js-cookie'; 
 
 const API_URL = process.env.NODE_ENV === "production"
   ? process.env.NEXT_PUBLIC_API_URL
   : "http://localhost:8800";
 
-export const checkAuth = async (token) => {
+const getToken = () => {
+  return cookie.get('token');
+};
+
+export const checkAuth = async () => {
+  const token = getToken();
+  
+  if (!token) {
+    console.error("No token found in cookies");
+    return false;
+  }
+  
   try {
     const response = await axios.get(
       `${API_URL}/api/auth/checkAuth`,
@@ -12,7 +24,7 @@ export const checkAuth = async (token) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        withCredentials: true, // Ensure cookies are sent for cross-site requests
+        withCredentials: true, 
       }
     );
     return response.status === 200;
