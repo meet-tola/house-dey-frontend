@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import AuthContext from "@/context/AuthContext";
 import { Loader } from "lucide-react";
 import toast from "react-hot-toast";
+import PageLoader from "@/components/PageLoader";
 
 const VerifyPage = ({ params }) => {
   const { verifyEmail } = useContext(AuthContext);
@@ -40,7 +41,7 @@ const VerifyPage = ({ params }) => {
   return (
     <div className="flex items-center justify-center min-h-screen">
       {loading ? (
-        <Loader className="animate-spin text-purple-500" size={32} />
+        <PageLoader />
       ) : (
         <p>Verifying your email...</p>
       )}
