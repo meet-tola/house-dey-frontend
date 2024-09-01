@@ -16,6 +16,8 @@ export const checkAuth = async () => {
     console.error("No token found in cookies");
     return false;
   }
+
+  console.log("token", token)
   
   try {
     const response = await axios.get(
