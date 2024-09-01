@@ -275,9 +275,6 @@ const SignupPage = () => {
               A verification link has been sent to your email address. Please
               check your inbox and click the link to verify your account.
             </DialogDescription>
-            <Button onClick={closeModal} className="mt-6">
-              Go to Login
-            </Button>
           </DialogHeader>
         </DialogContent>
       </Dialog>
