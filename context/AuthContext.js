@@ -2,7 +2,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useCookies } from "react-cookie";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -13,10 +12,8 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
-
   useEffect(() => {
-    const storedUser = cookies.user;
+    const storedUser = localStorage.getItem("user");
     const token = Cookies.get("token");
 
     if (storedUser && token) {
@@ -28,7 +25,7 @@ export const AuthProvider = ({ children }) => {
         console.error("Error parsing stored user data:", error);
       }
     }
-  }, [cookies.user]);
+  }, []);
 
   const signup = async (username, email, password, role) => {
     try {
@@ -64,7 +61,7 @@ export const AuthProvider = ({ children }) => {
         }
         Cookies.set("token", token);
         setUser(user);
-        setCookie("user", JSON.stringify(user), { path: "/" });
+        localStorage.setItem("user", JSON.stringify(user));
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
@@ -99,7 +96,7 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) {
         setUser(null);
         Cookies.remove("token");
-        removeCookie("user", { path: "/" });
+        localStorage.removeItem("user");
         delete axios.defaults.headers.common["Authorization"];
         console.log("Logout successful.");
       }
@@ -118,7 +115,7 @@ export const AuthProvider = ({ children }) => {
         const { token, user } = response.data;
         Cookies.set("token", token);
         setUser(user);
-        setCookie("user", JSON.stringify(user), { path: "/" });
+        localStorage.setItem("user", JSON.stringify(user));
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
@@ -135,7 +132,7 @@ export const AuthProvider = ({ children }) => {
   const updateUser = (updatedUser) => {
     if (updatedUser) {
       setUser(updatedUser);
-      setCookie("user", JSON.stringify(updatedUser), { path: "/" });
+      localStorage.setItem("user", JSON.stringify(updatedUser));
       console.log("User updated successfully.");
     } else {
       console.error("Invalid user data:", updatedUser);
