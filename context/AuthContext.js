@@ -74,13 +74,31 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    const token = Cookies.get("token");
+
+    if (!token) {
+      console.error("No token found, cannot logout.");
+      return;
+    }
+
     try {
-      const response = await axios.post(`${API_URL}/api/auth/logout`);
+      const response = await axios.post(
+        `${API_URL}/api/auth/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      
       if (response.status === 200) {
         setUser(null);
         Cookies.remove("token");
         localStorage.removeItem("user");
         delete axios.defaults.headers.common["Authorization"];
+        console.log("Logout successful.");
       }
     } catch (error) {
       console.error(

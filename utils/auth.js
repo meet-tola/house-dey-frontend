@@ -15,10 +15,7 @@ export const checkAuth = async () => {
   if (!token) {
     console.error("No token found in cookies");
     return false;
-  }
-
-  console.log("token", token)
-  
+  }  
   try {
     const response = await axios.get(
       `${API_URL}/api/auth/checkAuth`,
