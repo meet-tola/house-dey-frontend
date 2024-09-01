@@ -122,6 +122,7 @@ const SignupPage = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full h-12"
+                  required
                 />
               </div>
               <div className="grid gap-2">
@@ -133,6 +134,7 @@ const SignupPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-12"
+                  required
                 />
               </div>
               <div className="grid gap-2 relative">
@@ -147,6 +149,7 @@ const SignupPage = () => {
                     onFocus={() => setIsPasswordFocused(true)}
                     onBlur={() => setIsPasswordFocused(false)}
                     className="w-full h-12 pr-10"
+                    required
                   />
                   <button
                     type="button"
@@ -211,17 +214,20 @@ const SignupPage = () => {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="role">Role</Label>
-                <Select onValueChange={(value) => setRole(value)}>
+                <Select
+                  onValueChange={(value) => setRole(value)}
+                  required
+                >
                   <SelectTrigger className="w-full h-12">
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Roles</SelectLabel>
-                      <SelectItem value="client">
+                      <SelectItem value="CLIENT">
                         Individual (searching for property)
                       </SelectItem>
-                      <SelectItem value="agent">Agent/Landlord</SelectItem>
+                      <SelectItem value="AGENT">Agent/Landlord</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>

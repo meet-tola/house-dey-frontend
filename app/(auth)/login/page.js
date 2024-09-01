@@ -90,6 +90,7 @@ const LoginPage = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full h-12"
+                  required
                 />
               </div>
               <div className="grid gap-2 relative">
@@ -101,6 +102,7 @@ const LoginPage = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full h-12"
+                  required
                 />
                 <div
                   className="absolute right-3 top-[70%] transform text-muted-foreground text-[5px] -translate-y-1/2 cursor-pointer"
