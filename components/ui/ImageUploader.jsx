@@ -1,22 +1,31 @@
-"use client";
-import React, { useState } from "react";
-import { Image } from "cloudinary-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Trash2Icon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+'use client'
 
-const ImageUploader = ({ onImageUpload, multiple = false }) => {
-  const [images, setImages] = useState([]);
+import React, { useState, useCallback } from "react"
+import { Image } from "cloudinary-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Trash2Icon, UploadCloud } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-  const uploadImage = async (e) => {
-    const files = e.target.files;
-    const uploadedImageUrls = [];
+function ImageUploader({ onImageUpload, multiple = false }) {
+  const [images, setImages] = useState([])
+  const [dragActive, setDragActive] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [error, setError] = useState(null)
+
+  const uploadImage = async (files) => {
+    setUploading(true)
+    setProgress(0)
+    setError(null)
+    const uploadedImageUrls = []
 
     for (let i = 0; i < files.length; i++) {
-      const data = new FormData();
-      data.append("file", files[i]);
-      data.append("upload_preset", "bxmkzdav");
+      const data = new FormData()
+      data.append("file", files[i])
+      data.append("upload_preset", "bxmkzdav")
 
       try {
         const res = await fetch(
@@ -25,50 +34,114 @@ const ImageUploader = ({ onImageUpload, multiple = false }) => {
             method: "POST",
             body: data,
           }
-        );
+        )
 
-        const file = await res.json();
-        uploadedImageUrls.push(file.secure_url);
+        const file = await res.json()
+        uploadedImageUrls.push(file.secure_url)
+        setProgress((i + 1) / files.length * 100)
       } catch (error) {
-        console.error("Error uploading image:", error);
+        console.error("Error uploading image:", error)
+        setError("Error uploading image. Please try again.")
       }
     }
 
+    setUploading(false)
+
     if (multiple) {
-      setImages(prevImages => [...prevImages, ...uploadedImageUrls]);
-      onImageUpload([...images, ...uploadedImageUrls]);
+      setImages((prevImages) => [...prevImages, ...uploadedImageUrls])
+      onImageUpload([...images, ...uploadedImageUrls])
     } else {
-      setImages([uploadedImageUrls[0]]);
-      onImageUpload(uploadedImageUrls[0]);
+      setImages([uploadedImageUrls[0]])
+      onImageUpload([uploadedImageUrls[0]])
     }
-  };
+  }
+
+  const handleChange = (e) => {
+    e.preventDefault()
+    if (e.target.files && e.target.files.length > 0) {
+      uploadImage(e.target.files)
+    }
+  }
+
+  const handleDrag = useCallback((e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true)
+    } else if (e.type === "dragleave") {
+      setDragActive(false)
+    }
+  }, [])
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      uploadImage(e.dataTransfer.files)
+    }
+  }, [])
 
   const deleteImage = (imageUrl) => {
-    const filteredImages = images.filter(url => url !== imageUrl);
-    setImages(filteredImages);
-    onImageUpload(filteredImages);
-  };
+    const filteredImages = images.filter((url) => url !== imageUrl)
+    setImages(filteredImages)
+    onImageUpload(filteredImages)
+  }
 
   return (
-    <div>
+    <div className="w-full space-y-4">
+      <div
+        className={`relative border-2 border-dashed rounded-lg p-4 text-center ${
+          dragActive ? 'border-primary' : 'border-gray-300'
+        } transition-colors duration-300 ease-in-out cursor-pointer`}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+        onClick={() => document.getElementById('file-upload')?.click()}
+      >
+        <Input
+          id="file-upload"
+          type="file"
+          className="hidden"
+          onChange={handleChange}
+          multiple={multiple}
+          disabled={uploading}
+        />
+        <div className="space-y-2">
+          <UploadCloud className="mx-auto h-12 w-12 text-gray-400" />
+          <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
+          <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+        </div>
+      </div>
+
+      {uploading && <Progress value={progress} className="w-full" />}
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       {images.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {images.map((imageUrl, index) => (
-            <div key={index} className="relative group w-[200px]">
+            <div key={index} className="relative ">
               <Image
                 cloudName="dvvirefzi"
                 publicId={imageUrl}
-                alt="Uploaded Image"
+                alt={`Uploaded Image ${index + 1}`}
                 className="object-cover w-full rounded-md aspect-square"
               />
               <div className="absolute top-2 right-2 flex items-center gap-2">
                 <Button
-                  variant="ghost"
-                  size="sm"
-                  className="bg-background/80 hover:bg-background"
+                  variant="destructive"
+                  size="icon"
+                  className=" opacity-100 transition-opacity"
                   onClick={() => deleteImage(imageUrl)}
                 >
-                  <Trash2Icon className="w-4 h-4 text-muted-foreground" />
+                  <Trash2Icon className="w-4 h-4" />
                   <span className="sr-only">Delete</span>
                 </Button>
               </div>
@@ -76,12 +149,8 @@ const ImageUploader = ({ onImageUpload, multiple = false }) => {
           ))}
         </div>
       )}
-      <>
-        <Label htmlFor="picture">Upload Image/Images</Label>
-        <Input id="file" type="file" onChange={uploadImage} multiple={multiple} />
-      </>
     </div>
-  );
-};
+  )
+}
 
-export default ImageUploader;
+export default ImageUploader
