@@ -31,9 +31,10 @@ import AuthContext from "@/context/AuthContext";
 import { Edit3, Loader } from "lucide-react";
 import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
 
-const API_URL = process.env.NODE_ENV === "production"
-  ? process.env.NEXT_PUBLIC_API_URL
-  : "http://localhost:8800";
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "http://localhost:8800";
 export default function EditPost() {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
@@ -58,9 +59,7 @@ export default function EditPost() {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}/api/posts/${id}`
-        );
+        const response = await axios.get(`${API_URL}/api/posts/${id}`);
         if (response.status === 200) {
           const postData = response.data;
           setFormData({
@@ -244,7 +243,7 @@ export default function EditPost() {
                 <ImageUploader
                   onImageUpload={handleImageUpload}
                   multiple={true}
-                  initialImages={formData.images} // Pass initial images to ImageUploader
+                  initialImages={formData.images}
                 />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -335,7 +334,7 @@ export default function EditPost() {
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="utilities">Utilities(Optional)</Label>
