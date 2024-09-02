@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { fetchAllPosts } from "@/utils/post";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 const FeaturedProperties = () => {
   const [properties, setProperties] = useState([]);
@@ -41,8 +42,7 @@ const FeaturedProperties = () => {
               <img
                 className="w-full h-48 object-cover"
                 src={
-                  property.images?.[0] ||
-                  "https://via.placeholder.com/300x200"
+                  property.images?.[0] || "https://via.placeholder.com/300x200"
                 }
                 alt={property.address}
               />
@@ -71,6 +71,11 @@ const FeaturedProperties = () => {
             </Link>
           </div>
         ))}
+      </div>
+      <div className="w-full flex justify-center mt-4">
+        <Link href="/properties">
+          <Button>See more properties</Button>
+        </Link>
       </div>
     </div>
   );

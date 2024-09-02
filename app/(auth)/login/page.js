@@ -142,7 +142,7 @@ const LoginPage = () => {
         </div>
         <div className="hidden lg:block relative">
           <img
-            src="https://via.placeholder.com/1920x1080"
+            src="/image2.png"
             width="1920"
             height="1080"
             alt="Background"

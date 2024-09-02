@@ -113,6 +113,26 @@ const SignupPage = () => {
           </div>
           <form className="w-full max-w-md space-y-2" onSubmit={handleSignup}>
             <div className="w-full space-y-4">
+            <div className="grid gap-2">
+                <Label htmlFor="role">Role</Label>
+                <Select
+                  onValueChange={(value) => setRole(value)}
+                  required
+                >
+                  <SelectTrigger className="w-full h-12">
+                    <SelectValue placeholder="Select your role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Roles</SelectLabel>
+                      <SelectItem value="CLIENT">
+                        Individual (searching for property)
+                      </SelectItem>
+                      <SelectItem value="AGENT">Agent/Landlord</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="grid gap-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
@@ -212,26 +232,6 @@ const SignupPage = () => {
                   </div>
                 )}
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="role">Role</Label>
-                <Select
-                  onValueChange={(value) => setRole(value)}
-                  required
-                >
-                  <SelectTrigger className="w-full h-12">
-                    <SelectValue placeholder="Select your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Roles</SelectLabel>
-                      <SelectItem value="CLIENT">
-                        Individual (searching for property)
-                      </SelectItem>
-                      <SelectItem value="AGENT">Agent/Landlord</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
             <div className="w-full text-sm">
               <Button
@@ -263,7 +263,7 @@ const SignupPage = () => {
         </div>
         <div className="hidden lg:block relative">
           <img
-            src="https://via.placeholder.com/1920x1080"
+            src="/image2.png"
             width="1920"
             height="1080"
             alt="Background"
