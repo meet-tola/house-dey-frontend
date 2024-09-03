@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import {
-  MapPinIcon,
+  MapPin,
   BedIcon,
   DollarSignIcon,
   FilterIcon,
@@ -13,7 +13,9 @@ import {
   Bath,
   Home,
   SearchIcon,
+  Search,
   Map,
+  Locate,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -37,12 +39,14 @@ import { fetchPosts, savePost } from "@/utils/post";
 import { toast } from "react-hot-toast";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
 import GoogleMapComponent from "@/components/map/GoogleMap";
+import AddressAutocomplete from "@/components/map/AddressAutoComplete";
 
 export default function PropertiesPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [properties, setProperties] = useState([]);
   const [filters, setFilters] = useState({
+    address: searchParams.get("address") || "",
     city: searchParams.get("city") || "",
     minPrice: searchParams.get("minPrice") || "",
     maxPrice: searchParams.get("maxPrice") || "",
@@ -69,7 +73,7 @@ export default function PropertiesPage() {
     const query = new URLSearchParams(filters).toString();
     router.push(`/properties?${query}`);
 
-    setLoading(true);    
+    setLoading(true);
     fetchPosts(filters)
       .then((data) => {
         console.log(data);
@@ -110,7 +114,10 @@ export default function PropertiesPage() {
         toast.error("Failed to save property.");
       }
     } catch (error) {
-      console.error("An error occurred while saving the property:", error.response ? error.response.data : error.message);
+      console.error(
+        "An error occurred while saving the property:",
+        error.response ? error.response.data : error.message
+      );
       toast.error("An error occurred while saving the property.");
     }
   };
@@ -146,157 +153,143 @@ export default function PropertiesPage() {
     return "Properties";
   };
 
+  const handleAddressSelect = (address) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      address: address,
+    }));
+  };
+
   return (
     <div className="flex flex-col min-h-screen mt-16">
       {/* Header with Search and Filters */}
-      <div className="sticky inset-x-0 top-16 z-10 flex justify-between items-center py-4 px-8 bg-white shadow-md">
+      <div className="sticky top-16 z-10 py-4 px-4 md:px-16 bg-white shadow-md w-full">
         {/* Visible Filters on Large Screens */}
-        <div className="w-full flex justify-center">
-          <div className="hidden md:flex gap-2 justify-center items-center w-full">
-            {/* City Input */}
-            <div className="flex items-center border rounded-lg px-2 py-1 h-10 w-[300px]">
-              <MapPinIcon className="text-2xl text-gray-400 mr-2" />
-              <Input
-                name="city"
-                placeholder="Enter an address, city, or ZIP code"
-                className="border-none focus:ring-0 text-sm h-8 w-full"
-                value={filters.city}
-                onChange={handleInputChange}
-              />
-            </div>
+        <div className="max-w-full mx-auto">
+          <div className="w-full flex justify-center">
+            <div className="hidden md:flex gap-2 justify-center items-center w-full">
+              <div className="relative flex-grow max-w-[300px]">
+                <AddressAutocomplete onAddressSelect={handleAddressSelect} />
+              </div>
+              <div className="relative w-32">
+                <Locate className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  name="city"
+                  placeholder="Enter a city"
+                  className="pl-9 pr-3 py-2 w-full"
+                  value={filters.city}
+                  onChange={handleInputChange}
+                />
+              </div>
 
-            {/* Min Price Input */}
-            <div className="flex items-center border rounded-lg px-2 py-1 h-10 w-32">
-              <DollarSignIcon className="text-2xl text-gray-400 mr-2" />
-              <Input
-                name="minPrice"
-                placeholder="Min Price"
-                className="border-none focus:ring-0 text-sm h-8 w-full"
-                value={filters.minPrice}
-                onChange={handleInputChange}
-                type="number"
-              />
-            </div>
+              <div className="relative w-32">
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                  ₦
+                </span>
+                <Input
+                  name="minPrice"
+                  placeholder="Min Price"
+                  className="pl-7 pr-3 py-2 w-full"
+                  value={filters.minPrice}
+                  onChange={handleInputChange}
+                  type="number"
+                />
+              </div>
 
-            {/* Max Price Input */}
-            <div className="flex items-center border rounded-lg px-2 py-1 h-10 w-32">
-              <DollarSignIcon className="text-2xl text-gray-400 mr-2" />
-              <Input
-                name="maxPrice"
-                placeholder="Max Price"
-                className="border-none focus:ring-0 text-sm h-8 w-full"
-                value={filters.maxPrice}
-                onChange={handleInputChange}
-                type="number"
-              />
-            </div>
+              <div className="relative w-32">
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                  ₦
+                </span>
+                <Input
+                  name="maxPrice"
+                  placeholder="Max Price"
+                  className="pl-7 pr-3 py-2 w-full"
+                  value={filters.maxPrice}
+                  onChange={handleInputChange}
+                  type="number"
+                />
+              </div>
 
-            {/* Bedrooms Input */}
-            <div className="flex items-center border rounded-lg px-2 py-1 h-10 w-32">
-              <BedIcon className="text-2xl text-gray-400 mr-2" />
-              <Input
-                name="bedrooms"
-                placeholder="Bedrooms"
-                className="border-none focus:ring-0 text-sm h-8 w-full"
-                value={filters.bedrooms}
-                onChange={handleInputChange}
-                type="number"
-              />
-            </div>
+              <div className="relative w-32">
+                <Bed className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  name="bedrooms"
+                  placeholder="Bedrooms"
+                  className="pl-9 pr-3 py-2 w-full"
+                  value={filters.bedrooms}
+                  onChange={handleInputChange}
+                  type="number"
+                />
+              </div>
 
-            {/* Bathrooms Input */}
-            <div className="flex items-center border rounded-lg px-2 py-1 h-10 w-32">
-              <ShowerHeadIcon className="text-2xl text-gray-400 mr-2" />
-              <Input
-                name="bathrooms"
-                placeholder="Bathrooms"
-                className="border-none focus:ring-0 text-sm h-8 w-full"
-                value={filters.bathrooms}
-                onChange={handleInputChange}
-                type="number"
-              />
-            </div>
+              <div className="relative w-32">
+                <Home className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Select
+                  name="type"
+                  value={filters.type}
+                  onValueChange={(value) =>
+                    setFilters((prevFilters) => ({
+                      ...prevFilters,
+                      type: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="pl-9 pr-3 py-2 w-full">
+                    <SelectValue placeholder="Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="rent">Rent</SelectItem>
+                    <SelectItem value="buy">Buy</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            {/* Type Input */}
-            <div className="flex items-center border rounded-lg px-2 py-1 h-10 w-32">
-              <HomeIcon className="h-5 w-5 text-gray-400 mr-2" />
-              <Select
-                name="type"
-                value={filters.type}
-                onValueChange={(value) =>
-                  setFilters((prevFilters) => ({
-                    ...prevFilters,
-                    type: value,
-                  }))
-                }
+              <div className="relative w-32">
+                <Home className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Select
+                  name="property"
+                  value={filters.property}
+                  onValueChange={(value) =>
+                    setFilters((prevFilters) => ({
+                      ...prevFilters,
+                      property: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="pl-9 pr-3 py-2 w-full">
+                    <SelectValue placeholder="Property" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="apartment">Apartment</SelectItem>
+                    <SelectItem value="house">House</SelectItem>
+                    <SelectItem value="shop">Shop</SelectItem>
+                    <SelectItem value="hostel">Hostel</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button
+                onClick={handleSearch}
+                className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                disabled={loading}
               >
-                <SelectTrigger className="w-full border-none focus:ring-0 h-8">
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="rent">Rent</SelectItem>
-                  <SelectItem value="buy">Buy</SelectItem>
-                </SelectContent>
-              </Select>
+                {loading ? (
+                  <>
+                    <Loader className="animate-spin mr-2 h-4 w-4" /> Searching
+                  </>
+                ) : (
+                  <>
+                    <Search className="mr-2 h-4 w-4" /> Search
+                  </>
+                )}
+              </Button>
             </div>
-
-            {/* Property Category Input */}
-            <div className="flex items-center border rounded-lg px-2 py-1 h-10 w-32">
-              <HomeIcon className="h-5 w-5 text-gray-400 mr-2" />
-              <Select
-                name="property"
-                value={filters.property}
-                onValueChange={(value) =>
-                  setFilters((prevFilters) => ({
-                    ...prevFilters,
-                    property: value,
-                  }))
-                }
-              >
-                <SelectTrigger className="w-full border-none focus:ring-0 h-8">
-                  <SelectValue placeholder="Property" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="apartment">Apartment</SelectItem>
-                  <SelectItem value="house">House</SelectItem>
-                  <SelectItem value="shop">Shop</SelectItem>
-                  <SelectItem value="hostel">Hostel</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Search Button */}
-            <Button
-              onClick={handleSearch}
-              className="h-10 bg-primary flex items-center px-4"
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Loader className="animate-spin mr-2" /> Searching
-                </>
-              ) : (
-                <>
-                  <SearchIcon className="h-4 w-4 text-white mr-2" />
-                  Search
-                </>
-              )}
-            </Button>
           </div>
         </div>
 
         {/* Filter Button for Small Screens */}
-        <div className="md:hidden flex items-center justify-between w-full gap-2">
-          <div className="flex items-center border rounded-lg px-2 py-1 w-[500px] h-10">
-            <MapPinIcon className="h-6 w-6 text-gray-400 mr-2" />
-            <Input
-              name="city"
-              placeholder="Enter an address, city, or ZIP code"
-              className="border-none focus:ring-0 text-sm h-8 w-full"
-              value={filters.city}
-              onChange={handleInputChange}
-            />
-          </div>
+        <div className="md:hidden flex justify-between gap-2 w-full">
+          <AddressAutocomplete onAddressSelect={handleAddressSelect} />
           <div className="flex gap-2">
             {/* Search Button */}
             <Button
@@ -306,19 +299,18 @@ export default function PropertiesPage() {
             >
               {loading ? (
                 <>
-                  <Loader className="animate-spin mr-2" /> Searching
+                  <Loader className="animate-spin" />
                 </>
               ) : (
                 <>
-                  <SearchIcon className="h-4 w-4 text-white mr-2" />
-                  Search
+                  <SearchIcon className="h-4 w-4 text-white" />
                 </>
               )}
             </Button>
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" className="flex items-center">
-                  <FilterIcon className="h-4 w-4" />        
+                  <FilterIcon className="h-4 w-4" />
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
@@ -328,7 +320,7 @@ export default function PropertiesPage() {
                 <div className="space-y-4">
                   {/* City Input */}
                   <div className="flex items-center border rounded-lg px-2 py-1 h-10">
-                    <MapPinIcon className="h-4 w-4 text-gray-400 mr-2" />
+                    <MapPin className="h-4 w-4 text-gray-400 mr-2" />
                     <Input
                       name="city"
                       placeholder="City"
@@ -340,7 +332,7 @@ export default function PropertiesPage() {
 
                   {/* Min Price Input */}
                   <div className="flex items-center border rounded-lg px-2 py-1 h-10">
-                    <DollarSignIcon className="h-4 w-4 text-gray-400 mr-2" />
+                    <span className="text-gray-400 text-sm mr-3">₦</span>
                     <Input
                       name="minPrice"
                       placeholder="Min Price"
@@ -353,7 +345,7 @@ export default function PropertiesPage() {
 
                   {/* Max Price Input */}
                   <div className="flex items-center border rounded-lg px-2 py-1 h-10">
-                    <DollarSignIcon className="h-4 w-4 text-gray-400 mr-2" />
+                    <span className="text-gray-400 text-sm mr-3">₦</span>
                     <Input
                       name="maxPrice"
                       placeholder="Max Price"
@@ -501,7 +493,9 @@ export default function PropertiesPage() {
                         <Home className="mr-1 h-4 w-4" /> {property.size} sqft
                       </span>
                     </div>
-                    <p className="font-bold text-xl">{formatPrice(property.price)}</p>
+                    <p className="font-bold text-xl">
+                      {formatPrice(property.price)}
+                    </p>
                   </div>
                   <div className="flex justify-between items-center">
                     <Button

@@ -59,7 +59,7 @@ const AddressAutocomplete = ({ onAddressSelect }) => {
     });
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative w-full">
       <Input
         value={value}
         onChange={handleInput}
