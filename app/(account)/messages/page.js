@@ -21,7 +21,13 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UserIcon, SearchIcon, MessageSquare } from "lucide-react";
 import { fetchAgents } from "@/utils/user";
-import { fetchChats, fetchChat, addChat, addMessage, readChat } from "@/utils/message";
+import {
+  fetchChats,
+  fetchChat,
+  addChat,
+  addMessage,
+  readChat,
+} from "@/utils/message";
 import AuthContext from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
 import ChatList from "@/components/message/ChatList";
@@ -95,7 +101,7 @@ export default function Messages() {
   const handleSelectChat = async (chatId) => {
     setSelectedChatId(chatId);
 
-    await readChat(chatId)
+    await readChat(chatId);
 
     const chatData = await fetchChat(chatId);
     const { message, receiver } = chatData;
@@ -105,7 +111,6 @@ export default function Messages() {
       [chatId]: message,
     }));
 
-    
     setChatReceiver(receiver);
   };
 
@@ -148,11 +153,11 @@ export default function Messages() {
         <h1 className="text-4xl lg:text-6xl font-bold">My Messages</h1>
       </div>
       <div className="p-6 flex justify-between items-center bg-gray-100 rounded-2xl">
-        <div className="flex items-center gap-3 font-semiBold text-xl">
+        <div className="flex items-center gap-3 font-bold text-xl">
           <div className="p-2 bg-white rounded-full">
             <MessageSquare />
           </div>
-          Start a chat
+          All Chats
         </div>
         {user.role !== "AGENT" && (
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

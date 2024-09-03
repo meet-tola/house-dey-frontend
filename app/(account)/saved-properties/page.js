@@ -11,7 +11,7 @@ import {
 import { HouseIcon, MapPin, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { fetchSavedPosts } from "@/utils/post";
+import { fetchSavedPosts, savePost } from "@/utils/post";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
 
 const SavedProperties = () => {
@@ -28,6 +28,17 @@ const SavedProperties = () => {
     getSavedPosts();
   }, []);
 
+  const handleDelete = async (propertyId) => {
+    try {
+      await savePost(propertyId);
+      setSavedProperties((prevProperties) =>
+        prevProperties.filter((property) => property.id !== propertyId)
+      );
+    } catch (error) {
+      console.error("Failed to delete property:", error);
+    }
+  };
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat("en-NG", {
       style: "currency",
@@ -35,7 +46,6 @@ const SavedProperties = () => {
       minimumFractionDigits: 0,
     }).format(price);
   };
-
 
   return (
     <div className="max-w-7xl mx-auto p-6 mt-20">
@@ -105,23 +115,22 @@ const SavedProperties = () => {
                       <span className="truncate">{property.address}</span>
                     </div>
                     <div className="text-xl font-semibold truncate">
-                    {formatPrice(property.price)}
+                      {formatPrice(property.price)}
                     </div>
                   </div>
                 </div>
 
                 {/* Delete Button */}
                 <div className="absolute top-3 right-3">
-                  <Link href={`/edit-post/${property.id}`}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-2"
-                    >
-                      <Trash className="w-4 h-4" />
-                      Delete
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                    onClick={() => handleDelete(property.id)}
+                  >
+                    <Trash className="w-4 h-4" />
+                    Delete
+                  </Button>
                 </div>
               </div>
             ))}
