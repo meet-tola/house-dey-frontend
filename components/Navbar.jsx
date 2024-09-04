@@ -23,58 +23,70 @@ import {
 import AuthContext from "@/context/AuthContext";
 import Cookies from "js-cookie";
 
-const navLinks = [
-  {
-    href: `/properties?${new URLSearchParams({
-      city: "lagos",
-      minPrice: "",
-      maxPrice: "",
-      bedrooms: "",
-      bathrooms: "",
-      type: "rent",
-      property: "house",
-    }).toString()}`,
-    label: "House",
-  },
-  {
-    href: `/properties?${new URLSearchParams({
-      city: "",
-      minPrice: "",
-      maxPrice: "",
-      bedrooms: "",
-      bathrooms: "",
-      type: "rent",
-      property: "shop",
-    }).toString()}`,
-    label: "Shop",
-  },
-  {
-    href: `/properties?${new URLSearchParams({
-      city: "",
-      minPrice: "",
-      maxPrice: "",
-      bedrooms: "",
-      bathrooms: "",
-      type: "rent",
-      property: "hostel",
-    }).toString()}`,
-    label: "Hostel",
-  },
-  {
-    href: "#",
-    label: "Request",
-  },
-  {
-    href: "#",
-    label: "Blogs",
-  },
-];
-
-
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
   const token = Cookies.get("token");
+
+  const navLinks = user?.role === "AGENT" ? [
+    {
+      href: "/properties",
+      label: "Properties",
+    },
+    {
+      href: "#",
+      label: "Request",
+    },
+    {
+      href: "#",
+      label: "Customer Service",
+    },
+  ] : [
+    {
+      href: `/properties?${new URLSearchParams({
+        city: "lagos",
+        minPrice: "",
+        maxPrice: "",
+        bedrooms: "",
+        bathrooms: "",
+        type: "rent",
+        property: "house",
+      }).toString()}`,
+      label: "House",
+    },
+    {
+      href: `/properties?${new URLSearchParams({
+        city: "",
+        minPrice: "",
+        maxPrice: "",
+        bedrooms: "",
+        bathrooms: "",
+        type: "rent",
+        property: "shop",
+      }).toString()}`,
+      label: "Shop",
+    },
+    {
+      href: `/properties?${new URLSearchParams({
+        city: "",
+        minPrice: "",
+        maxPrice: "",
+        bedrooms: "",
+        bathrooms: "",
+        type: "rent",
+        property: "hostel",
+      }).toString()}`,
+      label: "Hostel",
+    },
+    {
+      href: "#",
+      label: "Request",
+    },
+    {
+      href: "#",
+      label: "Blogs",
+    },
+  ];
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white shadow-sm transition-all duration-300 data-[scrolled=true]:bg-background data-[scrolled=true]:shadow-lg">
@@ -156,16 +168,18 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           {user && token ? (
             <>
-              {/* <Button variant="ghost" size="icon">
+            <Link href="/messages">
+            <Button variant="ghost" size="icon" className="relative">
+                <MessageCircleMore className="h-5 w-5" />
+                <span className="sr-only">Messages</span>
+                <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+              </Button>
+            </Link>
+              <Button variant="ghost" size="icon" className="relative">
                 <BellIcon className="h-5 w-5" />
                 <span className="sr-only">Notifications</span>
-              </Button> */}
-              <Link href="/messages">
-                <Button variant="ghost" size="icon">
-                  <MessageCircleMore className="h-5 w-5" />
-                  <span className="sr-only">Messages</span>
-                </Button>
-              </Link>
+                <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">

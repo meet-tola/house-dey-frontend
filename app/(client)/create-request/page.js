@@ -4,16 +4,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import Link from 'next/link'
+import { HouseIcon } from "lucide-react"
 
 export default function CreateRequestPage() {
   return (
-    <div className="container mx-auto p-4">
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Create Property Request</h1>
-        <Link href="/">
-          <Button variant="outline">Back to Requests</Button>
+    <div className="container mx-auto px-4 md:px-16 mt-20">
+      <div className="p-6 flex justify-between items-center bg-gray-100 rounded-2xl mb-6">
+        <div className="flex items-center justify-between gap-3 font-bold text-xl">
+          <div className="p-2 bg-white rounded-full">
+            <HouseIcon />
+          </div>
+          Create Request
+        </div>
+        <Link href="/create-request">
+        <Button variant="outline">Back to Requests</Button>
         </Link>
-      </header>
+      </div>
 
       <form className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

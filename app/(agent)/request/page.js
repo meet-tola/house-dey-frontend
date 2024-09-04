@@ -216,7 +216,7 @@ export default function PropertyRequestPage() {
   return (
     <div className="container mx-auto px-4 md:px-16 mt-20">
       <div className="p-6 flex justify-between items-center bg-gray-100 rounded-2xl mb-4">
-        <div className="flex items-center gap-3 font-bold text-xl">
+        <div className="flex items-center justify-between gap-3 font-bold text-xl">
           <div className="p-2 bg-white rounded-full">
             <HouseIcon />
           </div>

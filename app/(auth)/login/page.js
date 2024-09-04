@@ -21,7 +21,8 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const router = useRouter();
@@ -32,7 +33,11 @@ const LoginPage = () => {
     setLoading(true);
     try {
       await login(username, password);
-      router.push("/");
+      if (user?.role === "AGENT") {
+        router.push("/for-agent");
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -42,7 +47,11 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (user) {
-      router.push("/");
+      if (user.role === "AGENT") {
+        router.push("/for-agent");
+      } else {
+        router.push("/");
+      }
     }
   }, [user]);
 
@@ -124,8 +133,8 @@ const LoginPage = () => {
                 onClick={() => setIsForgotPasswordModalOpen(true)}
               >
                 Forgot your Password?
-              </Button>
-              {" "} Let get you back in.
+              </Button>{" "}
+              Let get you back in.
             </div>
             <Button type="submit" className="w-full h-12">
               {loading ? <Loader className="animate-spin" /> : "Login"}
@@ -183,7 +192,11 @@ const LoginPage = () => {
                 />
               </div>
               <Button type="submit" className="w-full">
-                {loading ? <Loader className="animate-spin" /> : "Send Reset Link"}
+                {loading ? (
+                  <Loader className="animate-spin" />
+                ) : (
+                  "Send Reset Link"
+                )}
               </Button>
             </form>
           )}

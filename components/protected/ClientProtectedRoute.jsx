@@ -6,6 +6,7 @@ import PageLoader from "@/components/PageLoader";
 import { HomeIcon } from "lucide-react";
 import { Button } from "../ui/button";
 
+
 const AgentProtectedRoute = ({ children }) => {
   const router = useRouter();
   const { user } = useContext(AuthContext);
@@ -31,10 +32,10 @@ const AgentProtectedRoute = ({ children }) => {
             <HomeIcon className="h-6 w-6 text-muted-foreground" />
           </div>
           <h2 className="text-2xl font-semibold tracking-tight">
-            This page is only available for agents.
+            This page is only available for clients.
           </h2>
           <p className="text-sm text-muted-foreground">
-            Sign up a new profile as an Agent.
+            Sign up a new profile as an individual.
           </p>
           <Button>Sign Up</Button>
         </div>
