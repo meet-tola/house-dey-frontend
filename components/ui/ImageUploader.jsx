@@ -10,19 +10,21 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 function ImageUploader({ onImageUpload, multiple = false, initialImages = [] }) {
-  const [images, setImages] = useState(initialImages);
+  const [images, setImages] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setImages(initialImages);
+    if (initialImages.length > 0) {
+      setImages(initialImages);
+    }
   }, [initialImages]);
 
   const uploadImage = async (files) => {
     setUploading(true);
-    setProgress(0);
+    setProgress(13);
     setError(null);
     const uploadedImageUrls = [];
 
@@ -51,12 +53,10 @@ function ImageUploader({ onImageUpload, multiple = false, initialImages = [] }) 
 
     setUploading(false);
 
-    if (multiple) {
-      setImages((prevImages) => [...prevImages, ...uploadedImageUrls]);
-      onImageUpload([...images, ...uploadedImageUrls]);
-    } else {
-      setImages([uploadedImageUrls[0]]);
-      onImageUpload([uploadedImageUrls[0]]);
+    if (uploadedImageUrls.length > 0) {
+      const newImages = multiple ? [...images, ...uploadedImageUrls] : [uploadedImageUrls[0]];
+      setImages(newImages);
+      onImageUpload(newImages);
     }
   };
 
@@ -83,7 +83,7 @@ function ImageUploader({ onImageUpload, multiple = false, initialImages = [] }) 
     setDragActive(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       uploadImage(e.dataTransfer.files);
-    }
+    }    
   }, []);
 
   const deleteImage = (imageUrl) => {
@@ -131,7 +131,7 @@ function ImageUploader({ onImageUpload, multiple = false, initialImages = [] }) 
       {images.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {images.map((imageUrl, index) => (
-            <div key={index} className="relative ">
+            <div key={index} className="relative">
               <img
                 src={imageUrl}
                 alt={`Uploaded Image ${index + 1}`}
