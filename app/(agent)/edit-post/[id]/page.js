@@ -163,8 +163,23 @@ export default function EditPost() {
   };
 
   return (
-    <div className="max-w-7xl mt-10 mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
-      <div className="bg-blue-100 p-12 rounded-2xl mb-6">
+    <div className="max-w-7xl mt-10 mx-auto px-4 md:px-16 py-12 sm:py-16 lg:py-20">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/account">Account</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Edit Listing</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <div className="bg-blue-100 p-12 rounded-2xl mb-6 mt-4">
         <h1 className="text-4xl lg:text-6xl font-bold">Edit Post</h1>
         <p className="text-lg mt-4">Manage your account and preferences</p>
       </div>

@@ -13,11 +13,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import { HouseIcon } from "lucide-react";
+import { HouseIcon, Loader } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import AuthContext from "@/context/AuthContext";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
+import { useRouter } from "next/navigation";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -32,18 +33,14 @@ export default function CreateRequestPage() {
     title: "",
     property: "",
     type: "",
-    requestType: "",
     address: "",
     city: "",
     state: "",
     bedroom: "",
     budget: "",
-    name: "",
-    email: "",
-    phone: "",
-    role: "",
     comment: "",
   });
+  const router = useRouter();
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -65,18 +62,15 @@ export default function CreateRequestPage() {
 
     const requestDetail = {
       comment: formData.comment || "",
-      budget: formData.budget || "",
-      phoneNumber: formData.phone || "",
-      email: formData.email || "",
-    };
-
-    const requestPayload = { 
-      title: formData.property || "",
-      address: formData.address || "",
       city: formData.city || "",
       state: formData.state || "",
       bedroom: formData.bedroom || "",
-      role: formData.role || "",
+    };
+
+    const requestPayload = {
+      title: formData.property || "",
+      address: formData.address || "",
+      budget: parseInt(formData.budget, 10) || "",
       type: formData.type || "",
       property: formData.property || "",
       userId: userId || "",
@@ -99,12 +93,10 @@ export default function CreateRequestPage() {
           state: "",
           bedroom: "",
           budget: "",
-          name: "",
-          email: "",
-          phone: "",
-          role: "",
           comment: "",
         });
+
+        router.push("/my-request");
       } else {
         toast.error("Failed to create request.");
       }
@@ -125,8 +117,8 @@ export default function CreateRequestPage() {
           </div>
           Create Request
         </div>
-        <Link href="/create-request">
-          <Button variant="outline">Back to Requests</Button>
+        <Link href="/my-request">
+          <Button variant="outline">My Requests</Button>
         </Link>
       </div>
 
@@ -225,61 +217,11 @@ export default function CreateRequestPage() {
             <Label htmlFor="budget">Budget</Label>
             <Input
               id="budget"
-              placeholder="Budget"
+              placeholder="number"
               value={formData.budget}
               onChange={handleInputChange}
               required
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              placeholder="Your Name"
-              value={formData.name}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Your Email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input
-              id="phone"
-              placeholder="Your Phone Number"
-              value={formData.phone}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
-            <Select
-              id="role"
-              value={formData.role}
-              onValueChange={(value) =>
-                setFormData((prevFormData) => ({
-                  ...prevFormData,
-                  role: value,
-                }))
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="individual">Individual</SelectItem>
-                <SelectItem value="agent">Agent</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
         <div className="space-y-2">

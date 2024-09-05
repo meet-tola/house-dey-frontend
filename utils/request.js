@@ -8,7 +8,7 @@ const API_URL =
 export const fetchRequests = async (query = {}) => {
   try {
     const queryString = new URLSearchParams(query).toString();
-    const response = await axios.get(`${API_URL}/api/request${queryString}`);
+    const response = await axios.get(`${API_URL}/api/requests${queryString}`);
 
     if (response.status === 200) {
       return response.data;
@@ -22,7 +22,7 @@ export const fetchRequests = async (query = {}) => {
 
 export const fetchAllRequests = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/request/all`);
+    const response = await axios.get(`${API_URL}/api/requests/all`);
     if (response.status === 200) {
       return response.data;
     }
@@ -35,7 +35,7 @@ export const fetchAllRequests = async () => {
 
 export const fetchRequest = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/api/request/${id}`);
+    const response = await axios.get(`${API_URL}/api/requests/${id}`);
     if (response.status === 200) {
       return response.data;
     }
@@ -48,7 +48,7 @@ export const fetchRequest = async (id) => {
 
 export const fetchUserRequests = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/posts/user/request`);
+    const response = await axios.get(`${API_URL}/api/requests`);
     if (response.status === 200) {
       return response.data;
     }

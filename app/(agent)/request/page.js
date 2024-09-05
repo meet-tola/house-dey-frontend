@@ -28,7 +28,7 @@ export default function PropertyRequestPage() {
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
   const [filters, setFilters] = useState({
     type: "",
-    requestType: "",
+    property: "",
     minBudget: "",
     maxBudget: "",
     location: "",
@@ -45,131 +45,91 @@ export default function PropertyRequestPage() {
         id: 1,
         title: "2 Bedroom Apartment",
         type: "Apartment",
-        requestType: "For Rent",
+        property: "For Rent",
         budget: "$2000/month",
         location: "New York, NY",
         date: "2023-07-01",
-        name: "John Doe",
-        email: "john@example.com",
-        phone: "123-456-7890",
-        role: "Individual",
       },
       {
         id: 2,
         title: "3 Bedroom House",
         type: "House",
-        requestType: "For Sale",
+        property: "For Sale",
         budget: "$500,000",
         location: "Los Angeles, CA",
         date: "2023-06-28",
-        name: "Jane Smith",
-        email: "jane@example.com",
-        phone: "987-654-3210",
-        role: "Agent",
       },
       {
         id: 3,
         title: "Studio Apartment",
         type: "Apartment",
-        requestType: "For Rent",
+        property: "For Rent",
         budget: "$1200/month",
         location: "Boston, MA",
         date: "2023-06-25",
-        name: "Bob Johnson",
-        email: "bob@example.com",
-        phone: "456-789-0123",
-        role: "Individual",
       },
       {
         id: 4,
         title: "1 Bedroom Condo",
         type: "Condo",
-        requestType: "For Sale",
+        property: "For Sale",
         budget: "$300,000",
         location: "Miami, FL",
         date: "2023-07-02",
-        name: "Alice Brown",
-        email: "alice@example.com",
-        phone: "789-012-3456",
-        role: "Agent",
       },
       {
         id: 5,
         title: "4 Bedroom Villa",
         type: "House",
-        requestType: "For Rent",
+        property: "For Rent",
         budget: "$5000/month",
         location: "San Francisco, CA",
         date: "2023-07-05",
-        name: "Charlie Davis",
-        email: "charlie@example.com",
-        phone: "234-567-8901",
-        role: "Individual",
       },
       {
         id: 6,
         title: "2 Bedroom Townhouse",
         type: "Townhouse",
-        requestType: "For Sale",
+        property: "For Sale",
         budget: "$400,000",
         location: "Chicago, IL",
         date: "2023-07-03",
-        name: "Eva Wilson",
-        email: "eva@example.com",
-        phone: "345-678-9012",
-        role: "Agent",
       },
       {
         id: 7,
         title: "Luxury Penthouse",
         type: "Apartment",
-        requestType: "For Rent",
+        property: "For Rent",
         budget: "$10000/month",
         location: "Las Vegas, NV",
         date: "2023-07-06",
-        name: "Frank Miller",
-        email: "frank@example.com",
-        phone: "456-789-0123",
-        role: "Individual",
       },
       {
         id: 8,
         title: "Beachfront Cottage",
         type: "House",
-        requestType: "For Sale",
+        property: "For Sale",
         budget: "$750,000",
         location: "Malibu, CA",
         date: "2023-07-04",
-        name: "Grace Taylor",
-        email: "grace@example.com",
-        phone: "567-890-1234",
-        role: "Agent",
       },
       {
         id: 9,
         title: "Modern Loft",
         type: "Apartment",
-        requestType: "For Rent",
+        property: "For Rent",
         budget: "$3000/month",
         location: "Seattle, WA",
         date: "2023-07-07",
-        name: "Henry Clark",
-        email: "henry@example.com",
-        phone: "678-901-2345",
-        role: "Individual",
       },
       {
         id: 10,
         title: "Mountain Cabin",
         type: "House",
-        requestType: "For Sale",
+        property: "For Sale",
         budget: "$350,000",
         location: "Denver, CO",
         date: "2023-07-08",
-        name: "Ivy Anderson",
-        email: "ivy@example.com",
-        phone: "789-012-3456",
-        role: "Agent",
       },
     ];
     setPropertyRequests(mockData);
@@ -181,8 +141,8 @@ export default function PropertyRequestPage() {
       return (
         request.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
         (filters.type === "" || request.type === filters.type) &&
-        (filters.requestType === "" ||
-          request.requestType === filters.requestType) &&
+        (filters.property === "" ||
+          request.property === filters.property) &&
         (filters.minBudget === "" ||
           parseBudget(request.budget) >= parseBudget(filters.minBudget)) &&
         (filters.maxBudget === "" ||
@@ -265,7 +225,7 @@ export default function PropertyRequestPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="filterRequestType">Request Type</Label>
-                <Select value={filters.requestType} onValueChange={(value) => handleFilterChange('requestType', value)}>
+                <Select value={filters.property} onValueChange={(value) => handleFilterChange('property', value)}>
                   <SelectTrigger id="filterRequestType">
                     <SelectValue placeholder="Select Request Type" />
                   </SelectTrigger>
@@ -317,7 +277,7 @@ export default function PropertyRequestPage() {
             <CardContent className="flex-grow">
               <h3 className="font-semibold mt-4 mb-2">{request.title}</h3>
               <p>Type: {request.type}</p>
-              <p>Request Type: {request.requestType}</p>
+              <p>Request Type: {request.property}</p>
               <p>Budget: {request.budget}</p>
               <p>Location: {request.location}</p>
               <p>Date: {request.date}</p>
@@ -354,7 +314,7 @@ export default function PropertyRequestPage() {
                 <strong>Type:</strong> {selectedRequest.type}
               </p>
               <p>
-                <strong>Request Type:</strong> {selectedRequest.requestType}
+                <strong>Property Type:</strong> {selectedRequest.property}
               </p>
               <p>
                 <strong>Budget:</strong> {selectedRequest.budget}
@@ -365,21 +325,9 @@ export default function PropertyRequestPage() {
               <p>
                 <strong>Date:</strong> {selectedRequest.date}
               </p>
-              <p>
-                <strong>Name:</strong> {selectedRequest.name}
-              </p>
-              <p>
-                <strong>Email:</strong> {selectedRequest.email}
-              </p>
-              <p>
-                <strong>Phone:</strong> {selectedRequest.phone}
-              </p>
-              <p>
-                <strong>Role:</strong> {selectedRequest.role}
-              </p>
             </div>
             <CardFooter className="flex justify-end">
-            <Button className="w-full">Send User Message</Button>
+            <Button className="w-full mt-4">List This Property</Button>
             </CardFooter>
           </DialogContent>
         </Dialog>

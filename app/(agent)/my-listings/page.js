@@ -13,10 +13,11 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { fetchUserPosts } from "@/utils/post";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
-import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const MyListings = () => {
   const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getUserPosts = async () => {
@@ -24,6 +25,7 @@ const MyListings = () => {
       if (userPosts) {
         setProperties(userPosts);
       }
+      setLoading(false);
     };
 
     getUserPosts();
@@ -38,7 +40,7 @@ const MyListings = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 mt-20">
+    <div className="max-w-7xl mx-auto p-6 px-4 md:px-16 mt-20">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -69,7 +71,7 @@ const MyListings = () => {
           All Listing
         </div>
         <Button>
-          <Link href="create-post">Create a Post</Link>
+          <Link href="/create-post">Create a Post</Link>
         </Button>
       </div>
 
@@ -77,57 +79,67 @@ const MyListings = () => {
         <h2 className="text-2xl font-semibold mb-4">Properties for Rent</h2>
         {properties.length > 0 ? (
           <div className="flex gap-6 overflow-x-auto scrollbar-none">
-            {properties.map((property, index) => (
-              <div
-                key={index}
-                className="min-w-[300px] lg:min-w-[250px] w-[300px] rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white relative"
-              >
-                <img
-                  className="w-full h-48 object-cover"
-                  src={
-                    property.images?.[0] ||
-                    "https://via.placeholder.com/300x200"
-                  }
-                  alt={property.address}
-                />
-                <div className="p-4 flex flex-col justify-between flex-grow">
-                  <div>
-                    <div className="flex gap-2">
-                      <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm truncate">
-                        {property.property}
-                      </div>
-                      <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm truncate">
-                        {property.type}
-                      </div>
-                    </div>
-                    <div className="text-lg font-semibold mt-2 truncate">
-                      {property.title}
-                    </div>
-                    <div className="text-gray-600 flex items-center mb-2 truncate">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      <span className="truncate">{property.address}</span>
-                    </div>
-                    <div className="text-xl font-semibold truncate">
-                      {formatPrice(property.price)}
+            {loading
+              ? Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="flex flex-col space-y-3 mb-4">
+                    <Skeleton className="h-[150px] w-[250px] rounded-xl" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-[250px]" />
+                      <Skeleton className="h-4 w-[200px]" />
                     </div>
                   </div>
-                </div>
+                ))
+              : properties.map((property, index) => (
+                  <div
+                    key={index}
+                    className="min-w-[300px] lg:min-w-[250px] w-[300px] rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white relative"
+                  >
+                    <img
+                      className="w-full h-48 object-cover"
+                      src={
+                        property.images?.[0] ||
+                        "https://via.placeholder.com/300x200"
+                      }
+                      alt={property.address}
+                    />
+                    <div className="p-4 flex flex-col justify-between flex-grow">
+                      <div>
+                        <div className="flex gap-2">
+                          <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm truncate">
+                            {property.property}
+                          </div>
+                          <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm truncate">
+                            {property.type}
+                          </div>
+                        </div>
+                        <div className="text-lg font-semibold mt-2 truncate">
+                          {property.title}
+                        </div>
+                        <div className="text-gray-600 flex items-center mb-2 truncate">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          <span className="truncate">{property.address}</span>
+                        </div>
+                        <div className="text-xl font-semibold truncate">
+                          {formatPrice(property.price)}
+                        </div>
+                      </div>
+                    </div>
 
-                {/* Edit Button */}
-                <div className="absolute top-3 right-3">
-                  <Link href={`/edit-post/${property.id}`}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-2"
-                    >
-                      <Edit3 className="w-4 h-4" />
-                      Edit
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            ))}
+                    {/* Edit Button */}
+                    <div className="absolute top-3 right-3">
+                      <Link href={`/edit-post/${property.id}`}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center gap-2"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                          Edit
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
           </div>
         ) : (
           <NoPropertiesFound />

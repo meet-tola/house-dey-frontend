@@ -181,6 +181,40 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const deleteAccount = async (id) => {
+    const token = Cookies.get("token");
+
+    if (!token) {
+      console.error("No token found, cannot delete account.");
+      return;
+    }
+
+    try {
+      const response = await axios.delete(`${API_URL}/api/user/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      if (response.status === 200) {
+        setUser(null);
+        Cookies.remove("token");
+        removeCookie("user", { path: "/" });
+        delete axios.defaults.headers.common["Authorization"];
+        console.log("Account deleted successfully.");
+      }
+    } catch (error) {
+      console.error(
+        "Error during account deletion:",
+        error.response?.data || error.message
+      );
+      throw new Error(
+        error.response?.data?.message || "Failed to delete account."
+      );
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -192,6 +226,7 @@ export const AuthProvider = ({ children }) => {
         updateUser,
         requestPasswordReset,
         resetPassword,
+        deleteAccount
       }}
     >
       {children}

@@ -133,7 +133,7 @@ export default function Messages() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 mt-20 min-h-200vh">
+    <div className="max-w-7xl mx-auto p-6 mt-20 px-4 md:px-16 min-h-200vh">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

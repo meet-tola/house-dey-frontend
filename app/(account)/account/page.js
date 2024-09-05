@@ -13,16 +13,43 @@ import {
   Search
 } from "lucide-react";
 import AuthContext from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 const MyAccount = () => {
-  const { user } = useContext(AuthContext);
+  const { user, deleteAccount } = useContext(AuthContext);
   const [role, setRole] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (user) {
       setRole(user.role);
     }
   }, [user]);
+
+  const handleDeleteAccount = async () => {
+    if (user) {
+      try {
+        await deleteAccount(user.id);
+        alert("Your account has been deleted.");
+        router.push("/"); // Redirect to homepage or login page after deletion
+      } catch (error) {
+        console.error("Error deleting account:", error);
+        alert("Failed to delete your account. Please try again.");
+      }
+    }
+  };
 
   const renderCards = () => {
     if (role === "CLIENT") {
@@ -58,11 +85,11 @@ const MyAccount = () => {
             icon={<Search className="text-3xl" />}
             link="/notifications"
           />
-          <Card
+          <DeleteAccountCard
             title="Delete Account"
-            description="Manage your account visiblity preferences"
+            description="Permanently delete your account"
             icon={<Trash className="text-primary text-3xl" />}
-            link="/account-settings"
+            onDelete={handleDeleteAccount}
           />
         </>
       );
@@ -99,11 +126,11 @@ const MyAccount = () => {
             icon={<Bell className="text-3xl" />}
             link="/notifications"
           />
-          <Card
+          <DeleteAccountCard
             title="Delete Account"
-            description="Manage your account visiblity preferences"
+            description="Permanently delete your account"
             icon={<Trash className="text-primary text-3xl" />}
-            link="/account-settings"
+            onDelete={handleDeleteAccount}
           />
         </>
       );
@@ -132,6 +159,7 @@ const MyAccount = () => {
   );
 };
 
+// Existing Card Component
 const Card = ({ title, description, icon, link }) => {
   return (
     <Link href={link} passHref>
@@ -145,6 +173,37 @@ const Card = ({ title, description, icon, link }) => {
         </div>
       </div>
     </Link>
+  );
+};
+
+const DeleteAccountCard = ({ title, description, icon, onDelete }) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <div className="bg-white p-8 rounded-lg h-[11rem] shadow-md cursor-pointer">
+          <div className="flex flex-col items-start justify-center gap-4">
+            <div>{icon}</div>
+            <div>
+              <h2 className="text-xl font-bold">{title}</h2>
+              <p className="text-gray-600">{description}</p>
+            </div>
+          </div>
+        </div>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onDelete}>Delete Account</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
