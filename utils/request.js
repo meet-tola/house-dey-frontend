@@ -48,7 +48,7 @@ export const fetchRequest = async (id) => {
 
 export const fetchUserRequests = async () => {
   try {
-    const response = await axios.get(`${API_URL}/api/requests`);
+    const response = await axios.get(`${API_URL}/api/requests/user/requests`);
     if (response.status === 200) {
       return response.data;
     }
