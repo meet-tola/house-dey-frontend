@@ -19,7 +19,6 @@ import ImageUploader from "@/components/ui/ImageUploader";
 import AuthContext from "@/context/AuthContext";
 import { Loader } from "lucide-react";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
-import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -71,21 +70,21 @@ export default function CreatePost() {
     setLoading(true);
 
     const postDetail = {
-      desc: formData.desc,
-      utilities: formData.utilities,
-      size: parseInt(formData.size, 10),
+      desc: formData.desc || "",
+      utilities: formData.utilities || "",
+      size: parseInt(formData.size, 10) || "",
     };
 
     const postPayload = {
-      title: formData.title,
-      price: parseInt(formData.price, 10),
-      images: formData.images,
-      address: formData.address,
-      city: formData.city,
-      bedroom: parseInt(formData.bedrooms, 10),
-      bathroom: parseInt(formData.bathrooms, 10),
-      property: formData.property,
-      type: formData.type,
+      title: formData.title || "",
+      price: parseInt(formData.price, 10) || "",
+      images: formData.images || "",
+      address: formData.address || "",
+      city: formData.city || "",
+      bedroom: parseInt(formData.bedrooms, 10) || "",
+      bathroom: parseInt(formData.bathrooms, 10) || "",
+      property: formData.property || "",
+      type: formData.type || "",
       postDetail,
       userId: userId,
     };
@@ -140,6 +139,7 @@ export default function CreatePost() {
                   placeholder="Enter a title"
                   value={formData.title}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
               <div className="space-y-2">
@@ -150,6 +150,7 @@ export default function CreatePost() {
                   placeholder="Enter a price"
                   value={formData.price}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
             </div>
@@ -161,6 +162,7 @@ export default function CreatePost() {
                 placeholder="Enter a description"
                 value={formData.desc}
                 onChange={handleInputChange}
+                required
               />
             </div>
             <div className="space-y-2">
@@ -181,6 +183,7 @@ export default function CreatePost() {
                   placeholder="Enter a city"
                   value={formData.city}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
             </div>
@@ -196,6 +199,7 @@ export default function CreatePost() {
                       property: value,
                     }))
                   }
+                  required
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select property" />
@@ -219,6 +223,7 @@ export default function CreatePost() {
                       type: value,
                     }))
                   }
+                  required
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select Type" />
@@ -270,6 +275,7 @@ export default function CreatePost() {
                   placeholder="Enter size"
                   value={formData.size}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
             </div>

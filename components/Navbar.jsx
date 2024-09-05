@@ -34,7 +34,7 @@ export default function Navbar() {
       label: "Properties",
     },
     {
-      href: "#",
+      href: "/request",
       label: "Request",
     },
     {
@@ -79,7 +79,7 @@ export default function Navbar() {
       label: "Hostel",
     },
     {
-      href: "#",
+      href: "/create-request",
       label: "Request",
     },
     {

@@ -24,7 +24,7 @@ const AgentProtectedRoute = ({ children }) => {
     return <PageLoader />;
   }
 
-  if (user && user.role !== "AGENT") {
+  if (user && user.role !== "CLIENT") {
     return (
       <div className="w-full max-w-md mx-auto h-screen">
         <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-4">

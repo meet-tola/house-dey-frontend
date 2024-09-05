@@ -66,6 +66,7 @@ const AddressAutocomplete = ({ onAddressSelect }) => {
         disabled={!ready}
         placeholder="Enter an address"
         className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
+        required
       />
       {status === 'OK' && (
         <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
