@@ -48,7 +48,7 @@ const SavedProperties = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 mt-20">
+    <div className="max-w-7xl mx-auto p-6 mt-16 px-4 md:px-16">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

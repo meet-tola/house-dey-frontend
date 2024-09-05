@@ -9,6 +9,8 @@ import {
   Bell,
   Settings,
   MessageCircle,
+  Trash,
+  Search
 } from "lucide-react";
 import AuthContext from "@/context/AuthContext";
 
@@ -36,7 +38,13 @@ const MyAccount = () => {
             title="Searches for Properties"
             description="Custom searches for properties"
             icon={<Bell className="text-3xl" />}
-            link="/searches-alerts"
+            link="/properties"
+          />
+           <Card
+            title="Request"
+            description="Manage request, create and view request"
+            icon={<Bell className="text-3xl" />}
+            link="/request"
           />
           <Card
             title="Messages"
@@ -47,13 +55,13 @@ const MyAccount = () => {
           <Card
             title="Notifications"
             description="Manage your notifications and alerts"
-            icon={<Bell className="text-3xl" />}
+            icon={<Search className="text-3xl" />}
             link="/notifications"
           />
           <Card
-            title="Account Settings"
-            description="Manage your login details and notification preferences"
-            icon={<Settings className="text-primary text-3xl" />}
+            title="Delete Account"
+            description="Manage your account visiblity preferences"
+            icon={<Trash className="text-primary text-3xl" />}
             link="/account-settings"
           />
         </>
@@ -80,15 +88,21 @@ const MyAccount = () => {
             link="/saved-properties"
           />
           <Card
+            title="Searches for Request"
+            description="Custom searches for request"
+            icon={<Bell className="text-3xl" />}
+            link="/request"
+          />
+          <Card
             title="Notifications"
             description="Manage your notifications and alerts"
             icon={<Bell className="text-3xl" />}
             link="/notifications"
           />
           <Card
-            title="Account Settings"
-            description="Manage your login details and notification preferences"
-            icon={<Settings className="text-primary text-3xl" />}
+            title="Delete Account"
+            description="Manage your account visiblity preferences"
+            icon={<Trash className="text-primary text-3xl" />}
             link="/account-settings"
           />
         </>
@@ -98,7 +112,7 @@ const MyAccount = () => {
   };
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-6 px-4 md:px-16">
       <div className="max-w-7xl mx-auto mt-20">
         <div className="bg-blue-100 p-10 md:p-12 rounded-2xl mb-6">
           <h1 className="text-4xl lg:text-6xl font-bold">My Account</h1>
@@ -107,7 +121,7 @@ const MyAccount = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card
             title="My Profile"
-            description="Update your personal details and property goals"
+            description="Update your personal details and login details."
             icon={<User className="text-3xl" />}
             link="/profile"
           />

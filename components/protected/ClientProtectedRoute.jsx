@@ -7,7 +7,7 @@ import { HomeIcon } from "lucide-react";
 import { Button } from "../ui/button";
 
 
-const AgentProtectedRoute = ({ children }) => {
+const ClientProtectedRoute = ({ children }) => {
   const router = useRouter();
   const { user } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,4 +46,4 @@ const AgentProtectedRoute = ({ children }) => {
   return children;
 };
 
-export default AgentProtectedRoute;
+export default ClientProtectedRoute;
