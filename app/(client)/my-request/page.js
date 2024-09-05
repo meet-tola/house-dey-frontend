@@ -90,7 +90,7 @@ const MyRequest = () => {
             {requests.map((request, index) => (
               <Card
                 key={index}
-                className="flex flex-col w-72 bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                className="flex flex-col w-72 bg-white shadow-lg rounded-lg overflow-hidden duration-300 ease-in-out"
               >
                 <CardContent className="flex-grow p-6">
                   <h3 className="font-semibold text-lg mb-2">{request.title}</h3>
