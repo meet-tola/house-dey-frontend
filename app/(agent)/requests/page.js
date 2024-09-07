@@ -22,6 +22,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { Label } from "@/components/ui/label";
 import { Search, Plus, Filter, HouseIcon } from "lucide-react";
 import { fetchRequests, fetchAllRequests } from "@/utils/request";
+import { useRouter } from "next/navigation";
 
 export default function PropertyRequestPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,6 +40,7 @@ export default function PropertyRequestPage() {
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const requestsPerPage = 8;
+  const router = useRouter();
 
   // Fetch all property requests
   useEffect(() => {
@@ -97,6 +99,10 @@ export default function PropertyRequestPage() {
   const totalPages = Math.ceil(
     (filteredRequests || []).length / requestsPerPage
   );
+
+  const handleListProperty = () => {
+    router.push(`/create-post?requestId=${selectedRequest.id}`);
+  };
 
   return (
     <div className="container mx-auto px-4 md:px-16 mt-20">
@@ -280,8 +286,9 @@ export default function PropertyRequestPage() {
               </p>
             </div>
             <CardFooter className="flex justify-end">
-              <Button className="w-full mt-4">List This Property</Button>
-            </CardFooter>
+            <Button className="w-full mt-4" onClick={handleListProperty}>
+                List This Property
+              </Button>            </CardFooter>
           </DialogContent>
         </Dialog>
       )}

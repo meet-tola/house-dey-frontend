@@ -10,7 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 function ImageUploader({ onImageUpload, multiple = false, initialImages = [] }) {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState(initialImages || []);
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -19,8 +19,6 @@ function ImageUploader({ onImageUpload, multiple = false, initialImages = [] }) 
   useEffect(() => {
     if (initialImages.length > 0) {
       setImages(initialImages);
-    } else {
-      setImages([]);
     }
   }, [initialImages]);
 

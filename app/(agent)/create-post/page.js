@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useContext } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,8 +34,11 @@ const API_URL =
     ? process.env.NEXT_PUBLIC_API_URL
     : "http://localhost:8800";
 export default function CreatePost() {
+  const router = useRouter();
   const { user } = useContext(AuthContext);
   const userId = user?.id;
+  const searchParams = useSearchParams();
+  const requestId = searchParams.get("requestId");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -76,13 +80,13 @@ export default function CreatePost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     const postDetail = {
       desc: formData.desc || "",
       utilities: formData.utilities || "",
       size: parseInt(formData.size, 10) || "",
     };
-
+  
     const postPayload = {
       title: formData.title || "",
       price: parseInt(formData.price, 10) || "",
@@ -96,9 +100,10 @@ export default function CreatePost() {
       postDetail,
       userId: userId,
     };
-
+  
     try {
-      const response = await axios.post(`${API_URL}/api/posts`, postPayload);
+      const response = await axios.post(`${API_URL}/api/posts?requestId=${requestId}`, postPayload);
+  
       if (response.status === 200) {
         toast.success("Post created successfully!");
         setFormData({
@@ -124,7 +129,7 @@ export default function CreatePost() {
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   return (
     <div className="mt-16 mx-auto px-4 md:px-16 py-6">
