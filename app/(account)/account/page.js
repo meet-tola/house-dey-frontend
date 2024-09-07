@@ -25,7 +25,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 
 const MyAccount = () => {
   const { user, deleteAccount } = useContext(AuthContext);
@@ -43,7 +42,7 @@ const MyAccount = () => {
       try {
         await deleteAccount(user.id);
         alert("Your account has been deleted.");
-        router.push("/"); // Redirect to homepage or login page after deletion
+        router.push("/"); 
       } catch (error) {
         console.error("Error deleting account:", error);
         alert("Failed to delete your account. Please try again.");
@@ -71,7 +70,7 @@ const MyAccount = () => {
             title="Request"
             description="Manage request, create and view request"
             icon={<Bell className="text-3xl" />}
-            link="/request"
+            link="/my-requests"
           />
           <Card
             title="Messages"
@@ -118,7 +117,7 @@ const MyAccount = () => {
             title="Searches for Request"
             description="Custom searches for request"
             icon={<Bell className="text-3xl" />}
-            link="/request"
+            link="/requests"
           />
           <Card
             title="Notifications"

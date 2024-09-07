@@ -115,9 +115,9 @@ export default function CreateRequestPage() {
           <div className="p-2 bg-white rounded-full">
             <HouseIcon />
           </div>
-          Create Request
+           Create a Requests
         </div>
-        <Link href="/my-request">
+        <Link href="/my-requests">
           <Button variant="outline">My Requests</Button>
         </Link>
       </div>

@@ -5,15 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,7 +18,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import ImageUploader from "@/components/ui/ImageUploader";
-import { Loader } from "lucide-react";
+import { Loader, UserIcon } from "lucide-react";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -38,8 +29,6 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const { user, updateUser } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [pendingRole, setPendingRole] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -55,7 +44,6 @@ const Profile = () => {
     street: user?.street || "",
     locality: user?.locality || "",
     state: user?.state || "",
-    role: user?.role || "",
     avatar: user?.avatar || "",
   });
 
@@ -68,7 +56,6 @@ const Profile = () => {
       street: user?.street || "",
       locality: user?.locality || "",
       state: user?.state || "",
-      role: user?.role || "",
       avatar: user?.avatar || "",
     });
   }, [user]);
@@ -86,40 +73,6 @@ const Profile = () => {
       ...prevFormData,
       avatar: imageUrl,
     }));
-  };
-
-  const handleRoleToggle = () => {
-    const newRole = formData.role === "AGENT" ? "CLIENT" : "AGENT";
-    setPendingRole(newRole);
-    setDialogOpen(true);
-  };
-
-  const handleConfirmRoleChange = async () => {
-    setDialogOpen(false);
-    setLoading(true);
-
-    try {
-      const response = await axios.put(`${API_URL}/api/user/${user.id}`, {
-        ...formData,
-        role: pendingRole,
-      });
-      if (response.status === 200) {
-        toast.success("Role updated successfully!");
-        updateUser(response.data);
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          role: pendingRole,
-        }));
-      } else {
-        console.error("Unexpected response status:", response.status);
-        toast.error("Failed to update role.");
-      }
-    } catch (error) {
-      console.error("Error updating user role:", error);
-      toast.error("Failed to update role.");
-    } finally {
-      setLoading(false);
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -150,7 +103,6 @@ const Profile = () => {
       setLoading(false);
     }
   };
-
   return (
     <>
       <Toaster />
@@ -175,50 +127,35 @@ const Profile = () => {
         </div>
         <div className="p-6">
           <div className="flex items-center mb-6">
-            <img
-              src={formData.avatar || ""}
-              width={100}
-              height={100}
-              alt="User Profile"
-              className="rounded-full h-20 w-20 mr-4"
-            />
+            {formData.avatar ? (
+              <img
+                src={formData.avatar}
+                width={100}
+                height={100}
+                alt="User Profile"
+                className="rounded-full h-20 w-20 mr-4"
+              />
+            ) : (
+              <div className="rounded-full h-20 w-20 mr-4 flex items-center justify-center bg-gray-200">
+                <UserIcon className="h-10 w-10 text-gray-500" />
+              </div>
+            )}
             <div>
               <h2 className="text-2xl font-semibold">{user?.username}</h2>
               <p className="text-gray-600">{user?.email}</p>
-              <p className="text-gray-600">Role: {formData.role}</p>
             </div>
           </div>
           <Separator />
           <h2 className="text-xl font-semibold my-4">My Details</h2>
           <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-4"
+            className="grid grid-cols-1 gap-6 lg:grid-cols-2 mt-4"
           >
             <div className="flex items-center gap-4">
               <ImageUploader
                 onImageUpload={handleImageUpload}
                 multiple={false}
               />
-            </div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="role-switch">Role</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Switch between individual and agent modes
-                  </p>
-                </div>
-                <Switch
-                  id="role-switch"
-                  checked={formData.role === "AGENT"}
-                  onCheckedChange={handleRoleToggle}
-                />
-              </div>
-              <p className="text-sm">
-                {formData.role === "AGENT"
-                  ? "You are currently in Agent mode. You can handle multiple conversations."
-                  : "You are currently in Individual mode. You can only handle one conversation at a time."}
-              </p>
             </div>
             <div>
               <Label
@@ -338,7 +275,7 @@ const Profile = () => {
                 onChange={handleInputChange}
               />
             </div>
-            <div>
+            <div className="lg:col-span-2">
               <Button type="submit" className="mt-4 w-full">
                 {loading ? (
                   <Loader className="animate-spin" />
@@ -350,25 +287,6 @@ const Profile = () => {
           </form>
         </div>
       </div>
-
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Role Change</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to switch to{" "}
-              {pendingRole === "AGENT" ? "Agent" : "Individual"} mode? This will
-              change all your user settings.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleConfirmRoleChange}>Confirm</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };

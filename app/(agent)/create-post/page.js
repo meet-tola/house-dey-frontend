@@ -139,6 +139,10 @@ export default function CreatePost() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
+            <BreadcrumbLink href="/my-listings">My Listings</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
             <BreadcrumbPage>Create Listing</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
@@ -291,7 +295,7 @@ export default function CreatePost() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="size">Size</Label>
+                <Label htmlFor="size">Size(in sqft)</Label>
                 <Input
                   id="size"
                   type="number"
