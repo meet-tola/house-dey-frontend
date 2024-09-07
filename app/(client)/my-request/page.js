@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,27 +8,59 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { HouseIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 import Link from "next/link";
 import { fetchUserRequests } from "@/utils/request";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import AuthContext from "@/context/AuthContext";
 
 const MyRequest = () => {
   const [requests, setRequests] = useState([]);
+  const router = useRouter();
+  const { user } = useContext(AuthContext);
+  const userId = user?.id;
 
   useEffect(() => {
     const getUserRequests = async () => {
       const userRequests = await fetchUserRequests();
-      console.log(userRequests);
-
       if (userRequests) {
         setRequests(userRequests);
       }
     };
     getUserRequests();
   }, []);
+
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/requests/${userId}`
+      );
+      if (response.status === 200) {
+        toast.success("Post deleted successfully!");
+        router.push("/my-request");
+      } else {
+        toast.error("Failed to delete post.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while deleting the post.");
+      console.error("Error deleting post:", error);
+    }
+  };
 
   const formatPrice = (budget) => {
     return new Intl.NumberFormat("en-NG", {
@@ -93,7 +125,9 @@ const MyRequest = () => {
                 className="flex flex-col w-72 bg-white shadow-lg rounded-lg overflow-hidden duration-300 ease-in-out"
               >
                 <CardContent className="flex-grow p-6">
-                  <h3 className="font-semibold text-lg mb-2">{request.title}</h3>
+                  <h3 className="font-semibold text-lg mb-2">
+                    {request.title}
+                  </h3>
                   <p className="text-sm text-gray-600 mb-1">
                     <span className="font-semibold">Type:</span> {request.type}
                   </p>
@@ -102,19 +136,45 @@ const MyRequest = () => {
                     {request.property}
                   </p>
                   <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Budget:</span> {formatPrice(request.budget)}
+                    <span className="font-semibold">Budget:</span>{" "}
+                    {formatPrice(request.budget)}
                   </p>
                   <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Location:</span> {request.address}
+                    <span className="font-semibold">Location:</span>{" "}
+                    {request.address}
                   </p>
                   <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Date:</span> {formatDate(request.createdAt)}
+                    <span className="font-semibold">Date:</span>{" "}
+                    {formatDate(request.createdAt)}
                   </p>
                 </CardContent>
                 <CardFooter className="p-4">
-                  <Button variant="outline" className="w-full">
-                    Delete
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full">
+                        Delete
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Confirm Deletion</DialogTitle>
+                        <DialogDescription>
+                          Are you sure you want to delete this request? This
+                          action cannot be undone.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button type="button" variant="secondary">
+                            Close
+                          </Button>
+                        </DialogClose>
+                        <Button variant="destructive" onClick={handleDelete}>
+                          Delete
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </CardFooter>
               </Card>
             ))}
