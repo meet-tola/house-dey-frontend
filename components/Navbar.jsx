@@ -39,7 +39,7 @@ export default function Navbar() {
     },
     {
       href: "#",
-      label: "Customer Service",
+      label: "support",
     },
   ] : [
     {

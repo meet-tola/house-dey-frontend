@@ -40,6 +40,7 @@ import { toast } from "react-hot-toast";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
 import GoogleMapComponent from "@/components/map/GoogleMap";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
+import Link from "next/link";
 
 export default function PropertiesPage() {
   const searchParams = useSearchParams();
@@ -475,7 +476,7 @@ export default function PropertiesPage() {
                       <span className="text-gray-500">No image available</span>
                     </div>
                   )}
-                  <div className="space-y-1">
+                  <Link className="space-y-1" href={`/properties/${property.id}`}>
                     <h3 className="text-lg font-semibold mb-2 truncate">
                       {property.title}
                     </h3>
@@ -496,7 +497,7 @@ export default function PropertiesPage() {
                     <p className="font-bold text-xl">
                       {formatPrice(property.price)}
                     </p>
-                  </div>
+                  </Link>
                   <div className="flex justify-between items-center">
                     <Button
                       variant="outline"

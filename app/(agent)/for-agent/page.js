@@ -24,7 +24,9 @@ export default function AgentHomePage() {
                 </p>
               </div>
               <div className="space-x-4">
+                <Link href="/my-listings">
                 <Button>Get Started</Button>
+                </Link>
                 <Button variant="outline">Learn More</Button>
               </div>
             </div>
