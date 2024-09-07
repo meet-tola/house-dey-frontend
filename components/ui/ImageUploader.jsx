@@ -19,6 +19,8 @@ function ImageUploader({ onImageUpload, multiple = false, initialImages = [] }) 
   useEffect(() => {
     if (initialImages.length > 0) {
       setImages(initialImages);
+    } else {
+      setImages([]);
     }
   }, [initialImages]);
 

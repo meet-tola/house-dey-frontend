@@ -104,7 +104,7 @@ export default function CreatePost() {
         setFormData({
           title: "",
           price: "",
-          images: "",
+          images: [],
           address: "",
           city: "",
           bedrooms: "",
