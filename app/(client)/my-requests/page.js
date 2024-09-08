@@ -29,11 +29,14 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import AuthContext from "@/context/AuthContext";
 
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "http://localhost:8800";
+
 const MyRequest = () => {
   const [requests, setRequests] = useState([]);
   const router = useRouter();
-  const { user } = useContext(AuthContext);
-  const userId = user?.id;
 
   useEffect(() => {
     const getUserRequests = async () => {
@@ -45,20 +48,20 @@ const MyRequest = () => {
     getUserRequests();
   }, []);
 
-  const handleDelete = async () => {
+  const handleDelete = async (requestId) => {
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/requests/${userId}`
+        `${API_URL}/api/requests/${requestId}`
       );
       if (response.status === 200) {
-        toast.success("Post deleted successfully!");
-        router.push("/my-request");
+        toast.success("Request deleted successfully!");
+        router.push("/my-requests");
       } else {
-        toast.error("Failed to delete post.");
+        toast.error("Failed to delete request.");
       }
     } catch (error) {
-      toast.error("An error occurred while deleting the post.");
-      console.error("Error deleting post:", error);
+      toast.error("An error occurred while deleting the request.");
+      console.error("Error deleting request:", error);
     }
   };
 
@@ -169,7 +172,10 @@ const MyRequest = () => {
                             Close
                           </Button>
                         </DialogClose>
-                        <Button variant="destructive" onClick={handleDelete}>
+                        <Button
+                          variant="destructive"
+                          onClick={() => handleDelete(request.id)}
+                        >
                           Delete
                         </Button>
                       </DialogFooter>
