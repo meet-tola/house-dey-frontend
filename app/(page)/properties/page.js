@@ -61,6 +61,7 @@ export default function PropertiesPage() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -77,8 +78,8 @@ export default function PropertiesPage() {
     setLoading(true);
     fetchPosts(filters)
       .then((data) => {
-        console.log(data);
         setProperties(data);
+        setIsFilterOpen(false);
       })
       .catch((error) => {
         console.error("Error fetching properties:", error);
@@ -308,7 +309,7 @@ export default function PropertiesPage() {
                 </>
               )}
             </Button>
-            <Dialog>
+            <Dialog open={isFilterOpen} onOpenChange={setIsFilterOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline" className="flex items-center">
                   <FilterIcon className="h-4 w-4" />
@@ -430,13 +431,19 @@ export default function PropertiesPage() {
                     </Select>
                   </div>
                 </div>
-                <DialogFooter>
+                <DialogFooter className="gap-2">
                   <Button onClick={handleSearch} disabled={loading}>
                     {loading ? (
                       <Loader className="animate-spin" />
                     ) : (
                       "Apply Filters"
                     )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsFilterOpen(false)}
+                  >
+                    Cancel
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -476,7 +483,10 @@ export default function PropertiesPage() {
                       <span className="text-gray-500">No image available</span>
                     </div>
                   )}
-                  <Link className="space-y-1" href={`/properties/${property.id}`}>
+                  <Link
+                    className="space-y-1"
+                    href={`/properties/${property.id}`}
+                  >
                     <h3 className="text-lg font-semibold mb-2 truncate">
                       {property.title}
                     </h3>

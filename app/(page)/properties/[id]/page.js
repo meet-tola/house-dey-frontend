@@ -34,6 +34,7 @@ import toast from "react-hot-toast";
 import GoogleMapComponent from "@/components/map/GoogleMap";
 import { addChat } from "@/utils/message";
 import Link from "next/link";
+import ShareDialog from "@/components/ShareDialog";
 
 export default function PropertiesDetails() {
   const { id } = useParams();
@@ -41,6 +42,7 @@ export default function PropertiesDetails() {
   const [error, setError] = useState(null);
   const [isDescriptionOpen, setDescriptionOpen] = useState(true);
   const [isFeaturesOpen, setFeaturesOpen] = useState(false);
+  
   const [isSaved, setIsSaved] = useState(false);
   const router = useRouter();
 
@@ -279,10 +281,7 @@ export default function PropertiesDetails() {
                   />
                   <span className="sr-only">{isSaved ? "Unsave" : "Save"}</span>
                 </Button>
-                <Button size="icon" variant="outline">
-                  <ShareIcon className="w-5 h-5" />
-                  <span className="sr-only">Share</span>
-                </Button>
+                <ShareDialog />
               </div>
             </div>
             <div className="flex flex-wrap justify-between items-center mb-4">
