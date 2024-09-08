@@ -108,7 +108,7 @@ const MyRequest = () => {
           <div className="p-2 bg-white rounded-full">
             <HouseIcon />
           </div>
-          All Requests
+          Requests
         </div>
         <Button>
           <Link href="/create-request">Create a Request</Link>
@@ -116,13 +116,13 @@ const MyRequest = () => {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-2xl font-semibold mb-4">Requests</h2>
+        <h2 className="text-2xl font-semibold mb-4">All Requests</h2>
         {requests.length > 0 ? (
           <div className="flex gap-6 overflow-x-auto scrollbar-none">
             {requests.map((request, index) => (
               <Card
                 key={index}
-                className="flex flex-col w-72 bg-white shadow-lg rounded-lg overflow-hidden duration-300 ease-in-out"
+                className="flex flex-col min-w-[300px] lg:min-w-[250px] w-[300px] bg-white rounded-lg overflow-hidden duration-300 ease-in-out"
               >
                 <CardContent className="flex-grow p-6">
                   <h3 className="font-semibold text-lg mb-2">
