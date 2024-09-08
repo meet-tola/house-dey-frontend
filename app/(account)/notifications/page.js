@@ -16,8 +16,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Skeleton } from "@/components/ui/skeleton"
+import Link from "next/link"; 
 import axios from "axios";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -103,22 +104,32 @@ export default function Component() {
       ) : (
         <div className="space-y-4">
           {notifications.length > 0 ? (
-            notifications.map((notification) => (
-              <Card key={notification.id}>
-                <CardHeader className="flex flex-row items-center gap-4">
-                  {renderIcon(notification.type)}
-                  <div className="flex flex-col gap-1">
-                    <CardTitle>{notification.message}</CardTitle>
-                    <CardDescription>
-                      {new Date(notification.createdAt).toLocaleTimeString()}
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p>{notification.description || "No additional details."}</p>
-                </CardContent>
-              </Card>
-            ))
+            notifications.map((notification) => {
+              const cardContent = (
+                <Card key={notification.id}>
+                  <CardHeader className="flex flex-row items-center gap-4">
+                    {renderIcon(notification.type)}
+                    <div className="flex flex-col gap-1">
+                      <CardTitle>{notification.message}</CardTitle>
+                      <CardDescription>
+                        {new Date(notification.createdAt).toLocaleTimeString()}
+                      </CardDescription>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p>{notification.description || "No additional details."}</p>
+                  </CardContent>
+                </Card>
+              );
+
+              return notification.type === "listing" && notification.postId ? (
+                <Link href={`/properties/${notification.postId}`} key={notification.id}>
+                  <div>{cardContent}</div>
+                </Link>
+              ) : (
+                cardContent
+              );
+            })
           ) : (
             <Card className="text-center">
               <CardHeader>

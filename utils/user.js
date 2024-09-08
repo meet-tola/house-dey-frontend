@@ -17,3 +17,16 @@ export const fetchAgents = async () => {
     return null;
   }
 };
+
+export const fetchAgent = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/api/user/agent/${id}`);
+    if (response.status === 200) {
+      return response.data;
+    }
+    throw new Error("Failed to fetch agents");
+  } catch (error) {
+    console.error("Error fetching agents:", error);
+    return null;
+  }
+};

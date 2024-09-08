@@ -33,6 +33,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
 import GoogleMapComponent from "@/components/map/GoogleMap";
 import { addChat } from "@/utils/message";
+import Link from "next/link";
 
 export default function PropertiesDetails() {
   const { id } = useParams();
@@ -336,20 +337,25 @@ export default function PropertiesDetails() {
 
             <div>
               <p className="text-gray-500 mb-1">Contact</p>
-              <div className="flex items-center gap-2">
-                <Avatar className="w-10 h-10 border">
-                  <AvatarImage
-                    src={post.user.avatar}
-                    alt={post.user.username}
-                  />
-                  <AvatarFallback>
-                    {post.user.username.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-bold">{post.user.username}</p>
-                  <p className="text-gray-500">Real Estate Agent</p>
+              <div className="flex justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <Avatar className="w-10 h-10 border">
+                    <AvatarImage
+                      src={post.user.avatar}
+                      alt={post.user.username}
+                    />
+                    <AvatarFallback>
+                      {post.user.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-bold">{post.user.username}</p>
+                  </div>
                 </div>
+
+                <Link href={`/agent-profile/${post.user.id}`}>
+                  <Button variant="outline">View Profile</Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -368,7 +374,6 @@ export default function PropertiesDetails() {
           />
           <div>
             <h1 className="text-white font-bold">{post.user.username}</h1>
-            <p className="text-white">Real Estate Agent</p>
           </div>
         </div>
         <Button
