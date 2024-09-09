@@ -16,19 +16,19 @@ import {
 import AuthContext from "@/context/AuthContext";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { Loader, UserIcon, Upload } from "lucide-react";
 import Image from "next/image";
-import ImageUploader from "@/components/ui/ImageUploader";
-import { Loader, UserIcon } from "lucide-react";
 
 const API_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_API_URL
     : "http://localhost:8800";
 
-const Profile = () => {
+export default function Component() {
   const [loading, setLoading] = useState(false);
   const { user, updateUser } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -68,11 +68,36 @@ const Profile = () => {
     }));
   };
 
-  const handleImageUpload = (imageUrl) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      avatar: imageUrl,
-    }));
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "bxmkzdav");
+
+    try {
+      const res = await fetch(
+        "https://api.cloudinary.com/v1_1/dvvirefzi/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const file = await res.json();
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        avatar: file.secure_url,
+      }));
+      toast.success("Image uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -103,6 +128,7 @@ const Profile = () => {
       setLoading(false);
     }
   };
+
   return (
     <>
       <Toaster />
@@ -132,8 +158,8 @@ const Profile = () => {
                 src={formData.avatar}
                 width={100}
                 height={100}
-                alt="User Profile"
-                className="rounded-full h-20 w-20 mr-4"
+                className="h-20 w-20 mr-4 object-cover rounded-full"
+                alt="Profile image"
               />
             ) : (
               <div className="rounded-full h-20 w-20 mr-4 flex items-center justify-center bg-gray-200">
@@ -147,136 +173,164 @@ const Profile = () => {
           </div>
           <Separator />
           <h2 className="text-xl font-semibold my-4">My Details</h2>
-          <form
-            onSubmit={handleSubmit}
-            className="grid grid-cols-1 gap-6 lg:grid-cols-2 mt-4"
-          >
-            <div className="flex items-center gap-4">
-              <ImageUploader
-                onImageUpload={handleImageUpload}
-                multiple={false}
-              />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200">
+                {formData.avatar ? (
+                  <img
+                    src={formData.avatar}
+                    width={128}
+                    height={128}
+                    className="w-full h-full rounded-full object-cover"
+                    alt="Profile image"
+                  />
+                ) : (
+                  <UserIcon className="w-full h-full p-4 text-gray-400" />
+                )}
+              </div>
+              <div className="relative">
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                />
+                <label
+                  htmlFor="avatar-upload"
+                  className="cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary"
+                >
+                  {uploading ? (
+                    <Loader className="animate-spin mr-2" />
+                  ) : (
+                    <Upload className="mr-2" />
+                  )}
+                  {uploading ? "Uploading..." : "Change Photo"}
+                </label>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
+              <div>
+                <Label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  First Name*
+                </Label>
+                <Input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  className="mt-1 block w-full"
+                  placeholder="John"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Last Name
+                </Label>
+                <Input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  className="mt-1 block w-full"
+                  placeholder="Doe"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email
+                </Label>
+                <Input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className="mt-1 block w-full"
+                  placeholder="youremail@gmail.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor="mobile"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Mobile
+                </Label>
+                <Input
+                  type="text"
+                  id="mobile"
+                  name="mobile"
+                  className="mt-1 block w-full"
+                  value={formData.mobile}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor="street"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Street*
+                </Label>
+                <Input
+                  type="text"
+                  id="street"
+                  name="street"
+                  className="mt-1 block w-full"
+                  placeholder="Your street address"
+                  value={formData.street}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor="locality"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Locality
+                </Label>
+                <Input
+                  type="text"
+                  id="locality"
+                  name="locality"
+                  className="mt-1 block w-full"
+                  placeholder="Your locality"
+                  value={formData.locality}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor="state"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  State
+                </Label>
+                <Input
+                  type="text"
+                  id="state"
+                  name="state"
+                  className="mt-1 block w-full"
+                  placeholder="Your state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                />
+              </div>
             </div>
             <div>
-              <Label
-                htmlFor="firstName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                First Name*
-              </Label>
-              <Input
-                type="text"
-                id="firstName"
-                name="firstName"
-                className="mt-1 block w-full"
-                placeholder="John"
-                value={formData.firstName}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="lastName"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Last Name
-              </Label>
-              <Input
-                type="text"
-                id="lastName"
-                name="lastName"
-                className="mt-1 block w-full"
-                placeholder="Doe"
-                value={formData.lastName}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
-              </Label>
-              <Input
-                type="email"
-                id="email"
-                name="email"
-                className="mt-1 block w-full"
-                placeholder="youremail@gmail.com"
-                value={formData.email}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="mobile"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Mobile
-              </Label>
-              <Input
-                type="text"
-                id="mobile"
-                name="mobile"
-                className="mt-1 block w-full"
-                value={formData.mobile}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="street"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Street*
-              </Label>
-              <Input
-                type="text"
-                id="street"
-                name="street"
-                className="mt-1 block w-full"
-                placeholder="Your street address"
-                value={formData.street}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="locality"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Locality
-              </Label>
-              <Input
-                type="text"
-                id="locality"
-                name="locality"
-                className="mt-1 block w-full"
-                placeholder="Your locality"
-                value={formData.locality}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="state"
-                className="block text-sm font-medium text-gray-700"
-              >
-                State
-              </Label>
-              <Input
-                type="text"
-                id="state"
-                name="state"
-                className="mt-1 block w-full"
-                placeholder="Your state"
-                value={formData.state}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="lg:col-span-2">
-              <Button type="submit" className="mt-4 w-full">
+              <Button type="submit" className="w-full">
                 {loading ? (
                   <Loader className="animate-spin" />
                 ) : (
@@ -289,6 +343,4 @@ const Profile = () => {
       </div>
     </>
   );
-};
-
-export default Profile;
+}
