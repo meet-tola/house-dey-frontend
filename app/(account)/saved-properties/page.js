@@ -14,6 +14,17 @@ import Link from "next/link";
 import { fetchSavedPosts, savePost } from "@/utils/post";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const SavedProperties = () => {
   const [savedProperties, setSavedProperties] = useState([]);
@@ -136,17 +147,38 @@ const SavedProperties = () => {
                       </div>
                     </Link>
 
-                    {/* Delete Button */}
+                    {/* Delete Button with Alert Dialog */}
                     <div className="absolute top-3 right-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-2"
-                        onClick={() => handleDelete(property.id)}
-                      >
-                        <Trash className="w-4 h-4" />
-                        Delete
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-2"
+                          >
+                            <Trash className="w-4 h-4" />
+                            Delete
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently remove the property from your saved list.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDelete(property.id)}
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </div>
                 ))}

@@ -42,7 +42,7 @@ export default function PropertiesDetails() {
   const [error, setError] = useState(null);
   const [isDescriptionOpen, setDescriptionOpen] = useState(true);
   const [isFeaturesOpen, setFeaturesOpen] = useState(false);
-  
+
   const [isSaved, setIsSaved] = useState(false);
   const router = useRouter();
 
@@ -76,15 +76,19 @@ export default function PropertiesDetails() {
   const handleSavePost = async () => {
     try {
       const response = await savePost(id);
-      console.log(response);
       if (response) {
         setIsSaved((prev) => !prev);
-        toast.success("This properties has been saved");
+        toast.success(
+          isSaved
+            ? "This property has been removed from saved list"
+            : "This property has been saved"
+        );
       } else {
-        toast.error("Failed to save properties");
+        toast.error("Failed to save/unsave property");
       }
     } catch (error) {
-      console.error("Error saving the post:", error);
+      console.error("Error saving/removing the post:", error);
+      toast.error("An error occurred while saving/removing the property.");
     }
   };
 
@@ -277,10 +281,13 @@ export default function PropertiesDetails() {
               <div className="flex items-center gap-2">
                 <Button size="icon" variant="outline" onClick={handleSavePost}>
                   <HeartIcon
-                    className={`w-5 h-5 ${isSaved ? "text-red-500" : ""}`}
+                    className={`w-5 h-5 ${
+                      isSaved ? "fill-red-500" : "text-gray-500"
+                    }`}
                   />
                   <span className="sr-only">{isSaved ? "Unsave" : "Save"}</span>
                 </Button>
+
                 <ShareDialog />
               </div>
             </div>

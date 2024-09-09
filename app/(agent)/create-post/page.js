@@ -120,6 +120,7 @@ export default function CreatePost() {
           utilities: "",
           size: "",
         });
+        router.push("/my-listings");
       } else {
         toast.error("Failed to create post.");
       }

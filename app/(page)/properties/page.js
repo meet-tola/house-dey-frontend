@@ -46,6 +46,7 @@ export default function PropertiesPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [properties, setProperties] = useState([]);
+  const [isSaved, setIsSaved] = useState(false);
   const [filters, setFilters] = useState({
     address: searchParams.get("address") || "",
     city: searchParams.get("city") || "",
@@ -109,18 +110,20 @@ export default function PropertiesPage() {
 
   const handleSavePost = async (postId) => {
     try {
-      const result = await savePost(postId);
-      if (result) {
-        toast.success("Property saved successfully!");
+      const response = await savePost(postId);
+      if (response) {
+        setIsSaved((prev) => !prev);
+        toast.success(
+          isSaved
+            ? "This property has been removed from saved list"
+            : "This property has been saved"
+        );
       } else {
-        toast.error("Failed to save property.");
+        toast.error("Failed to save/unsave property");
       }
     } catch (error) {
-      console.error(
-        "An error occurred while saving the property:",
-        error.response ? error.response.data : error.message
-      );
-      toast.error("An error occurred while saving the property.");
+      console.error("Error saving/removing the post:", error);
+      toast.error("An error occurred while saving/removing the property.");
     }
   };
 
@@ -466,12 +469,21 @@ export default function PropertiesPage() {
                 >
                   <div className="absolute top-2 right-2">
                     <Button
+                      size="icon"
                       variant="outline"
                       onClick={() => handleSavePost(property.id)}
                     >
-                      <Heart className="h-6 w-6" />
+                      <Heart
+                        className={`w-5 h-5 ${
+                          isSaved ? "fill-red-500" : "text-gray-500"
+                        }`}
+                      />
+                      <span className="sr-only">
+                        {isSaved ? "Unsave" : "Save"}
+                      </span>
                     </Button>
                   </div>
+
                   {property.images && property.images.length > 0 ? (
                     <img
                       src={property.images[0]}
