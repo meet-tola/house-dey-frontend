@@ -46,7 +46,7 @@ export default function PropertiesPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [properties, setProperties] = useState([]);
-  const [isSaved, setIsSaved] = useState(false);
+  const [savedProperties, setSavedProperties] = useState({});
   const [filters, setFilters] = useState({
     address: searchParams.get("address") || "",
     city: searchParams.get("city") || "",
@@ -112,9 +112,13 @@ export default function PropertiesPage() {
     try {
       const response = await savePost(postId);
       if (response) {
-        setIsSaved((prev) => !prev);
+        setSavedProperties((prevSavedProperties) => ({
+          ...prevSavedProperties,
+          [postId]: !prevSavedProperties[postId],
+        }));
+
         toast.success(
-          isSaved
+          savedProperties[postId]
             ? "This property has been removed from saved list"
             : "This property has been saved"
         );
@@ -475,11 +479,13 @@ export default function PropertiesPage() {
                     >
                       <Heart
                         className={`w-5 h-5 ${
-                          isSaved ? "fill-red-500" : "text-gray-500"
+                          savedProperties[property.id]
+                            ? "fill-red-500"
+                            : "text-gray-500"
                         }`}
                       />
                       <span className="sr-only">
-                        {isSaved ? "Unsave" : "Save"}
+                        {savedProperties[property.id] ? "Unsave" : "Save"}
                       </span>
                     </Button>
                   </div>
