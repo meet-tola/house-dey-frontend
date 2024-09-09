@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import AuthContext from "@/context/AuthContext";
 import Cookies from "js-cookie";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -178,14 +179,7 @@ export default function Navbar() {
                   <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
                 </Button>
               </Link>
-              <Link href="/notifications">
-                <Button variant="ghost" size="icon" className="relative">
-                  <BellIcon className="h-5 w-5" />
-                  <span className="sr-only">Notifications</span>
-                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
-                </Button>
-              </Link>
-
+              <NotificationBell />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">

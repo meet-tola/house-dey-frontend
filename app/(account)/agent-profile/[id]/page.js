@@ -71,26 +71,13 @@ export default function AgentProfile() {
                   alt={agent.firstName + " " + agent.lastName}
                   className="rounded-full w-32 h-32 object-cover mb-4"
                 />
-                <h1 className="text-2xl font-bold mb-2">
+                <h1 className="text-2xl font-bold mb-1">
                   {agent.firstName} {agent.lastName}
                 </h1>
                 <p className="text-muted-foreground mb-4">@{agent.username}</p>
                 <Badge className="mb-4">Verified Agent</Badge>
                 <Button className="w-full mb-4">Contact Agent</Button>
-                <div className="flex justify-center space-x-4 mb-4">
-                  <a href="#" className="text-muted-foreground hover:text-primary">
-                    <Facebook size={20} />
-                  </a>
-                  <a href="#" className="text-muted-foreground hover:text-primary">
-                    <Twitter size={20} />
-                  </a>
-                  <a href="#" className="text-muted-foreground hover:text-primary">
-                    <Instagram size={20} />
-                  </a>
-                  <a href="#" className="text-muted-foreground hover:text-primary">
-                    <Linkedin size={20} />
-                  </a>
-                </div>
+    
                 <div className="w-full space-y-2">
                   <div className="flex items-center">
                     <Phone className="w-4 h-4 mr-2" />
