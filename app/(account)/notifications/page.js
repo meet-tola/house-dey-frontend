@@ -25,7 +25,7 @@ const API_URL =
     ? process.env.NEXT_PUBLIC_API_URL
     : "http://localhost:8800";
 
-export default function Component() {
+export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,6 +56,17 @@ export default function Component() {
         return <CheckCircle className="h-5 w-5 text-green-500" />;
       default:
         return <Bell className="h-5 w-5 text-gray-500" />;
+    }
+  };
+
+  const renderLink = (notification) => {
+    switch (notification.type) {
+      case "listing":
+        return notification.postId ? `/properties/${notification.postId}` : "#";
+      case "profile":
+        return "/profile";
+      default:
+        return "#";
     }
   };
 
@@ -122,12 +133,10 @@ export default function Component() {
                 </Card>
               );
 
-              return notification.type === "listing" && notification.postId ? (
-                <Link href={`/properties/${notification.postId}`} key={notification.id}>
+              return (
+                <Link href={renderLink(notification)} key={notification.id}>
                   <div>{cardContent}</div>
                 </Link>
-              ) : (
-                cardContent
               );
             })
           ) : (
