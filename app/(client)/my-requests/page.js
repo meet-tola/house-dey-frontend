@@ -27,7 +27,8 @@ import NoPropertiesFound from "@/components/NoPropertiesFound";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import AuthContext from "@/context/AuthContext";
+import { Skeleton } from "@/components/ui/skeleton";
+
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -36,6 +37,7 @@ const API_URL =
 
 const MyRequest = () => {
   const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -44,6 +46,7 @@ const MyRequest = () => {
       if (userRequests) {
         setRequests(userRequests);
       }
+      setLoading(false);
     };
     getUserRequests();
   }, []);
@@ -122,7 +125,18 @@ const MyRequest = () => {
         <h2 className="text-2xl font-semibold mb-4">All Requests</h2>
         {requests.length > 0 ? (
           <div className="flex gap-6 overflow-x-auto scrollbar-none">
-            {requests.map((request, index) => (
+            {loading
+              ? Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="flex flex-col space-y-3 mb-4">
+                    <Skeleton className="h-[150px] w-[250px] rounded-xl" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-[250px]" />
+                      <Skeleton className="h-4 w-[200px]" />
+                    </div>
+                  </div>
+                ))
+              :
+            requests.map((request, index) => (
               <Card
                 key={index}
                 className="flex flex-col min-w-[300px] lg:min-w-[250px] w-[300px] bg-white rounded-lg overflow-hidden duration-300 ease-in-out"
