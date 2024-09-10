@@ -21,28 +21,27 @@ const MessageUI = ({
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
-  
+
     if (!chatReceiver?.id) {
       console.error("Cannot send message, chatReceiver is not set.");
       return;
     }
-  
+
     const messageData = {
       chatId,
       userId: currentUser.id,
       text: messageText,
       createdAt: new Date().toISOString(),
     };
-  
+
     socket.emit("sendMessage", {
       receiverId: chatReceiver.id,
       message: messageData,
     });
-  
+
     await onSendMessage(messageText);
     setMessageText("");
   };
-  
 
   useEffect(() => {
     if (socket) {
@@ -59,7 +58,8 @@ const MessageUI = ({
     chatReceiver && onlineUsers.some((user) => user.userId === chatReceiver.id);
 
   return (
-    <div className="flex flex-col h-[600px] border-[1.5px] rounded-lg border-gray-200">
+    <div className="flex flex-col h-full md:h-[600px] border-[1.5px] rounded-lg border-gray-200">
+      {/* Header */}
       <div className="p-4 border-b flex items-center space-x-4">
         <Button
           variant="ghost"
@@ -87,7 +87,9 @@ const MessageUI = ({
           )}
         </h2>
       </div>
-      <ScrollArea className="flex-1 p-4">
+
+      {/* Message List (Scroll Area) */}
+      <ScrollArea className="flex-1 p-4 overflow-auto">
         {messages && messages.length > 0 ? (
           messages.map((message) => {
             const isSender = message.userId === currentUser.id;
@@ -143,6 +145,8 @@ const MessageUI = ({
           </div>
         )}
       </ScrollArea>
+
+      {/* Input Area */}
       <div className="p-4 border-t flex space-x-2">
         <Input
           className="flex-1"

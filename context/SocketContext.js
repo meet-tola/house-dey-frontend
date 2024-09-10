@@ -10,6 +10,8 @@ export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [newNotification, setNewNotification] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState(false);
 
   useEffect(() => {
     const backendURL =
@@ -29,14 +31,22 @@ export const SocketContextProvider = ({ children }) => {
     if (user && socket) {
       socket.emit("newUser", user.id);
 
+      // Listen for new notifications
       socket.on("newNotification", (notification) => {
         setNotifications((prev) => [notification, ...prev]);
         setNewNotification(true);
+      });
+
+      // Listen for new messages
+      socket.on("getMessage", (message) => {
+        setMessages((prev) => [message, ...prev]);
+        setNewMessage(true);
       });
     }
 
     return () => {
       socket?.off("newNotification");
+      socket?.off("getMessage");
     };
   }, [user, socket]);
 
@@ -44,9 +54,21 @@ export const SocketContextProvider = ({ children }) => {
     setNewNotification(false);
   };
 
+  const markMessagesRead = () => {
+    setNewMessage(false);
+  };
+
   return (
     <SocketContext.Provider
-      value={{ socket, notifications, newNotification, markNotificationsRead }}
+      value={{
+        socket,
+        notifications,
+        newNotification,
+        markNotificationsRead,
+        messages,
+        newMessage,
+        markMessagesRead,
+      }}
     >
       {children}
     </SocketContext.Provider>

@@ -10,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { MenuIcon, BellIcon, MessageCircleMore } from "lucide-react";
+import { MenuIcon, MessageCircleMore } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import AuthContext from "@/context/AuthContext";
 import Cookies from "js-cookie";
-import NotificationBell from "./NotificationBell";
+import { NotificationBell, MessageMore } from "./Notification";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -172,13 +172,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           {user && token ? (
             <>
-              <Link href="/messages">
-                <Button variant="ghost" size="icon" className="relative">
-                  <MessageCircleMore className="h-5 w-5" />
-                  <span className="sr-only">Messages</span>
-                  <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
-                </Button>
-              </Link>
+              <MessageMore />
               <NotificationBell />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

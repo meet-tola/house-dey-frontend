@@ -12,7 +12,6 @@ const ChatList = ({ chats, onSelectChat, selectedChatId }) => {
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>All Chats</CardTitle>
-          {/* <NotificationBadge count={totalUnreadMessages} /> */}
         </div>
       </CardHeader>
       <CardContent>
@@ -40,11 +39,6 @@ const ChatList = ({ chats, onSelectChat, selectedChatId }) => {
                   {chat?.lastMessage || "No messages yet"}
                 </p>
               </div>
-              {/* {unreadMessages[chat.id] > 0 && (
-                <span className="ml-auto text-xs bg-red-500 text-white rounded-full px-2 py-1">
-                  {unreadMessages[chat.id]}
-                </span>
-              )} */}
             </div>
           ))}
         </ScrollArea>
