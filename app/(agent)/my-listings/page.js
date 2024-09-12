@@ -8,16 +8,26 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { HouseIcon, MapPin, Edit3 } from "lucide-react";
+import { HouseIcon, MapPin, MoreHorizontal, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { fetchUserPosts } from "@/utils/post";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
 import { Skeleton } from "@/components/ui/skeleton";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const MyListings = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const getUserPosts = async () => {
@@ -37,6 +47,27 @@ const MyListings = () => {
       currency: "NGN",
       minimumFractionDigits: 0,
     }).format(price);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`
+      );
+      if (response.status === 200) {
+        toast.success("Post deleted successfully!");
+        // Optionally update properties after deletion
+        setProperties((prevProperties) =>
+          prevProperties.filter((property) => property.id !== id)
+        );
+        router.push("/my-listings");
+      } else {
+        toast.error("Failed to delete post.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while deleting the post.");
+      console.error("Error deleting post:", error);
+    }
   };
 
   return (
@@ -76,7 +107,7 @@ const MyListings = () => {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-2xl font-semibold mb-4">Properties for Rent</h2>
+        <h2 className="text-2xl font-semibold mb-4">Properties</h2>
         {properties.length > 0 ? (
           <div className="flex gap-6 overflow-x-auto scrollbar-none">
             {loading
@@ -125,18 +156,28 @@ const MyListings = () => {
                       </div>
                     </div>
 
-                    {/* Edit Button */}
+                    {/* Dropdown Menu for Edit and Delete */}
                     <div className="absolute top-3 right-3">
-                      <Link href={`/edit-post/${property.id}`}>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex items-center gap-2"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                          Edit
-                        </Button>
-                      </Link>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger>
+                          <Button className="bg-white text-primary px-3">
+                            <MoreVertical className="w-5 h-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem>
+                            <Link href={`/edit-post/${property.id}`}>
+                              Edit
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => handleDelete(property.id)}
+                            className="text-red-500"
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
                 ))}

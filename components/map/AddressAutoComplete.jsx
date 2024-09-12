@@ -64,7 +64,7 @@ const AddressAutocomplete = ({ onAddressSelect }) => {
         value={value}
         onChange={handleInput}
         disabled={!ready}
-        placeholder="Enter an address"
+        placeholder="Enter an Area/City"
         className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
         required
       />
