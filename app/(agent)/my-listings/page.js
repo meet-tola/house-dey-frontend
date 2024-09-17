@@ -8,7 +8,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { HouseIcon, MapPin, MoreHorizontal, MoreVertical } from "lucide-react";
+import { HouseIcon, MapPin, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { fetchUserPosts } from "@/utils/post";

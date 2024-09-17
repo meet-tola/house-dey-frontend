@@ -305,7 +305,7 @@ export default function CreatePost() {
                 <Input
                   id="size"
                   type="number"
-                  placeholder="Enter size"
+                  m placeholder="Enter size"
                   value={formData.size}
                   onChange={handleInputChange}
                   required
@@ -343,7 +343,7 @@ export default function CreatePost() {
                   {formData.title || "HouseDey"}
                 </h2>
                 <p className="text-muted-foreground text-lg">
-                  Address: {formData.address || "123 Main Street"}
+                  Address: {formData.address}
                 </p>
                 <p className="text-muted-foreground text-lg">
                   Bedrooms: {formData.bedrooms || 32} | Bathrooms:{" "}

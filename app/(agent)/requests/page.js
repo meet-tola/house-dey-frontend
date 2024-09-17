@@ -286,9 +286,10 @@ export default function PropertyRequestPage() {
               </p>
             </div>
             <CardFooter className="flex justify-end">
-            <Button className="w-full mt-4" onClick={handleListProperty}>
+              <Button className="w-full mt-4" onClick={handleListProperty}>
                 List This Property
-              </Button>            </CardFooter>
+              </Button>{" "}
+            </CardFooter>
           </DialogContent>
         </Dialog>
       )}
