@@ -17,7 +17,7 @@ import toast from "react-hot-toast";
 import AuthContext from "@/context/AuthContext";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -32,7 +32,7 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(username, password);
+      await login(email, password);
       if (user?.role === "AGENT") {
         router.push("/for-agent");
       } else {
@@ -91,13 +91,13 @@ const LoginPage = () => {
           <form className="w-full max-w-md space-y-2" onSubmit={handleLogin}>
             <div className="w-full space-y-4">
               <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Enter your username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-12"
                   required
                 />

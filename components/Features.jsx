@@ -6,7 +6,7 @@ const Features = () => {
     <section className="w-full py-12 border-b">
       <div className="container px-4 md:px-16">
         <h2 className="text-2xl font-semibold mb-4">Special Features</h2>
-        <div className="grid gap-6 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           <Card className="border shadow-sm">
             <img
               src="/message-agents-clients.svg"
