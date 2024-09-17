@@ -6,52 +6,61 @@ const Features = () => {
     <section className="w-full py-12 border-b">
       <div className="container px-4 md:px-16">
         <h2 className="text-2xl font-semibold mb-4">Special Features</h2>
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-4">
           <Card className="border shadow-sm">
-            <CardHeader>
-              <img
-                src="/home-chart-feature.svg"
-                alt="Experience"
-                className="w-full h-40 object-cover rounded-t-lg"
-              />
-              <CardTitle className="mt-4">Experience</CardTitle>
-            </CardHeader>
+            <img
+              src="/message-agents-clients.svg"
+              alt="Message-Agents-Clients"
+              className="w-full h-40 object-cover rounded-t-lg"
+            />
             <CardContent>
+              <CardTitle className="my-4">Message Agents/Clients</CardTitle>
               <p>
-                With over 20 years in the industry, we bring unparalleled
-                expertise to every transaction.
+                With our secure messaging platform, chat privately, hop on calls
+                and get familiar with your agent or client.
               </p>
             </CardContent>
           </Card>
           <Card className="border shadow-sm">
-            <CardHeader>
-              <img
-                src="/home-compare-feature.svg"
-                alt="Local Knowledge"
-                className="w-full h-40 object-cover rounded-t-lg"
-              />
-              <CardTitle className="mt-4">Local Knowledge</CardTitle>
-            </CardHeader>
+            <img
+              src="/advanced-search.svg"
+              alt="Advanced-Search"
+              className="w-full h-40 object-cover rounded-t-lg"
+            />
             <CardContent>
+              <CardTitle className="my-4">Advanced Search</CardTitle>
               <p>
-                Our team has in-depth knowledge of the local real estate market
-                and neighborhoods.
+                Search for properties in different locations, filter between
+                different types of categories and tags.
               </p>
             </CardContent>
           </Card>
           <Card className="border shadow-sm">
-            <CardHeader>
-              <img
-                src="/home-map-feature.svg"
-                alt="Client-Focused"
-                className="w-full h-40 object-cover rounded-t-lg"
-              />
-              <CardTitle className="mt-4">Client-Focused</CardTitle>
-            </CardHeader>
+            <img
+              src="/map-navigation.svg"
+              alt="Map-Navigation"
+              className="w-full h-40 object-cover rounded-t-lg"
+            />
             <CardContent>
+              <CardTitle className="my-4">Map Navigation</CardTitle>
               <p>
-                We prioritize your needs and work tirelessly to exceed your
-                expectations.
+                Use our advanced map geolocation to see the location and
+                direction of any property, anywhere in the world.
+              </p>
+            </CardContent>
+          </Card>
+          <Card className="border shadow-sm">
+            <img
+              src="/secure-escrows.svg"
+              alt="Secure-Escrow"
+              className="w-full h-40 object-cover rounded-t-lg"
+            />
+            <CardContent>
+              <CardTitle className="my-4">Secure Escrow</CardTitle>
+              <p>
+                Wish to protect your funds? With our optional escrow service,
+                you can deposit your money and we will pay the agent when you
+                are satisfied with your choice.
               </p>
             </CardContent>
           </Card>
