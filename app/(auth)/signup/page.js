@@ -30,8 +30,10 @@ const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("CLIENT");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -44,10 +46,14 @@ const SignupPage = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
     setLoading(true);
     try {
       await signup(username, email, password, role.toUpperCase());
-      setIsModalOpen(true);
+      setIsModalOpen(true); 
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "An unexpected error occurred";
@@ -59,6 +65,10 @@ const SignupPage = () => {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const closeModal = () => {
@@ -105,7 +115,7 @@ const SignupPage = () => {
               </p>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold">
-              Sign in, Join Us!
+              Sign up, Join Us!
             </h1>
             <p className="text-muted-foreground">
               Welcome! Please fill in the form to create your account.
@@ -113,12 +123,9 @@ const SignupPage = () => {
           </div>
           <form className="w-full max-w-md space-y-2" onSubmit={handleSignup}>
             <div className="w-full space-y-4">
-            <div className="grid gap-2">
+              <div className="grid gap-2">
                 <Label htmlFor="role">Role</Label>
-                <Select
-                  onValueChange={(value) => setRole(value)}
-                  required
-                >
+                <Select onValueChange={(value) => setRole(value)} required>
                   <SelectTrigger className="w-full h-12">
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
@@ -126,9 +133,11 @@ const SignupPage = () => {
                     <SelectGroup>
                       <SelectLabel>Roles</SelectLabel>
                       <SelectItem value="CLIENT">
-                        Individual (searching for property)
+                        You want to search for a property (Individual)
                       </SelectItem>
-                      <SelectItem value="AGENT">Agent/Landlord</SelectItem>
+                      <SelectItem value="AGENT">
+                        You want to list your property (Agent/Landlord)
+                      </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -232,17 +241,43 @@ const SignupPage = () => {
                   </div>
                 )}
               </div>
+              <div className="grid gap-2 relative">
+                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <div className="relative">
+                  <Input
+                    id="confirm-password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full h-12 pr-10"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+                    onClick={toggleConfirmPasswordVisibility}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOffIcon size={20} />
+                    ) : (
+                      <EyeIcon size={20} />
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
+
             <div className="w-full text-sm">
               <Button
                 type="button"
                 variant="link"
-                className=" text-blue-600 hover:underline p-0"
+                className="text-blue-600 hover:underline p-0"
                 onClick={() => setIsForgotPasswordModalOpen(true)}
               >
-                Forgot your Password? 
-              </Button>
-              {" "}Let get you back in.
+                Forgot your Password?
+              </Button>{" "}
+              Let get you back in.
             </div>
             <Button
               type="submit"
@@ -252,7 +287,7 @@ const SignupPage = () => {
               {loading ? <Loader className="animate-spin" /> : "Sign Up"}
             </Button>
             <div className="w-full flex items-center justify-center">
-              <p className="">
+              <p>
                 Already part of the family{" "}
                 <Link href="/login" className="text-blue-600 hover:underline">
                   Login
