@@ -33,7 +33,7 @@ const FeaturedProperties = () => {
   return (
     <div className="py-10 px-4 md:px-16">
       <h2 className="text-2xl font-semibold mb-4">
-        Featured Properties for Rent
+      Sponsored Properties for Rent
       </h2>
       <div className="flex gap-6 overflow-x-auto scrollbar-none">
         {loading

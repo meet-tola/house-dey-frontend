@@ -83,24 +83,11 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const response = await axios.post(
-        `${API_URL}/api/auth/logout`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
-      );
-
-      if (response.status === 200) {
-        setUser(null);
-        Cookies.remove("token");
-        localStorage.removeItem("user");
-        delete axios.defaults.headers.common["Authorization"];
-        console.log("Logout successful.");
-      }
+      setUser(null);
+      Cookies.remove("token");
+      localStorage.removeItem("user");
+      delete axios.defaults.headers.common["Authorization"];
+      console.log("Logout successful.");
     } catch (error) {
       console.error(
         "Error during logout:",

@@ -8,9 +8,9 @@ const Hero = () => {
   const texts = [
     "You dey find House?",
     "Looking for a new home?",
-    "N wa ile titun?",
-    "Na-achọ ụlọ ọhụrụ?",
-    "Neman sabon gida?",
+    "Ṣe n wa ile?",
+    "Ị na-achọ ụlọ?",
+    "Kana neman gida?",
   ];
 
   useEffect(() => {
