@@ -17,6 +17,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo2.svg" sizes="any" />
+      </head>
       <AuthProvider>
         <SocketContextProvider>
           <body className={plus.className}>
