@@ -93,7 +93,7 @@ const LoginPage = () => {
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  id="username"
+                  id="email"
                   type="text"
                   placeholder="Enter your email"
                   value={email}
