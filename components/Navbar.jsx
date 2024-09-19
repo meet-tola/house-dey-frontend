@@ -42,7 +42,7 @@ export default function Navbar() {
           },
           {
             href: "#",
-            label: "support",
+            label: "Support",
           },
         ]
       : [

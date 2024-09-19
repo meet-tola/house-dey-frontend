@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,11 +23,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import AuthContext from "@/context/AuthContext";
 
 const MyListings = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
   const router = useRouter();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const getUserPosts = async () => {
@@ -70,6 +82,14 @@ const MyListings = () => {
     }
   };
 
+  const handleCreatePostClick = () => {
+    if (user.verificationStatus) {
+      router.push("/create-post");
+    } else {
+      setShowPopup(true);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto p-6 px-4 md:px-16 mt-20">
       <Breadcrumb>
@@ -101,9 +121,7 @@ const MyListings = () => {
           </div>
           All Listing
         </div>
-        <Button>
-          <Link href="/create-post">Create a Post</Link>
-        </Button>
+        <Button onClick={handleCreatePostClick}>Create a Post</Button>
       </div>
 
       <div className="mt-8">
@@ -160,15 +178,15 @@ const MyListings = () => {
                     <div className="absolute top-3 right-3">
                       <DropdownMenu>
                         <DropdownMenuTrigger>
-                          <Button className="bg-white text-primary px-3">
-                            <MoreVertical className="w-5 h-5" />
-                          </Button>
+                          <DropdownMenuTrigger asChild>
+                            <div className="bg-white text-primary px-3 py-2 cursor-pointer rounded-md hover:bg-accent">
+                              <MoreVertical className="w-5 h-5" />
+                            </div>
+                          </DropdownMenuTrigger>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem>
-                            <Link href={`/edit-post/${property.id}`}>
-                              Edit
-                            </Link>
+                            <Link href={`/edit-post/${property.id}`}>Edit</Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleDelete(property.id)}
@@ -186,6 +204,27 @@ const MyListings = () => {
           <NoPropertiesFound />
         )}
       </div>
+
+      <Dialog open={showPopup} onOpenChange={setShowPopup}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Verification Required</DialogTitle>
+            <DialogDescription>
+              As an unverified agent, you must complete the verification process
+              to access all features.
+            </DialogDescription>
+          </DialogHeader>
+          <p className="py-4">
+            Please upload your official real estate agent ID to verify your
+            status.
+          </p>
+          <DialogFooter>
+            <Button asChild>
+              <Link href="/agent-verification">Go to Verification Page</Link>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

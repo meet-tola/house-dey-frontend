@@ -17,7 +17,6 @@ import AuthContext from "@/context/AuthContext";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { Loader, UserIcon, Upload } from "lucide-react";
-import Image from "next/image";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -37,8 +36,7 @@ export default function Component() {
   }, [user]);
 
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
+    fullName: user?.fullName || "",
     email: user?.email || "",
     mobile: user?.mobile || "",
     street: user?.street || "",
@@ -49,8 +47,7 @@ export default function Component() {
 
   useEffect(() => {
     setFormData({
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
+      fullName: user?.fullName || "",
       email: user?.email || "",
       mobile: user?.mobile || "",
       street: user?.street || "",
@@ -212,35 +209,18 @@ export default function Component() {
             <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2">
               <div>
                 <Label
-                  htmlFor="firstName"
+                  htmlFor="fullName"
                   className="block text-sm font-medium text-gray-700"
                 >
                   First Name*
                 </Label>
                 <Input
                   type="text"
-                  id="firstName"
-                  name="firstName"
+                  id="fullName"
+                  name="fullName"
                   className="mt-1 block w-full"
                   placeholder="John"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <Label
-                  htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Last Name
-                </Label>
-                <Input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  className="mt-1 block w-full"
-                  placeholder="Doe"
-                  value={formData.lastName}
+                  value={formData.fullName}
                   onChange={handleInputChange}
                 />
               </div>

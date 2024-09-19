@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -33,7 +33,7 @@ const API_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_API_URL
     : "http://localhost:8800";
-export default function CreatePost() {
+export default function CreateListing() {
   const router = useRouter();
   const { user } = useContext(AuthContext);
   const userId = user?.id;
@@ -54,6 +54,12 @@ export default function CreatePost() {
     utilities: "",
     size: "",
   });
+
+  useEffect(() => {
+    if (user && !user.verificationStatus) {
+      router.push("/my-listings");
+    }
+  }, [user, router]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;

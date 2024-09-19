@@ -1,137 +1,229 @@
-import React, { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+"use client";
 
+import axios from 'axios';
+import React, { useState, useContext } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Upload, Loader2 } from "lucide-react";
+import AuthContext from "@/context/AuthContext"; 
+import toast from 'react-hot-toast';
 
-const MyImageUploadComponent = () => {
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "http://localhost:8800";
+
+const VerifiedUpload = () => {
+  const { user, updateUser } = useContext(AuthContext); 
+  const userId = user?.id;
   const [uploading, setUploading] = useState(false);
-  const [formData, setFormData] = useState({ avatar: '' });
-
-  const API_KEY = "YOUR_GOOGLE_GENAI_API_KEY"; 
-  const genAI = new GoogleGenerativeAI(API_KEY);
-
-  const sampleUserName = "John Doe"; 
+  const [formData, setFormData] = useState({ avatar: "" });
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "bxmkzdav");
+    setUploadProgress(0);
 
-    try {
-      // Upload to Cloudinary
-      const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dvvirefzi/image/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      const fileData = await res.json();
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
 
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        avatar: fileData.secure_url,
-      }));
-
-      toast.success("Image uploaded successfully!");
-
-      // Call Gemini API for name extraction
-      const imageUrl = fileData.secure_url;  // Use the uploaded image URL
-
-      const detectedName = await scanImageWithGemini(imageUrl);
-
-      if (detectedName && detectedName === sampleUserName) {
-        console.log("Successfully detected the sample user name.");
-        toast.success("Detected name matches the sample username!");
-      } else {
-        toast.warning("Name detected but does not match the sample username.");
+    reader.onloadend = async () => {
+      const base64Image = reader.result?.toString().split(",")[1];
+      if (!base64Image) {
+        toast.error("Failed to read the image file.");
+        setUploading(false);
+        return;
       }
 
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      toast.error("Failed to upload image.");
-    } finally {
-      setUploading(false);
-    }
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "bxmkzdav");
+
+        const progressInterval = setInterval(() => {
+          setUploadProgress((prev) => Math.min(prev + 10, 90));
+        }, 200);
+
+        const res = await fetch(
+          "https://api.cloudinary.com/v1_1/dvvirefzi/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        clearInterval(progressInterval);
+        setUploadProgress(100);
+
+        if (!res.ok) {
+          throw new Error("Failed to upload image to Cloudinary");
+        }
+
+        const fileData = await res.json();
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          avatar: fileData.secure_url,
+        }));
+
+        toast.success("Image uploaded successfully!");
+        const detectedName = await extractTextFromImage(base64Image);
+
+        const normalizedDetectedName = detectedName?.toLowerCase().trim();
+        const normalizedUserName = user.fullName?.toLowerCase().trim(); // Use user.fullName from AuthContext
+
+        if (
+          normalizedDetectedName &&
+          normalizedDetectedName.includes(normalizedUserName)
+        ) {
+          console.log("Successfully detected the user name.");
+          toast.success("Detected name matches your username!");
+
+          await verifyAgent(fileData.secure_url);
+        } else {
+          toast.error("Name detected but does not match your username.");
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Failed to upload image.");
+      } finally {
+        setUploading(false);
+      }
+    };
   };
 
-  const scanImageWithGemini = async (base64Image) => {
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-    });
-
-    const generationConfig = {
-      temperature: 0.7,
-      topP: 0.95,
-      topK: 64,
-      maxOutputTokens: 64,
-      responseMimeType: "text/plain",
-    };
-
-    try {
-      const chatSession = await model.startChat({
-        generationConfig,
-        history: [
-          {
-            role: "user",
-            parts: [{ text: `You will be provided with an image. Please scan it for any names.` }],
-            inline_data: {
-              mime_type: "image/png",
-              data: base64Image,  
+  const extractTextFromImage = async (base64Image) => {
+    const API_KEY = "AIzaSyC8R1JRC2s2quciVEE29OzGOMig-tPGsBw";
+    const res = await fetch(
+      `https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          requests: [
+            {
+              image: {
+                content: base64Image,
+              },
+              features: [
+                {
+                  type: "TEXT_DETECTION",
+                },
+              ],
             },
-          },
-        ],
+          ],
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to extract text from image");
+    }
+
+    const data = await res.json();
+    const extractedText =
+      data.responses[0]?.textAnnotations[0]?.description || null;
+
+    console.log("Extracted Text:", extractedText);
+
+    return extractedText;
+  };
+
+  const verifyAgent = async (imageUrl) => {
+    try {
+      const response = await axios.put(`${API_URL}/api/user/verify/agent`, {
+        userId,
+        imageUrl
       });
-
-      return chatSession.response.text();  s
-
+      console.log("User data:", response);
+      
+      if (response.status === 200) {
+        updateUser(response.data.user);
+      } 
     } catch (error) {
-      console.error("Error calling Gemini API:", error);
-      return null;
+      console.error("Error verifying agent:", error);
+      toast.error("Error to verify agent.");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 bg-gray-50 h-screen">
-      <div className="w-full max-w-sm bg-white shadow-md rounded-lg p-5">
-        <h2 className="text-lg font-semibold text-center mb-4">Upload Image</h2>
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="border w-full p-2 rounded-md mb-4"
-          disabled={uploading}
-        />
-
-        {uploading ? (
-          <p className="text-blue-500 text-center">Uploading...</p>
-        ) : (
-          formData.avatar && (
-            <div className="mt-4">
-              <img
-                src={formData.avatar}
-                alt="Uploaded Avatar"
-                className="w-full rounded-lg"
+    <div className="flex flex-col items-center justify-center p-4 bg-gray-50 h-screen">
+      <Card className="w-full max-w-md mx-auto mt-20">
+        <CardHeader>
+          <CardTitle>Agent ID Verification (NIN)</CardTitle>
+          <CardDescription>
+            Upload an image of your NIN for verification of agent.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid w-full items-center gap-4">
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="imageUpload">Image</Label>
+              <Input
+                id="imageUpload"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                disabled={uploading}
               />
             </div>
-          )
-        )}
-
-        <div className="mt-4 text-center">
-          {uploading ? (
-            <p>Processing...</p>
-          ) : (
-            formData.avatar && <p>Image uploaded successfully!</p>
-          )}
-        </div>
-      </div>
+            {uploading && (
+              <div className="space-y-2">
+                <Label>Uploading</Label>
+                <Progress value={uploadProgress} className="w-full" />
+              </div>
+            )}
+            {formData.avatar && (
+              <div className="mt-4">
+                <Label>Preview</Label>
+                <div className="mt-2 border rounded-md overflow-hidden">
+                  <img
+                    src={formData.avatar}
+                    alt="Uploaded Avatar"
+                    className="w-full h-auto"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button
+            type="button"
+            onClick={() => document.getElementById("imageUpload")?.click()}
+            disabled={uploading}
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Uploading
+              </>
+            ) : (
+              <>
+                <Upload className="mr-2 h-4 w-4" />
+                Upload Image
+              </>
+            )}
+          </Button>
+        </CardFooter>
+        
+      </Card>
     </div>
   );
 };
 
-export default MyImageUploadComponent;
+export default VerifiedUpload;

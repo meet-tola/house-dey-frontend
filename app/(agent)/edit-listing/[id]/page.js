@@ -37,14 +37,13 @@ import toast from "react-hot-toast";
 import ImageUploader from "@/components/ui/ImageUploader";
 import AuthContext from "@/context/AuthContext";
 import { Edit3, Loader } from "lucide-react";
-import AgentProtectedRoute from "@/components/protected/AgentProtectedRoute";
 
 const API_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_API_URL
     : "http://localhost:8800";
     
-export default function EditPost() {
+export default function EditListing() {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const userId = user?.id;
@@ -64,6 +63,12 @@ export default function EditPost() {
     utilities: "",
     size: "",
   });
+
+  useEffect(() => {
+    if (user && !user.verificationStatus) {
+      router.push("/my-listings");
+    }
+  }, [user, router]);
 
   useEffect(() => {
     const fetchPostData = async () => {
