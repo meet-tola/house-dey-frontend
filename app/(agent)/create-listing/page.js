@@ -26,7 +26,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import ImageUploader from "@/components/ui/ImageUploader";
 import AuthContext from "@/context/AuthContext";
-import { Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
 
 const API_URL =
@@ -321,7 +321,7 @@ export default function CreateListing() {
             <Button type="submit">
               {loading ? (
                 <div>
-                  <Loader className="animate-spin" />
+                  <Loader2 className="animate-spin" />
                 </div>
               ) : (
                 "Create Post"

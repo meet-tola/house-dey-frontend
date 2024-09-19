@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { EyeIcon, EyeOffIcon, HomeIcon, Loader } from "lucide-react";
+import { EyeIcon, EyeOffIcon, HomeIcon, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -137,7 +137,7 @@ const LoginPage = () => {
               Let get you back in.
             </div>
             <Button type="submit" className="w-full h-12">
-              {loading ? <Loader className="animate-spin" /> : "Login"}
+              {loading ? <Loader2 className="animate-spin" /> : "Login"}
             </Button>
             <div className="w-full flex items-center justify-center">
               <p className="">
@@ -193,7 +193,7 @@ const LoginPage = () => {
               </div>
               <Button type="submit" className="w-full">
                 {loading ? (
-                  <Loader className="animate-spin" />
+                  <Loader2 className="animate-spin" />
                 ) : (
                   "Send Reset Link"
                 )}

@@ -36,7 +36,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import ImageUploader from "@/components/ui/ImageUploader";
 import AuthContext from "@/context/AuthContext";
-import { Edit3, Loader } from "lucide-react";
+import { Edit3, Loader2 } from "lucide-react";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -391,7 +391,7 @@ export default function EditListing() {
             <Button type="submit">
               {loading ? (
                 <div>
-                  <Loader className="animate-spin" />
+                  <Loader2 className="animate-spin" />
                 </div>
               ) : (
                 "Update Post"

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { EyeIcon, EyeOffIcon, HomeIcon, Loader, Check, X } from "lucide-react";
+import { EyeIcon, EyeOffIcon, HomeIcon, Loader2, Check, X } from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import {
@@ -284,7 +284,7 @@ const SignupPage = () => {
               className="w-full h-12 flex items-center justify-center"
               disabled={loading}
             >
-              {loading ? <Loader className="animate-spin" /> : "Sign Up"}
+              {loading ? <Loader2 className="animate-spin" /> : "Sign Up"}
             </Button>
             <div className="w-full flex items-center justify-center">
               <p>

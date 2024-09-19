@@ -1,7 +1,8 @@
 "use client";
 
-import axios from 'axios';
+import axios from "axios";
 import React, { useState, useContext } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,22 +14,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Upload, Loader2 } from "lucide-react";
-import AuthContext from "@/context/AuthContext"; 
-import toast from 'react-hot-toast';
+import AuthContext from "@/context/AuthContext";
+import toast from "react-hot-toast";
 
 const API_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_API_URL
     : "http://localhost:8800";
 
-const VerifiedUpload = () => {
-  const { user, updateUser } = useContext(AuthContext); 
+export default function VerifiedUpload() {
+  const router = useRouter();
+  const { user, updateUser } = useContext(AuthContext);
   const userId = user?.id;
   const [uploading, setUploading] = useState(false);
+  const [detecting, setDetecting] = useState(false);
   const [formData, setFormData] = useState({ avatar: "" });
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showMismatchDialog, setShowMismatchDialog] = useState(false);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -78,11 +90,11 @@ const VerifiedUpload = () => {
           avatar: fileData.secure_url,
         }));
 
-        toast.success("Image uploaded successfully!");
+        setDetecting(true);
         const detectedName = await extractTextFromImage(base64Image);
 
         const normalizedDetectedName = detectedName?.toLowerCase().trim();
-        const normalizedUserName = user.fullName?.toLowerCase().trim(); // Use user.fullName from AuthContext
+        const normalizedUserName = user.fullName?.toLowerCase().trim();
 
         if (
           normalizedDetectedName &&
@@ -93,13 +105,14 @@ const VerifiedUpload = () => {
 
           await verifyAgent(fileData.secure_url);
         } else {
-          toast.error("Name detected but does not match your username.");
+          setShowMismatchDialog(true);
         }
       } catch (error) {
         console.error("Error uploading image:", error);
         toast.error("Failed to upload image.");
       } finally {
         setUploading(false);
+        setDetecting(false);
       }
     };
   };
@@ -138,8 +151,6 @@ const VerifiedUpload = () => {
     const extractedText =
       data.responses[0]?.textAnnotations[0]?.description || null;
 
-    console.log("Extracted Text:", extractedText);
-
     return extractedText;
   };
 
@@ -147,21 +158,32 @@ const VerifiedUpload = () => {
     try {
       const response = await axios.put(`${API_URL}/api/user/verify/agent`, {
         userId,
-        imageUrl
+        imageUrl,
       });
       console.log("User data:", response);
-      
+
       if (response.status === 200) {
         updateUser(response.data.user);
-      } 
+        router.push("/my-listings");
+      }
     } catch (error) {
       console.error("Error verifying agent:", error);
-      toast.error("Error to verify agent.");
+      toast.error("Error verifying agent.");
     }
   };
 
+  const handleCancel = () => {
+    setShowMismatchDialog(false);
+    window.location.reload();
+  };
+
+  const handleGoToProfile = () => {
+    setShowMismatchDialog(false);
+    router.push("/profile");
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center p-4 bg-gray-50 h-screen">
+    <div className="flex flex-col items-center justify-center p-4 bg-gray-50 h-screen relative">
       <Card className="w-full max-w-md mx-auto mt-20">
         <CardHeader>
           <CardTitle>Agent ID Verification (NIN)</CardTitle>
@@ -178,7 +200,7 @@ const VerifiedUpload = () => {
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
-                disabled={uploading}
+                disabled={uploading || detecting}
               />
             </div>
             {uploading && (
@@ -205,12 +227,12 @@ const VerifiedUpload = () => {
           <Button
             type="button"
             onClick={() => document.getElementById("imageUpload")?.click()}
-            disabled={uploading}
+            disabled={uploading || detecting}
           >
-            {uploading ? (
+            {uploading || detecting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Uploading
+                {uploading ? "Uploading" : "Detecting"}
               </>
             ) : (
               <>
@@ -220,10 +242,35 @@ const VerifiedUpload = () => {
             )}
           </Button>
         </CardFooter>
-        
       </Card>
+      {(uploading || detecting) && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg flex flex-col items-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="mt-2 text-sm font-medium">
+              {uploading ? "Uploading..." : "Verifying..."}
+            </p>
+          </div>
+        </div>
+      )}
+      <Dialog open={showMismatchDialog} onOpenChange={setShowMismatchDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Name Mismatch</DialogTitle>
+            <DialogDescription>
+              The name detected in the document doesn't match the full name you
+              provided during sign up. Please update your credentials in your
+              profile or upload another document.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button onClick={handleGoToProfile}>Go to Profile</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-};
-
-export default VerifiedUpload;
+}

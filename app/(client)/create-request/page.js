@@ -13,7 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import { HouseIcon, Loader } from "lucide-react";
+import { HouseIcon, Loader2 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import AuthContext from "@/context/AuthContext";
@@ -236,7 +236,7 @@ export default function CreateRequestPage() {
         <Button type="submit" className="w-full">
           {loading ? (
             <div>
-              <Loader className="animate-spin" />
+              <Loader2 className="animate-spin" />
             </div>
           ) : (
             "Submit Request"

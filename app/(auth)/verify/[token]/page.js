@@ -2,7 +2,7 @@
 import { useEffect, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthContext from "@/context/AuthContext";
-import { Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import PageLoader from "@/components/PageLoader";
 
