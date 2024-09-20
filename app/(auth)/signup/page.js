@@ -5,8 +5,7 @@ import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { EyeIcon, EyeOffIcon, HomeIcon, Loader2, Check, X } from "lucide-react";
-import Image from "next/image";
+import { EyeIcon, EyeOffIcon, HomeIcon, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import {
   Select,
@@ -24,9 +23,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
 import AuthContext from "@/context/AuthContext";
 
 const SignupPage = () => {
+  const [fullName, setFullName] = useState("");
+  const [mobile, setMobile] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,7 +55,7 @@ const SignupPage = () => {
     setLoading(true);
     try {
       await signup(username, email, password, role.toUpperCase());
-      setIsModalOpen(true); 
+      setIsModalOpen(true);
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "An unexpected error occurred";
@@ -71,29 +73,30 @@ const SignupPage = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    router.push("/login");
-  };
-
-  const updatePasswordStrength = (pass) => {
+  const calculatePasswordStrength = (pass) => {
     let strength = 0;
-    if (pass.length >= 8) strength++;
-    if (pass.match(/[A-Z]/)) strength++;
-    if (pass.match(/[0-9]/)) strength++;
-    if (pass.match(/[^A-Za-z0-9]/)) strength++;
-    setPasswordStrength(strength);
+    if (pass.length > 6) strength += 20;
+    if (pass.length > 10) strength += 20;
+    if (/[A-Z]/.test(pass)) strength += 20;
+    if (/[0-9]/.test(pass)) strength += 20;
+    if (/[^A-Za-z0-9]/.test(pass)) strength += 20;
+    return strength;
   };
 
   useEffect(() => {
-    updatePasswordStrength(password);
+    setPasswordStrength(calculatePasswordStrength(password));
   }, [password]);
 
-  const getStrengthColor = (index) => {
-    if (index >= passwordStrength) return "bg-gray-200";
-    if (passwordStrength < 2) return "bg-red-500";
-    if (passwordStrength < 4) return "bg-yellow-500";
+  const getStrengthColor = (strength) => {
+    if (strength < 40) return "bg-red-500";
+    if (strength < 80) return "bg-yellow-500";
     return "bg-green-500";
+  };
+
+  const getStrengthText = (strength) => {
+    if (strength < 40) return "Weak";
+    if (strength < 80) return "Medium";
+    return "Strong";
   };
 
   const handleForgotPassword = (e) => {
@@ -106,10 +109,10 @@ const SignupPage = () => {
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 w-full min-h-screen">
-        <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-16 xl:p-20 space-y-6 mt-12">
+        <div className="flex flex-col items-start justify-center p-8 md:p-12 lg:p-16 xl:p-20 space-y-6 mt-14">
           <div className="space-y-2 text-left">
-            <div className="flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full bg-purple-100 px-7 py-2">
-              <HomeIcon className="h-5 w-5 text-[#3aaaf5]" />
+            <div className="flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full bg-purple-100 px-5 py-2">
+              <HomeIcon className="h-4 w-4 text-[#3aaaf5]" />
               <p className="text-sm font-semibold text-[#1d9bf0]">
                 Finding Your Dream Home
               </p>
@@ -126,7 +129,7 @@ const SignupPage = () => {
               <div className="grid gap-2">
                 <Label htmlFor="role">Role</Label>
                 <Select onValueChange={(value) => setRole(value)} required>
-                  <SelectTrigger className="w-full h-12">
+                  <SelectTrigger className="w-full h-10">
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
                   <SelectContent>
@@ -143,6 +146,18 @@ const SignupPage = () => {
                 </Select>
               </div>
               <div className="grid gap-2">
+                <Label htmlFor="fullName">Full Name</Label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full h-10"
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
                   id="username"
@@ -150,7 +165,7 @@ const SignupPage = () => {
                   placeholder="Enter your username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full h-12"
+                  className="w-full h-10"
                   required
                 />
               </div>
@@ -162,7 +177,19 @@ const SignupPage = () => {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12"
+                  className="w-full h-10"
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="mobile">Phone Number</Label>
+                <Input
+                  id="mobile"
+                  type="tel"
+                  placeholder="Enter your mobile number"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  className="w-full h-10"
                   required
                 />
               </div>
@@ -177,7 +204,7 @@ const SignupPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     onFocus={() => setIsPasswordFocused(true)}
                     onBlur={() => setIsPasswordFocused(false)}
-                    className="w-full h-12 pr-10"
+                    className="w-full h-10 pr-10"
                     required
                   />
                   <button
@@ -193,51 +220,15 @@ const SignupPage = () => {
                   </button>
                 </div>
                 {isPasswordFocused && (
-                  <div className="mt-2 p-3 bg-gray-50 rounded-md space-y-2">
-                    <div className="flex space-x-2">
-                      {[...Array(4)].map((_, i) => (
-                        <div
-                          key={i}
-                          className={`h-2 flex-1 rounded ${getStrengthColor(
-                            i
-                          )}`}
-                        />
-                      ))}
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Password strength:</span>
+                      <span>{getStrengthText(passwordStrength)}</span>
                     </div>
-                    <ul className="text-sm space-y-1">
-                      <li className="flex items-center space-x-2">
-                        {password.length >= 8 ? (
-                          <Check size={16} className="text-green-500" />
-                        ) : (
-                          <X size={16} className="text-red-500" />
-                        )}
-                        <span>At least 8 characters</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        {password.match(/[A-Z]/) ? (
-                          <Check size={16} className="text-green-500" />
-                        ) : (
-                          <X size={16} className="text-red-500" />
-                        )}
-                        <span>At least one capital letter</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        {password.match(/[0-9]/) ? (
-                          <Check size={16} className="text-green-500" />
-                        ) : (
-                          <X size={16} className="text-red-500" />
-                        )}
-                        <span>At least one number</span>
-                      </li>
-                      <li className="flex items-center space-x-2">
-                        {password.match(/[^A-Za-z0-9]/) ? (
-                          <Check size={16} className="text-green-500" />
-                        ) : (
-                          <X size={16} className="text-red-500" />
-                        )}
-                        <span>At least one symbol</span>
-                      </li>
-                    </ul>
+                    <Progress
+                      value={passwordStrength}
+                      className={`h-2 ${getStrengthColor(passwordStrength)}`}
+                    />
                   </div>
                 )}
               </div>
@@ -250,7 +241,7 @@ const SignupPage = () => {
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full h-12 pr-10"
+                    className="w-full h-10 pr-10"
                     required
                   />
                   <button
@@ -281,7 +272,7 @@ const SignupPage = () => {
             </div>
             <Button
               type="submit"
-              className="w-full h-12 flex items-center justify-center"
+              className="w-full h-10 flex items-center justify-center"
               disabled={loading}
             >
               {loading ? <Loader2 className="animate-spin" /> : "Sign Up"}
@@ -342,7 +333,7 @@ const SignupPage = () => {
                 placeholder="Enter your email"
                 value={forgotPasswordEmail}
                 onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                className="w-full h-12"
+                className="w-full h-10"
                 required
               />
             </div>

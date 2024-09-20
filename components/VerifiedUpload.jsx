@@ -40,6 +40,7 @@ export default function VerifiedUpload() {
   const [detecting, setDetecting] = useState(false);
   const [formData, setFormData] = useState({ avatar: "" });
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [showPendingDialog, setShowPendingDialog] = useState(false);
   const [showMismatchDialog, setShowMismatchDialog] = useState(false);
 
   const handleImageUpload = async (e) => {
@@ -81,7 +82,7 @@ export default function VerifiedUpload() {
         setUploadProgress(100);
 
         if (!res.ok) {
-          throw new Error("Failed to upload image to Cloudinary");
+          throw new Error("Failed to upload image");
         }
 
         const fileData = await res.json();
@@ -100,8 +101,7 @@ export default function VerifiedUpload() {
           normalizedDetectedName &&
           normalizedDetectedName.includes(normalizedUserName)
         ) {
-          console.log("Successfully detected the user name.");
-          toast.success("Detected name matches your username!");
+          toast.success("Credentials verified.");
 
           await verifyAgent(fileData.secure_url);
         } else {
@@ -113,6 +113,7 @@ export default function VerifiedUpload() {
       } finally {
         setUploading(false);
         setDetecting(false);
+        setShowPendingDialog(true);  // Show the pending dialog after upload
       }
     };
   };
@@ -160,7 +161,6 @@ export default function VerifiedUpload() {
         userId,
         imageUrl,
       });
-      console.log("User data:", response);
 
       if (response.status === 200) {
         updateUser(response.data.user);
@@ -182,13 +182,18 @@ export default function VerifiedUpload() {
     router.push("/profile");
   };
 
+  const handleGoToListings = () => {
+    setShowPendingDialog(false);
+    router.push("/my-listings");
+  };
+
   return (
     <div className="flex flex-col items-center justify-center p-4 bg-gray-50 h-screen relative">
       <Card className="w-full max-w-md mx-auto mt-20">
         <CardHeader>
-          <CardTitle>Agent ID Verification (NIN)</CardTitle>
+          <CardTitle>Agent ID Verification (NIN/CAC)</CardTitle>
           <CardDescription>
-            Upload an image of your NIN for verification of agent.
+            Upload an image of your NIN or CAC for verification of agent.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -253,21 +258,38 @@ export default function VerifiedUpload() {
           </div>
         </div>
       )}
+      
+      {/* Pending Approval Dialog */}
+      <Dialog open={showPendingDialog} onOpenChange={setShowPendingDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>ID Pending Approval</DialogTitle>
+            <DialogDescription>
+              Your ID is currently pending approval. You will receive a notification once it's approved. 
+              You can still proceed with listing your properties.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={handleGoToListings}>Go to My Listings</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       <Dialog open={showMismatchDialog} onOpenChange={setShowMismatchDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Name Mismatch</DialogTitle>
+            <DialogTitle>Invalid Credentials</DialogTitle>
             <DialogDescription>
-              The name detected in the document doesn't match the full name you
+              The name detected in the doesn't match the full name you
               provided during sign up. Please update your credentials in your
               profile or upload another document.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
+          <Button onClick={handleGoToProfile}>Go to Profile</Button>
             <Button variant="outline" onClick={handleCancel}>
-              Cancel
+              Try Again
             </Button>
-            <Button onClick={handleGoToProfile}>Go to Profile</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

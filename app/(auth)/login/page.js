@@ -98,7 +98,7 @@ const LoginPage = () => {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12"
+                  className="w-full h-10"
                   required
                 />
               </div>
@@ -110,7 +110,7 @@ const LoginPage = () => {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-12"
+                  className="w-full h-10"
                   required
                 />
                 <div
