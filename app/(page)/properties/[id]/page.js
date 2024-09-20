@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import {
   HeartIcon,
   CheckIcon,
-  ShareIcon,
+  User,
   MailIcon,
   ChevronDown,
   ChevronUp,
@@ -30,6 +30,7 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import GoogleMapComponent from "@/components/map/GoogleMap";
 import { addChat } from "@/utils/message";
@@ -340,11 +341,9 @@ export default function PropertiesDetails() {
                 </ul>
               </CollapsibleContent>
             </Collapsible>
-
-            <div>
-              <p className="text-gray-500 mb-1">Contact</p>
-              <div className="flex justify-between w-full">
-                <div className="flex items-center gap-2">
+            <Card>
+              <CardContent className="flex items-center space-x-4 py-4">
+                <div className="rounded-full bg-muted p-2">
                   <Avatar className="w-10 h-10 border">
                     <AvatarImage
                       src={post.user.avatar}
@@ -354,16 +353,18 @@ export default function PropertiesDetails() {
                       {post.user.username.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div>
-                    <p className="font-bold">{post.user.username}</p>
-                  </div>
                 </div>
-
+                <div className="flex-grow">
+                  <h3 className="font-semibold text-sm">
+                    {post.user?.fullName}
+                  </h3>
+                  <p>{post.user.username}</p>
+                </div>
                 <Link href={`/agent-profile/${post.user.id}`}>
                   <Button variant="outline">View Profile</Button>
                 </Link>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
           <div>
             <GoogleMapComponent address={post.address} />
@@ -372,23 +373,24 @@ export default function PropertiesDetails() {
       </div>
 
       <div className="sticky inset-x-0 bottom-0 z-10 flex items-center justify-between bg-primary px-4 lg:px-20 py-3">
-        <div className="flex items-center">
+        <div className="flex items-center text-white text-sm">
           <img
             src={post.user.avatar}
             alt={post.user.username}
             className="w-12 h-12 rounded-full mr-4"
           />
           <div>
-            <h1 className="text-white font-bold">{post.user.username}</h1>
+            <h2 className="font-semibold">{post.user?.fullName}</h2>
+            <p>{post.user.username}</p>
           </div>
         </div>
         <Button
           variant="outline"
-          className="gap-3 text-primary"
+          className="gap-2 text-primary"
           onClick={() => handleSendMessage(post.user.id)}
         >
           <MailIcon />
-          Send a Message
+          Send Message
         </Button>
       </div>
 
