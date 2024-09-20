@@ -56,10 +56,14 @@ export default function CreateListing() {
   });
 
   useEffect(() => {
-    if (user && !user.verificationStatus) {
+    if (
+      user.verificationStatus === "rejected" ||
+      user.verificationStatus === "unverified"
+    ) {
       router.push("/my-listings");
     }
   }, [user, router]);
+
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;

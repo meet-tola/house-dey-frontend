@@ -68,7 +68,6 @@ const MyListings = () => {
       );
       if (response.status === 200) {
         toast.success("Post deleted successfully!");
-        // Optionally update properties after deletion
         setProperties((prevProperties) =>
           prevProperties.filter((property) => property.id !== id)
         );
@@ -83,12 +82,13 @@ const MyListings = () => {
   };
 
   const handleCreatePostClick = () => {
-    if (user.verificationStatus) {
-      router.push("/create-post");
-    } else {
+    if (user.verificationStatus === "approved" || user.verificationStatus === "pending") {
+      router.push("/create-listing");
+    } else if (user.verificationStatus === "unverified" || user.verificationStatus === "rejected") {
       setShowPopup(true);
     }
   };
+  
 
   return (
     <div className="max-w-7xl mx-auto p-6 px-4 md:px-16 mt-20">
@@ -186,7 +186,7 @@ const MyListings = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem>
-                            <Link href={`/edit-post/${property.id}`}>Edit</Link>
+                            <Link href={`/edit-listing/${property.id}`}>Edit</Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleDelete(property.id)}
@@ -208,15 +208,25 @@ const MyListings = () => {
       <Dialog open={showPopup} onOpenChange={setShowPopup}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Verification Required</DialogTitle>
+            <DialogTitle>
+              {user.verificationStatus === "unverified"
+                ? "Verification Required"
+                : user.verificationStatus === "rejected"
+                ? "Account Suspended"
+                : "Verification in Progress"}
+            </DialogTitle>
             <DialogDescription>
-              As an unverified agent, you must complete the verification process
-              to access all features.
+              {user.verificationStatus === "unverified"
+                ? "As an unverified agent, you must complete the verification process to access all features."
+                : user.verificationStatus === "rejected"
+                ? "Your verification was rejected. Please upload the correct credentials to regain access to post creation."
+                : "Your verification is currently in progress. Please wait for approval before creating a post."}
             </DialogDescription>
           </DialogHeader>
           <p className="py-4">
-            Please upload your official real estate agent ID to verify your
-            status.
+            {user.verificationStatus === "rejected"
+              ? "Please upload correct credentials for re-verification."
+              : "Please upload your official document ID to verify your status."}
           </p>
           <DialogFooter>
             <Button asChild>

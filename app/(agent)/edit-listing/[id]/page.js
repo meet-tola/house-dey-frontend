@@ -42,7 +42,7 @@ const API_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_API_URL
     : "http://localhost:8800";
-    
+
 export default function EditListing() {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
@@ -65,7 +65,10 @@ export default function EditListing() {
   });
 
   useEffect(() => {
-    if (user && !user.verificationStatus) {
+    if (
+      user.verificationStatus === "rejected" ||
+      user.verificationStatus === "unverified"
+    ) {
       router.push("/my-listings");
     }
   }, [user, router]);
