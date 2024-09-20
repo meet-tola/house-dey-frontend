@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import AuthContext from "@/context/AuthContext";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
 import { useRouter } from "next/navigation";
+import CityAutocomplete from "@/components/map/CityAutoComplete";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -53,6 +54,13 @@ export default function CreateRequestPage() {
     setFormData((prevFormData) => ({
       ...prevFormData,
       address: address,
+    }));
+  };
+
+  const handleCitySelect = (city) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      city: city,
     }));
   };
 
@@ -115,7 +123,7 @@ export default function CreateRequestPage() {
           <div className="p-2 bg-white rounded-full">
             <HouseIcon />
           </div>
-           Create a Requests
+          Create a Requests
         </div>
         <Link href="/my-requests">
           <Button variant="outline">My Requests</Button>
@@ -187,12 +195,7 @@ export default function CreateRequestPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">City</Label>
-            <Input
-              id="city"
-              placeholder="City"
-              value={formData.city}
-              onChange={handleInputChange}
-            />
+            <CityAutocomplete onCitySelect={handleCitySelect} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">State</Label>

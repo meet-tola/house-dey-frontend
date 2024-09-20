@@ -1,9 +1,12 @@
 import React, { useEffect } from 'react';
-import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
-import useOnclickOutside from 'react-cool-onclickoutside';
-import { Input } from '../ui/input';
+import usePlacesAutocomplete, {
+  getGeocode,
+  getLatLng,
+} from "use-places-autocomplete";
+import useOnclickOutside from "react-cool-onclickoutside";
+import { Input } from "../ui/input";
 
-const AddressAutocomplete = ({ onAddressSelect, initialValue = '' }) => {
+const CityAutocomplete = ({ onCitySelect, initialValue = '' }) => {
   const {
     ready,
     value,
@@ -12,9 +15,10 @@ const AddressAutocomplete = ({ onAddressSelect, initialValue = '' }) => {
     clearSuggestions,
   } = usePlacesAutocomplete({
     requestOptions: {
-      componentRestrictions: { country: 'ng' }, 
+      types: ["(cities)"],
+      componentRestrictions: { country: "ng" },
     },
-    debounce: 300, 
+    debounce: 300,
   });
 
   useEffect(() => {
@@ -31,19 +35,21 @@ const AddressAutocomplete = ({ onAddressSelect, initialValue = '' }) => {
     setValue(e.target.value);
   };
 
-  const handleSelect = ({ description }) => async () => {
-    setValue(description, false);
-    clearSuggestions();
+  const handleSelect =
+    ({ description }) =>
+    async () => {
+      setValue(description, false);
+      clearSuggestions();
 
-    try {
-      const results = await getGeocode({ address: description });
-      const { lat, lng } = await getLatLng(results[0]);
+      try {
+        const results = await getGeocode({ address: description });
+        const { lat, lng } = await getLatLng(results[0]);
 
-      onAddressSelect(description); // Pass the selected address back to the parent
-    } catch (error) {
-      console.error('Error fetching address details:', error);
-    }
-  };
+        onCitySelect(description);
+      } catch (error) {
+        console.error("Error fetching city details:", error);
+      }
+    };
 
   const renderSuggestions = () =>
     data.map((suggestion) => {
@@ -69,11 +75,11 @@ const AddressAutocomplete = ({ onAddressSelect, initialValue = '' }) => {
         value={value}
         onChange={handleInput}
         disabled={!ready}
-        placeholder="Enter an Address"
+        placeholder="Enter a City or Area"
         className="w-full p-2 border border-gray-300 rounded-md shadow-sm"
         required
       />
-      {status === 'OK' && (
+      {status === "OK" && (
         <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
           {renderSuggestions()}
         </ul>
@@ -82,4 +88,4 @@ const AddressAutocomplete = ({ onAddressSelect, initialValue = '' }) => {
   );
 };
 
-export default AddressAutocomplete;
+export default CityAutocomplete;

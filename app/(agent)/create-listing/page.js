@@ -28,6 +28,7 @@ import ImageUploader from "@/components/ui/ImageUploader";
 import AuthContext from "@/context/AuthContext";
 import { Loader2 } from "lucide-react";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
+import CityAutocomplete from "@/components/map/CityAutoComplete";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -84,6 +85,13 @@ export default function CreateListing() {
     setFormData((prevFormData) => ({
       ...prevFormData,
       address: address,
+    }));
+  };
+
+  const handleCitySelect = (city) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      city: city,
     }));
   };
 
@@ -220,14 +228,8 @@ export default function CreateListing() {
                 <AddressAutocomplete onAddressSelect={handleAddressSelect} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="city">City**</Label>
-                <Input
-                  id="city"
-                  placeholder="Enter a city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  required
-                />
+                <Label htmlFor="address">City**</Label>
+                <CityAutocomplete onCitySelect={handleCitySelect} />
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

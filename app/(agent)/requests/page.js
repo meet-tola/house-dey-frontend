@@ -146,10 +146,10 @@ export default function PropertyRequestPage() {
                     <SelectValue placeholder="Select Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Apartment">Apartment</SelectItem>
-                    <SelectItem value="House">House</SelectItem>
-                    <SelectItem value="Condo">Condo</SelectItem>
-                    <SelectItem value="Townhouse">Townhouse</SelectItem>
+                    <SelectItem value="apartment">Apartment</SelectItem>
+                    <SelectItem value="house">House</SelectItem>
+                    <SelectItem value="shop">Shop</SelectItem>
+                    <SelectItem value="hostel">Hostel</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -165,8 +165,8 @@ export default function PropertyRequestPage() {
                     <SelectValue placeholder="Select Request Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="For Rent">For Rent</SelectItem>
-                    <SelectItem value="For Sale">For Sale</SelectItem>
+                    <SelectItem value="rent">For Rent</SelectItem>
+                    <SelectItem value="buy">For Sale</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

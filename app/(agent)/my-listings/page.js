@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState, useContext } from "react";
 import {
   Breadcrumb,
@@ -30,14 +31,25 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import AuthContext from "@/context/AuthContext";
 
 const MyListings = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const router = useRouter();
   const { user } = useContext(AuthContext);
 
@@ -61,15 +73,17 @@ const MyListings = () => {
     }).format(price);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!deleteId) return;
+
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${deleteId}`
       );
       if (response.status === 200) {
         toast.success("Post deleted successfully!");
         setProperties((prevProperties) =>
-          prevProperties.filter((property) => property.id !== id)
+          prevProperties.filter((property) => property.id !== deleteId)
         );
         router.push("/my-listings");
       } else {
@@ -78,20 +92,28 @@ const MyListings = () => {
     } catch (error) {
       toast.error("An error occurred while deleting the post.");
       console.error("Error deleting post:", error);
+    } finally {
+      setDeleteId(null);
+      setShowDeleteAlert(false);
     }
   };
 
   const handleCreatePostClick = () => {
-    if (user.verificationStatus === "approved" || user.verificationStatus === "pending") {
+    if (
+      user.verificationStatus === "approved" ||
+      user.verificationStatus === "pending"
+    ) {
       router.push("/create-listing");
-    } else if (user.verificationStatus === "unverified" || user.verificationStatus === "rejected") {
+    } else if (
+      user.verificationStatus === "unverified" ||
+      user.verificationStatus === "rejected"
+    ) {
       setShowPopup(true);
     }
   };
-  
 
   return (
-    <div className="max-w-7xl mx-auto p-6 px-4 md:px-16 mt-20">
+    <div className="mt-16 mx-auto px-4 md:px-16 py-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -138,9 +160,9 @@ const MyListings = () => {
                     </div>
                   </div>
                 ))
-              : properties.map((property, index) => (
+              : properties.map((property) => (
                   <div
-                    key={index}
+                    key={property.id}
                     className="min-w-[300px] lg:min-w-[250px] w-[300px] rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white relative"
                   >
                     <img
@@ -174,25 +196,24 @@ const MyListings = () => {
                       </div>
                     </div>
 
-                    {/* Dropdown Menu for Edit and Delete */}
                     <div className="absolute top-3 right-3">
                       <DropdownMenu>
-                        <DropdownMenuTrigger>
-                          <DropdownMenuTrigger asChild>
-                            <div className="bg-white text-primary px-3 py-2 cursor-pointer rounded-md hover:bg-accent">
-                              <MoreVertical className="w-5 h-5" />
-                            </div>
-                          </DropdownMenuTrigger>
+                        <DropdownMenuTrigger asChild>
+                          <div className="bg-white text-primary px-3 py-2 cursor-pointer rounded-md hover:bg-accent">
+                            <MoreVertical className="w-5 h-5" />
+                          </div>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem>
-                            <Link href={`/edit-listing/${property.id}`}>Edit</Link>
+                            <Link href={`/edit-listing/${property.id}`}>
+                              <div className="p-1">Edit</div>
+                            </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(property.id)}
-                            className="text-red-500"
-                          >
-                            Delete
+                          <DropdownMenuItem onSelect={() => {
+                            setDeleteId(property.id);
+                            setShowDeleteAlert(true);
+                          }}>
+                            <div className="p-1 text-red-500">Delete</div>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -235,6 +256,24 @@ const MyListings = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={showDeleteAlert} onOpenChange={setShowDeleteAlert}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              property listing and remove the data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

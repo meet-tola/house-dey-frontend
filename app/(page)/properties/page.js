@@ -41,6 +41,7 @@ import NoPropertiesFound from "@/components/NoPropertiesFound";
 import GoogleMapComponent from "@/components/map/GoogleMap";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
 import Link from "next/link";
+import CityAutocomplete from "@/components/map/CityAutoComplete";
 
 export default function PropertiesPage() {
   const searchParams = useSearchParams();
@@ -168,6 +169,12 @@ export default function PropertiesPage() {
       address: address,
     }));
   };
+  const handleCitySelect = (city) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      city: city,
+    }));
+  };
 
   return (
     <div className="flex flex-col min-h-screen mt-16">
@@ -178,17 +185,10 @@ export default function PropertiesPage() {
           <div className="w-full flex justify-center">
             <div className="hidden md:flex gap-2 justify-center items-center w-full">
               <div className="relative flex-grow max-w-[300px]">
-                <AddressAutocomplete onAddressSelect={handleAddressSelect} />
+                <CityAutocomplete onCitySelect={handleCitySelect} />
               </div>
               <div className="relative w-32">
-                <Locate className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  name="city"
-                  placeholder="Enter a city"
-                  className="pl-9 pr-3 py-2 w-full"
-                  value={filters.city}
-                  onChange={handleInputChange}
-                />
+                <AddressAutocomplete onAddressSelect={handleAddressSelect} />
               </div>
 
               <div className="relative w-32">
@@ -298,7 +298,8 @@ export default function PropertiesPage() {
 
         {/* Filter Button for Small Screens */}
         <div className="md:hidden flex justify-between gap-2 w-full">
-          <AddressAutocomplete onAddressSelect={handleAddressSelect} />
+          <CityAutocomplete onCitySelect={handleCitySelect} />
+
           <div className="flex gap-2">
             {/* Search Button */}
             <Button
@@ -327,17 +328,8 @@ export default function PropertiesPage() {
                   <DialogTitle>Search Filters</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
-                  {/* City Input */}
-                  <div className="flex items-center border rounded-lg px-2 py-1 h-10">
-                    <MapPin className="h-4 w-4 text-gray-400 mr-2" />
-                    <Input
-                      name="city"
-                      placeholder="City"
-                      className="border-none focus:ring-0 text-sm h-8 w-full"
-                      value={filters.city}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+                  {/* Address Input */}
+                  <AddressAutocomplete onAddressSelect={handleAddressSelect} />
 
                   {/* Min Price Input */}
                   <div className="flex items-center border rounded-lg px-2 py-1 h-10">

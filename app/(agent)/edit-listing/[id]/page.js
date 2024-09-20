@@ -37,6 +37,8 @@ import toast from "react-hot-toast";
 import ImageUploader from "@/components/ui/ImageUploader";
 import AuthContext from "@/context/AuthContext";
 import { Edit3, Loader2 } from "lucide-react";
+import AddressAutocomplete from "@/components/map/AddressAutoComplete";
+import CityAutocomplete from "@/components/map/CityAutoComplete";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -120,6 +122,20 @@ export default function EditListing() {
     }));
   };
 
+  const handleAddressSelect = (address) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      address: address,
+    }));
+  };
+
+  const handleCitySelect = (city) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      city: city,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -180,7 +196,7 @@ export default function EditListing() {
   };
 
   return (
-    <div className="max-w-7xl mt-10 mx-auto px-4 md:px-16 py-12 sm:py-16 lg:py-20">
+    <div className="mt-16 mx-auto px-4 md:px-16 py-6">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -284,20 +300,16 @@ export default function EditListing() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="address">Address**</Label>
-                <Input
-                  id="address"
-                  placeholder="Enter an address"
-                  value={formData.address}
-                  onChange={handleInputChange}
+                <AddressAutocomplete
+                  onAddressSelect={handleAddressSelect}
+                  initialValue={formData.address}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="city">City**</Label>
-                <Input
-                  id="city"
-                  placeholder="Enter a city"
-                  value={formData.city}
-                  onChange={handleInputChange}
+                <CityAutocomplete
+                  onCitySelect={handleCitySelect}
+                  initialValue={formData.city}
                 />
               </div>
             </div>
