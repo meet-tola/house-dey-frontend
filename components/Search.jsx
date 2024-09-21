@@ -11,6 +11,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { HomeIcon, MapPinIcon, DollarSignIcon, Loader2 } from "lucide-react";
+import CityAutocomplete from "./map/CityAutoComplete";
 
 export default function Search() {
   const [activeTab, setActiveTab] = useState("buy");
@@ -21,9 +22,12 @@ export default function Search() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const handleCitySelect = (selectedCity) => {
+    setCity(selectedCity);
+  };
   const handleSearch = () => {
     setLoading(true);
-  
+
     const query = {
       city: city || undefined,
       type: activeTab,
@@ -31,18 +35,17 @@ export default function Search() {
       minPrice: minPrice || undefined,
       maxPrice: maxPrice || undefined,
     };
-  
+
     const queryString = Object.keys(query)
       .filter((key) => query[key] !== undefined)
       .map(
         (key) => `${encodeURIComponent(key)}=${encodeURIComponent(query[key])}`
       )
       .join("&");
-  
+
     router.push(`/properties?${queryString}`);
-    setLoading(false); 
+    setLoading(false);
   };
-  
 
   return (
     <div className="flex flex-col items-start">
@@ -62,14 +65,8 @@ export default function Search() {
       </div>
       <div className="bg-white p-4 rounded-b-xl rounded-tr-xl shadow-lg">
         <div className="flex flex-wrap gap-2">
-          <div className="flex items-center w-full md:w-auto border rounded-lg px-2 py-1">
-            <MapPinIcon className="h-5 w-5 text-gray-400 mr-2" />
-            <Input
-              placeholder="City"
-              className="w-full border-none focus:ring-0"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-            />
+          <div className="flex w-full md:w-auto">
+            <CityAutocomplete onCitySelect={handleCitySelect} />
           </div>
           <div className="flex items-center w-full md:w-auto border rounded-lg px-2 py-1">
             <HomeIcon className="h-5 w-5 text-gray-400 mr-2" />
@@ -104,8 +101,8 @@ export default function Search() {
               </Select>
             </div>
             <div className="flex items-center w-full md:w-auto border rounded-lg px-2 py-1">
-            <div className="h-5 w-5 text-gray-400 mr-2">₦</div>
-            <Select onValueChange={(value) => setMaxPrice(value)}>
+              <div className="h-5 w-5 text-gray-400 mr-2">₦</div>
+              <Select onValueChange={(value) => setMaxPrice(value)}>
                 <SelectTrigger className="w-full border-none focus:ring-0">
                   <SelectValue placeholder="Max Price" />
                 </SelectTrigger>

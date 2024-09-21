@@ -40,13 +40,9 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 201) {
         const { userId } = response.data;
         localStorage.setItem("userId", userId);
-        console.log("Signup successful. Please verify your email.");
       }
     } catch (error) {
-      console.error(
-        "Error during signup:",
-        error.response?.data || error.message
-      );
+      throw new Error(error.response?.data?.message || "Failed to signup.");
     }
   };
 
@@ -67,10 +63,6 @@ export const AuthProvider = ({ children }) => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error(
-        "Error during login:",
-        error.response?.data || error.message
-      );
       throw new Error(error.response?.data?.message || "Failed to login.");
     }
   };
@@ -88,7 +80,6 @@ export const AuthProvider = ({ children }) => {
       Cookies.remove("token");
       localStorage.removeItem("user");
       delete axios.defaults.headers.common["Authorization"];
-      console.log("Logout successful.");
     } catch (error) {
       console.error(
         "Error during logout:",
@@ -129,7 +120,6 @@ export const AuthProvider = ({ children }) => {
     if (updatedUser) {
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
-      console.log("User updated successfully.");
     } else {
       console.error("Invalid user data:", updatedUser);
     }
@@ -196,7 +186,6 @@ export const AuthProvider = ({ children }) => {
         Cookies.remove("token");
         localStorage.removeItem("user");
         delete axios.defaults.headers.common["Authorization"];
-        console.log("Account deleted successfully.");
       }
     } catch (error) {
       console.error(

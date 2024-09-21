@@ -41,6 +41,9 @@ const SignupPage = () => {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [isUsernameFocused, setIsUsernameFocused] = useState(false);
+  const [usernameLength, setUsernameLength] = useState(0);
+
   const router = useRouter();
   const { signup } = useContext(AuthContext);
 
@@ -50,14 +53,17 @@ const SignupPage = () => {
       toast.error('Passwords do not match.');
       return;
     }
+    if (usernameLength < 4) {
+      toast.error('Username must be at least 4 characters.');
+      return;
+    }
     setLoading(true);
     try {
       await signup(username, email, password, role.toUpperCase());
       toast.success('Check your email for verification.');
       router.push('/verify-email'); 
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'An unexpected error occurred';
-      toast.error('Error: ' + errorMessage);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -85,6 +91,10 @@ const SignupPage = () => {
     setPasswordStrength(calculatePasswordStrength(password));
   }, [password]);
 
+  useEffect(() => {
+    setUsernameLength(username.length);
+  }, [username]);
+
   const getStrengthColor = (strength) => {
     if (strength < 40) return 'bg-red-500';
     if (strength < 80) return 'bg-yellow-500';
@@ -102,6 +112,18 @@ const SignupPage = () => {
     console.log('Forgot password for:', forgotPasswordEmail);
     toast.success('Password reset link sent to your email');
     setIsForgotPasswordModalOpen(false);
+  };
+
+  const getUsernameMessage = (length) => {
+    if (length === 0) return '';
+    if (length < 4) return 'Username must be at least 4 characters long.';
+    return 'Username is valid.';
+  };
+
+  const getUsernameColor = (length) => {
+    if (length === 0) return '';
+    if (length < 4) return 'text-red-500';
+    return 'text-green-500';
   };
 
   return (
@@ -124,6 +146,7 @@ const SignupPage = () => {
           </div>
           <form className="w-full max-w-md space-y-2" onSubmit={handleSignup}>
             <div className="w-full space-y-4">
+              {/* Role Selector */}
               <div className="grid gap-2">
                 <Label htmlFor="role">Role</Label>
                 <Select onValueChange={(value) => setRole(value)} required>
@@ -134,15 +157,17 @@ const SignupPage = () => {
                     <SelectGroup>
                       <SelectLabel>Roles</SelectLabel>
                       <SelectItem value="CLIENT">
-                        You want to search for a property (Individual)
+                        I want to search for a property (Individual)
                       </SelectItem>
                       <SelectItem value="AGENT">
-                        You want to list your property (Agent/Landlord)
+                        I want to list your property (Agent/Landlord)
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Full Name Input */}
               <div className="grid gap-2">
                 <Label htmlFor="fullName">Full Name</Label>
                 <Input
@@ -155,7 +180,9 @@ const SignupPage = () => {
                   required
                 />
               </div>
-              <div className="grid gap-2">
+
+              {/* Username Input */}
+              <div className="grid gap-2 relative">
                 <Label htmlFor="username">Username</Label>
                 <Input
                   id="username"
@@ -163,10 +190,19 @@ const SignupPage = () => {
                   placeholder="Enter your username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  onFocus={() => setIsUsernameFocused(true)}
+                  onBlur={() => setIsUsernameFocused(false)}
                   className="w-full h-10"
                   required
                 />
+                {isUsernameFocused && (
+                  <p className={`mt-1 text-sm ${getUsernameColor(usernameLength)}`}>
+                    {getUsernameMessage(usernameLength)}
+                  </p>
+                )}
               </div>
+
+              {/* Email Input */}
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -179,6 +215,8 @@ const SignupPage = () => {
                   required
                 />
               </div>
+
+              {/* Mobile Input */}
               <div className="grid gap-2">
                 <Label htmlFor="mobile">Phone Number</Label>
                 <Input
@@ -191,6 +229,8 @@ const SignupPage = () => {
                   required
                 />
               </div>
+
+              {/* Password Input */}
               <div className="grid gap-2 relative">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
@@ -230,6 +270,8 @@ const SignupPage = () => {
                   </div>
                 )}
               </div>
+
+              {/* Confirm Password Input */}
               <div className="grid gap-2 relative">
                 <Label htmlFor="confirm-password">Confirm Password</Label>
                 <div className="relative">
@@ -257,6 +299,7 @@ const SignupPage = () => {
               </div>
             </div>
 
+            {/* Forgot Password Link */}
             <div className="w-full text-sm">
               <Button
                 type="button"
@@ -268,6 +311,8 @@ const SignupPage = () => {
               </Button>{' '}
               Let get you back in.
             </div>
+
+            {/* Signup Button */}
             <Button
               type="submit"
               className="w-full h-10 flex items-center justify-center"
@@ -275,6 +320,8 @@ const SignupPage = () => {
             >
               {loading ? <Loader2 className="animate-spin" /> : 'Sign Up'}
             </Button>
+
+            {/* Already have an account */}
             <div className="w-full flex items-center justify-center">
               <p>
                 Already part of the family{' '}
