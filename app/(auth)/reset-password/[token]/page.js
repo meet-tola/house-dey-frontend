@@ -47,7 +47,7 @@ const ResetPasswordPage = () => {
         <div className="w-full flex flex-col justify-center items-center">
           <img
             alt="Housedey logo"
-            src="/logo.svg"
+            src="/logo.png"
             className="w-[150px] h-[80px] object-contain"
           />
           <h2 className="text-3xl font-bold text-center">Reset Password</h2>

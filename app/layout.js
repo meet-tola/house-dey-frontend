@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/logo2.svg" sizes="any" />
+        <link rel="icon" href="/logo2.png" sizes="any" />
       </head>
       <AuthProvider>
         <SocketContextProvider>

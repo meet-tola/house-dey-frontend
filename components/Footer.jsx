@@ -12,7 +12,7 @@ const Footer = () => {
             className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse"
           >
             <Image
-              src="/logo.svg"
+              src="/logo.png"
               width={160}
               height={40}
               alt="house-dey-logo"

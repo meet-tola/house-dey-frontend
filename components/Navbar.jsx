@@ -116,7 +116,7 @@ export default function Navbar() {
                       prefetch={false}
                     >
                       <Image
-                        src="/logo.svg"
+                        src="/logo.png"
                         width={160}
                         height={40}
                         alt="house-dey-logo"
@@ -142,14 +142,14 @@ export default function Navbar() {
           </div>
           <Link href="/" className="flex items-center gap-2" prefetch={false}>
             <Image
-              src="/logo.svg"
+              src="/logo.png"
               width={160}
               height={40}
               alt="house-dey-logo"
               className="hidden md:block"
             />
             <Image
-              src="/logo2.svg"
+              src="/logo2.png"
               width={60}
               height={40}
               alt="house-dey-logo"
