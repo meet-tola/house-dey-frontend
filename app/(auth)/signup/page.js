@@ -169,7 +169,7 @@ const SignupPage = () => {
 
               {/* Full Name Input */}
               <div className="grid gap-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">Full Name/Company Name</Label>
                 <Input
                   id="fullName"
                   type="text"
