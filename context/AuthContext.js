@@ -28,11 +28,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const signup = async (username, email, password, role) => {
+  const signup = async (fullName, username, email, mobile, password, role) => {
     try {
       const response = await axios.post(`${API_URL}/api/auth/register`, {
+        fullName,
         username,
         email,
+        mobile,
         password,
         role,
       });
@@ -112,7 +114,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "An unexpected error occurred.";
-        throw new Error(errorMessage);
+      throw new Error(errorMessage);
     }
   };
 

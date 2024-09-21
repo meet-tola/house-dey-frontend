@@ -60,7 +60,7 @@ const SignupPage = () => {
     }
     setLoading(true);
     try {
-      await signup(username, email, password, role.toUpperCase());
+      await signup(fullName, username, email, mobile, password, role.toUpperCase());
       toast.success("Check your email for verification.");
       router.push("/verify-email");
     } catch (error) {
@@ -161,7 +161,7 @@ const SignupPage = () => {
                         I want to search for a property (Individual)
                       </SelectItem>
                       <SelectItem value="AGENT">
-                        I want to list your property (Agent/Landlord)
+                        I want to list my property (Agent/Landlord)
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>
