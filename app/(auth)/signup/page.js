@@ -1,12 +1,12 @@
-'use client';
-import { useState, useContext, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { EyeIcon, EyeOffIcon, HomeIcon, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+"use client";
+import { useState, useContext, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { EyeIcon, EyeOffIcon, HomeIcon, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
 import {
   Select,
   SelectContent,
@@ -15,7 +15,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -23,24 +23,25 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Progress } from '@/components/ui/progress';
-import AuthContext from '@/context/AuthContext';
+import { Progress } from "@/components/ui/progress";
+import AuthContext from "@/context/AuthContext";
 
 const SignupPage = () => {
-  const [fullName, setFullName] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('CLIENT');
+  const [fullName, setFullName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [role, setRole] = useState("CLIENT");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
+    useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [isUsernameFocused, setIsUsernameFocused] = useState(false);
   const [usernameLength, setUsernameLength] = useState(0);
 
@@ -50,18 +51,18 @@ const SignupPage = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match.');
+      toast.error("Passwords do not match.");
       return;
     }
     if (usernameLength < 4) {
-      toast.error('Username must be at least 4 characters.');
+      toast.error("Username must be at least 4 characters.");
       return;
     }
     setLoading(true);
     try {
       await signup(username, email, password, role.toUpperCase());
-      toast.success('Check your email for verification.');
-      router.push('/verify-email'); 
+      toast.success("Check your email for verification.");
+      router.push("/verify-email");
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -96,34 +97,34 @@ const SignupPage = () => {
   }, [username]);
 
   const getStrengthColor = (strength) => {
-    if (strength < 40) return 'bg-red-500';
-    if (strength < 80) return 'bg-yellow-500';
-    return 'bg-green-500';
+    if (strength < 40) return "bg-red-500";
+    if (strength < 80) return "bg-yellow-500";
+    return "bg-green-500";
   };
 
   const getStrengthText = (strength) => {
-    if (strength < 40) return 'Weak';
-    if (strength < 80) return 'Medium';
-    return 'Strong';
+    if (strength < 40) return "Weak";
+    if (strength < 80) return "Medium";
+    return "Strong";
   };
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    console.log('Forgot password for:', forgotPasswordEmail);
-    toast.success('Password reset link sent to your email');
+    console.log("Forgot password for:", forgotPasswordEmail);
+    toast.success("Password reset link sent to your email");
     setIsForgotPasswordModalOpen(false);
   };
 
   const getUsernameMessage = (length) => {
-    if (length === 0) return '';
-    if (length < 4) return 'Username must be at least 4 characters long.';
-    return 'Username is valid.';
+    if (length === 0) return "";
+    if (length < 4) return "Username must be at least 4 characters long.";
+    return "Username is valid.";
   };
 
   const getUsernameColor = (length) => {
-    if (length === 0) return '';
-    if (length < 4) return 'text-red-500';
-    return 'text-green-500';
+    if (length === 0) return "";
+    if (length < 4) return "text-red-500";
+    return "text-green-500";
   };
 
   return (
@@ -196,7 +197,11 @@ const SignupPage = () => {
                   required
                 />
                 {isUsernameFocused && (
-                  <p className={`mt-1 text-sm ${getUsernameColor(usernameLength)}`}>
+                  <p
+                    className={`mt-1 text-sm ${getUsernameColor(
+                      usernameLength
+                    )}`}
+                  >
                     {getUsernameMessage(usernameLength)}
                   </p>
                 )}
@@ -236,7 +241,7 @@ const SignupPage = () => {
                 <div className="relative">
                   <Input
                     id="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -277,7 +282,7 @@ const SignupPage = () => {
                 <div className="relative">
                   <Input
                     id="confirm-password"
-                    type={showConfirmPassword ? 'text' : 'password'}
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -308,7 +313,7 @@ const SignupPage = () => {
                 onClick={() => setIsForgotPasswordModalOpen(true)}
               >
                 Forgot your Password?
-              </Button>{' '}
+              </Button>{" "}
               Let get you back in.
             </div>
 
@@ -318,13 +323,13 @@ const SignupPage = () => {
               className="w-full h-10 flex items-center justify-center"
               disabled={loading}
             >
-              {loading ? <Loader2 className="animate-spin" /> : 'Sign Up'}
+              {loading ? <Loader2 className="animate-spin" /> : "Sign Up"}
             </Button>
 
             {/* Already have an account */}
             <div className="w-full flex items-center justify-center">
               <p>
-                Already part of the family{' '}
+                Already part of the family{" "}
                 <Link href="/login" className="text-blue-600 hover:underline">
                   Login
                 </Link>
@@ -332,7 +337,7 @@ const SignupPage = () => {
             </div>
           </form>
         </div>
-        <div className="hidden lg:block relative">
+        <div className="hidden lg:block relative min-h-screen">
           <img
             src="/image2.png"
             width="1920"
