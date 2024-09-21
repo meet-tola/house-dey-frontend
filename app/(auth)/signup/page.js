@@ -1,12 +1,12 @@
-"use client";
-import { useState, useContext, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { EyeIcon, EyeOffIcon, HomeIcon, Loader2 } from "lucide-react";
-import toast from "react-hot-toast";
+'use client';
+import { useState, useContext, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { EyeIcon, EyeOffIcon, HomeIcon, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import {
   Select,
   SelectContent,
@@ -15,7 +15,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -23,43 +23,41 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
-import AuthContext from "@/context/AuthContext";
+import { Progress } from '@/components/ui/progress';
+import AuthContext from '@/context/AuthContext';
 
 const SignupPage = () => {
-  const [fullName, setFullName] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState("CLIENT");
+  const [fullName, setFullName] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('CLIENT');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
-    useState(false);
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
   const router = useRouter();
   const { signup } = useContext(AuthContext);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
+      toast.error('Passwords do not match.');
       return;
     }
     setLoading(true);
     try {
       await signup(username, email, password, role.toUpperCase());
-      setIsModalOpen(true);
+      toast.success('Check your email for verification.');
+      router.push('/verify-email'); 
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "An unexpected error occurred";
-      toast.error("Error: " + errorMessage);
+      const errorMessage = error.response?.data?.message || 'An unexpected error occurred';
+      toast.error('Error: ' + errorMessage);
     } finally {
       setLoading(false);
     }
@@ -88,21 +86,21 @@ const SignupPage = () => {
   }, [password]);
 
   const getStrengthColor = (strength) => {
-    if (strength < 40) return "bg-red-500";
-    if (strength < 80) return "bg-yellow-500";
-    return "bg-green-500";
+    if (strength < 40) return 'bg-red-500';
+    if (strength < 80) return 'bg-yellow-500';
+    return 'bg-green-500';
   };
 
   const getStrengthText = (strength) => {
-    if (strength < 40) return "Weak";
-    if (strength < 80) return "Medium";
-    return "Strong";
+    if (strength < 40) return 'Weak';
+    if (strength < 80) return 'Medium';
+    return 'Strong';
   };
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    console.log("Forgot password for:", forgotPasswordEmail);
-    toast.success("Password reset link sent to your email");
+    console.log('Forgot password for:', forgotPasswordEmail);
+    toast.success('Password reset link sent to your email');
     setIsForgotPasswordModalOpen(false);
   };
 
@@ -198,7 +196,7 @@ const SignupPage = () => {
                 <div className="relative">
                   <Input
                     id="password"
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -237,7 +235,7 @@ const SignupPage = () => {
                 <div className="relative">
                   <Input
                     id="confirm-password"
-                    type={showConfirmPassword ? "text" : "password"}
+                    type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirm your password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -267,7 +265,7 @@ const SignupPage = () => {
                 onClick={() => setIsForgotPasswordModalOpen(true)}
               >
                 Forgot your Password?
-              </Button>{" "}
+              </Button>{' '}
               Let get you back in.
             </div>
             <Button
@@ -275,11 +273,11 @@ const SignupPage = () => {
               className="w-full h-10 flex items-center justify-center"
               disabled={loading}
             >
-              {loading ? <Loader2 className="animate-spin" /> : "Sign Up"}
+              {loading ? <Loader2 className="animate-spin" /> : 'Sign Up'}
             </Button>
             <div className="w-full flex items-center justify-center">
               <p>
-                Already part of the family{" "}
+                Already part of the family{' '}
                 <Link href="/login" className="text-blue-600 hover:underline">
                   Login
                 </Link>
@@ -297,19 +295,6 @@ const SignupPage = () => {
           />
         </div>
       </div>
-
-      {/* Signup Success Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Check Your Email</DialogTitle>
-            <DialogDescription>
-              A verification link has been sent to your email address. Please
-              check your inbox and click the link to verify your account.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
 
       {/* Forgot Password Modal */}
       <Dialog

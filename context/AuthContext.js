@@ -98,7 +98,9 @@ export const AuthProvider = ({ children }) => {
 
   const verifyEmail = async (token) => {
     try {
-      const response = await axios.get(`${API_URL}/api/auth/verify/${token}`);
+      const response = await axios.get(`${API_URL}/api/auth/verify`, {
+        token
+      });
       if (response.status === 200) {
         const { token, user } = response.data;
         Cookies.set("token", token);
@@ -112,7 +114,7 @@ export const AuthProvider = ({ children }) => {
         error.response?.data || error.message
       );
       throw new Error(
-        error.response?.data?.message || "Failed to verify email."
+        error.response?.data?.message || "Failed to verify account."
       );
     }
   };
