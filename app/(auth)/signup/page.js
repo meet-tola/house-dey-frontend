@@ -337,7 +337,7 @@ const SignupPage = () => {
             </div>
           </form>
         </div>
-        <div className="hidden lg:block relative min-h-screen">
+        <div className="hidden lg:block relative">
           <img
             src="/image2.png"
             width="1920"
