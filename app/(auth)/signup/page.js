@@ -183,7 +183,7 @@ const SignupPage = () => {
                 <Label htmlFor="mobile">Phone Number</Label>
                 <Input
                   id="mobile"
-                  type="tel"
+                  type="number"
                   placeholder="Enter your mobile number"
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}

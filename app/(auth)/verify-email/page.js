@@ -45,12 +45,10 @@ export default function VerifyEmail() {
 
     try {
       await verifyEmail(token);
-      toast.success("verification successfully.");
+      toast.success("Verification successful.");
       router.push("/");
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "An unexpected error occurred";
-      toast.error("Error: " + errorMessage);
+      toast.error("" + error);
     } finally {
       setLoading(false);
     }

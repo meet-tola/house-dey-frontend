@@ -36,10 +36,11 @@ export const AuthProvider = ({ children }) => {
         password,
         role,
       });
+
       if (response.status === 201) {
-        console.log(
-          "Signup successful. Please check your email to verify your account."
-        );
+        const { userId } = response.data;
+        localStorage.setItem("userId", userId);
+        console.log("Signup successful. Please verify your email.");
       }
     } catch (error) {
       console.error(
@@ -96,26 +97,31 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const verifyEmail = async (token) => {
+  const verifyEmail = async (code) => {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+      console.error("No userId found for verification.");
+      return;
+    }
+
     try {
-      const response = await axios.get(`${API_URL}/api/auth/verify`, {
-        token
+      const response = await axios.post(`${API_URL}/api/auth/verify`, {
+        code,
+        userId,
       });
+
       if (response.status === 200) {
-        const { token, user } = response.data;
+        const { user, token } = response.data;
         Cookies.set("token", token);
         setUser(user);
         localStorage.setItem("user", JSON.stringify(user));
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error(
-        "Error during email verification:",
-        error.response?.data || error.message
-      );
-      throw new Error(
-        error.response?.data?.message || "Failed to verify account."
-      );
+      const errorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+        throw new Error(errorMessage);
     }
   };
 
