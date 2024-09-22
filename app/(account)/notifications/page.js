@@ -20,7 +20,7 @@ const API_URL = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_
 export default function Notifications() {
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
-  const [seenNotifications, setSeenNotifications] = useState([]) // Add state to track seen notifications
+  const [seenNotifications, setSeenNotifications] = useState([]) 
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -38,7 +38,6 @@ export default function Notifications() {
   }, [])
 
   const handleNotificationClick = (id) => {
-    // Mark the notification as seen
     setSeenNotifications((prev) => [...prev, id])
   }
 
@@ -101,7 +100,7 @@ export default function Notifications() {
           {loading ? (
             <div className="space-y-4 p-4">
               {[...Array(4)].map((_, index) => (
-                <div key={index} className="flex items-start space-x-4 rounded-lg p-3 sm:p-4 transition-colors hover:bg-accent">
+                <div key={index} className="flex items-start space-x-4 rounded-lg p-3 sm:p-4 transition-colors">
                   <Skeleton className="h-5 w-5 rounded-full" />
                   <div className="space-y-2 flex-1">
                     <Skeleton className="h-4 w-3/4" />
@@ -119,8 +118,8 @@ export default function Notifications() {
                 className="block"
               >
                 <div
-                  className={`flex items-start space-x-4 rounded-lg p-3 sm:p-4 transition-colors ${seenNotifications.includes(notification.id) ? 'bg-gray-200' : 'hover:bg-accent'}`} // Change bg color if seen
-                  onClick={() => handleNotificationClick(notification.id)} // Mark as seen on click
+                  className={`flex items-start space-x-4 rounded-lg p-3 sm:p-4 transition-colors ${seenNotifications.includes(notification.id) ? 'bg-gray-200' : ''}`} 
+                  onClick={() => handleNotificationClick(notification.id)} 
                 >
                   {renderIcon(notification.type)}
                   <div className="flex-1 space-y-1">

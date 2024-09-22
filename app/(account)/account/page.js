@@ -43,6 +43,7 @@ const MyAccount = () => {
       try {
         await deleteAccount(user.id);
         toast.success("Your account has been deleted.");
+        window.location.reload(); 
         router.push("/"); 
       } catch (error) {
         console.error("Error deleting account:", error);
