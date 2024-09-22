@@ -176,6 +176,21 @@ export default function PropertiesPage() {
     }));
   };
 
+  const PropertySkeleton = () => (
+    <div className="border rounded-lg p-4 shadow-sm">
+      <Skeleton className="w-full h-48 rounded-lg mb-4" />
+      <Skeleton className="h-6 w-3/4 mb-2" />
+      <Skeleton className="h-4 w-1/2 mb-2" />
+      <div className="flex space-x-4 mb-2">
+        <Skeleton className="h-4 w-8" />
+        <Skeleton className="h-4 w-8" />
+        <Skeleton className="h-4 w-16" />
+      </div>
+      <Skeleton className="h-6 w-1/3 mb-4" />
+      <Skeleton className="h-8 w-full" />
+    </div>
+  );
+
   return (
     <div className="flex flex-col min-h-screen mt-16">
       {/* Header with Search and Filters */}
@@ -457,7 +472,12 @@ export default function PropertiesPage() {
         <div className="w-full md:w-1/2 p-4 mt-4">
           <h2 className="text-xl font-semibold mb-4">{getHeaderText()}</h2>{" "}
           <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {properties.length ? (
+            {loading ? (
+              // Display skeletons while loading
+              Array(6)
+                .fill(0)
+                .map((_, index) => <PropertySkeleton key={index} />)
+            ) : properties.length ? (
               properties.map((property) => (
                 <div
                   key={property.id}

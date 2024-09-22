@@ -46,10 +46,28 @@ const SignupPage = () => {
   const [usernameLength, setUsernameLength] = useState(0);
 
   const router = useRouter();
-  const { signup } = useContext(AuthContext);
+  const { user, signup } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "AGENT") {
+        router.push("/for-agent");
+      } else {
+        router.push("/");
+      }
+    }
+  }, [user]);
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    
+    const formattedMobile = formatMobileNumber(mobile);
+    
+    if (!formattedMobile) {
+      toast.error("Please enter a valid mobile number.");
+      return;
+    }
+    
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
       return;
@@ -60,7 +78,7 @@ const SignupPage = () => {
     }
     setLoading(true);
     try {
-      await signup(fullName, username, email, mobile, password, role.toUpperCase());
+      await signup(fullName, username, email, formattedMobile, password, role.toUpperCase());
       toast.success("Check your email for verification.");
       router.push("/verify-email");
     } catch (error) {
@@ -69,6 +87,24 @@ const SignupPage = () => {
       setLoading(false);
     }
   };
+  
+  const formatMobileNumber = (mobileNumber) => {
+    let sanitizedMobile = mobileNumber.trim();
+  
+    sanitizedMobile = sanitizedMobile.replace(/\D/g, '');
+  
+    if (sanitizedMobile.startsWith('0')) {
+      sanitizedMobile = '+234' + sanitizedMobile.slice(1);
+    }
+  
+    const validNumberPattern = /^\+234\d{10}$/;
+    if (!validNumberPattern.test(sanitizedMobile)) {
+      return null;  
+    }
+  
+    return sanitizedMobile;
+  };
+  
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

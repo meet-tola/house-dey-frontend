@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react"
 import { Bell, Home, AlertTriangle, CheckCircle, User } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Button } from "@/components/ui/button"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -21,6 +20,7 @@ const API_URL = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_
 export default function Notifications() {
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(true)
+  const [seenNotifications, setSeenNotifications] = useState([]) // Add state to track seen notifications
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -36,6 +36,11 @@ export default function Notifications() {
 
     fetchNotifications()
   }, [])
+
+  const handleNotificationClick = (id) => {
+    // Mark the notification as seen
+    setSeenNotifications((prev) => [...prev, id])
+  }
 
   const renderIcon = (type) => {
     switch (type) {
@@ -82,7 +87,7 @@ export default function Notifications() {
       </Breadcrumb>
 
       <div className="bg-blue-100 p-12 rounded-2xl mb-6 mt-4">
-        <h1 className="text-4xl lg:text-6xl font-bold">My Notifications</h1>
+        <h1 className="text-4xl lg:text-6xl font-bold">Notifications</h1>
       </div>
 
       <div className="w-full mx-auto bg-white rounded-lg shadow-md border-2 border-gray-200">
@@ -108,8 +113,15 @@ export default function Notifications() {
             </div>
           ) : notifications.length > 0 ? (
             notifications.map((notification) => (
-              <Link href={renderLink(notification)} key={notification.id} className="block">
-                <div className="flex items-start space-x-4 rounded-lg p-3 sm:p-4 transition-colors hover:bg-accent">
+              <Link 
+                href={renderLink(notification)} 
+                key={notification.id} 
+                className="block"
+              >
+                <div
+                  className={`flex items-start space-x-4 rounded-lg p-3 sm:p-4 transition-colors ${seenNotifications.includes(notification.id) ? 'bg-gray-200' : 'hover:bg-accent'}`} // Change bg color if seen
+                  onClick={() => handleNotificationClick(notification.id)} // Mark as seen on click
+                >
                   {renderIcon(notification.type)}
                   <div className="flex-1 space-y-1">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">

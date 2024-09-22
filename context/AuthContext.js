@@ -81,6 +81,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       Cookies.remove("token");
       localStorage.removeItem("user");
+      localStorage.removeItem("userId");
       delete axios.defaults.headers.common["Authorization"];
     } catch (error) {
       console.error(
@@ -187,6 +188,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         Cookies.remove("token");
         localStorage.removeItem("user");
+        localStorage.removeItem("userId");
         delete axios.defaults.headers.common["Authorization"];
       }
     } catch (error) {

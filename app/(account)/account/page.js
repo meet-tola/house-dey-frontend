@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import toast from "react-hot-toast";
 
 const MyAccount = () => {
   const { user, deleteAccount } = useContext(AuthContext);
@@ -41,7 +42,7 @@ const MyAccount = () => {
     if (user) {
       try {
         await deleteAccount(user.id);
-        alert("Your account has been deleted.");
+        toast.success("Your account has been deleted.");
         router.push("/"); 
       } catch (error) {
         console.error("Error deleting account:", error);
