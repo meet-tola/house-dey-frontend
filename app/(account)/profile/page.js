@@ -163,9 +163,12 @@ export default function Component() {
                 <UserIcon className="h-10 w-10 text-gray-500" />
               </div>
             )}
-            <div>
-              <h2 className="text-2xl font-semibold">{user?.username}</h2>
-              <p className="text-gray-600">{user?.email}</p>
+
+            <div className="flex-1 min-w-0">
+              <h2 className="text-2xl font-semibold truncate">
+                {user?.username}
+              </h2>
+              <p className="text-gray-600 truncate">{user?.email}</p>
             </div>
           </div>
           <Separator />
