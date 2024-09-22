@@ -17,7 +17,7 @@ export const SocketContextProvider = ({ children }) => {
     const backendURL =
       process.env.NODE_ENV === "production"
         ? process.env.NEXT_PUBLIC_SOCKET_URL
-        : "http://localhost:4001";
+        : "http://localhost:4000";
 
     const socketInstance = io(backendURL);
     setSocket(socketInstance);
