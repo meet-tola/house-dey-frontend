@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import React, { useEffect, useState } from "react"
-import { Bell, Home, AlertTriangle, CheckCircle, User } from "lucide-react"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import React, { useEffect, useState } from 'react';
+import { Bell, Home, AlertTriangle, CheckCircle, User } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,62 +10,63 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import Link from "next/link"
-import axios from "axios"
-import { Skeleton } from "@/components/ui/skeleton"
+} from '@/components/ui/breadcrumb';
+import Link from 'next/link';
+import axios from 'axios';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const API_URL = process.env.NODE_ENV === "production" ? process.env.NEXT_PUBLIC_API_URL : "http://localhost:8800"
+const API_URL = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_URL : 'http://localhost:8800';
 
 export default function Notifications() {
-  const [notifications, setNotifications] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [seenNotifications, setSeenNotifications] = useState([]) 
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [clickedNotifications, setClickedNotifications] = useState([]); // Track clicked notifications
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/notifications`)
-        setNotifications(response.data)
+        const response = await axios.get(`${API_URL}/api/notifications`);
+        setNotifications(response.data);
       } catch (error) {
-        console.error("Error fetching notifications:", error)
+        console.error('Error fetching notifications:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchNotifications()
-  }, [])
+    fetchNotifications();
+  }, []);
 
   const handleNotificationClick = (id) => {
-    setSeenNotifications((prev) => [...prev, id])
-  }
+    // Add clicked notification to the clickedNotifications array
+    setClickedNotifications((prev) => [...prev, id]);
+  };
 
   const renderIcon = (type) => {
     switch (type) {
-      case "listing":
-        return <Home className="h-5 w-5 text-blue-500" />
-      case "profile":
-        return <User className="h-5 w-5 text-green-500" />
-      case "alert":
-        return <AlertTriangle className="h-5 w-5 text-yellow-500" />
-      case "success":
-        return <CheckCircle className="h-5 w-5 text-green-500" />
+      case 'listing':
+        return <Home className="h-5 w-5 text-blue-500" />;
+      case 'profile':
+        return <User className="h-5 w-5 text-green-500" />;
+      case 'alert':
+        return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+      case 'success':
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
       default:
-        return <Bell className="h-5 w-5 text-gray-500" />
+        return <Bell className="h-5 w-5 text-gray-500" />;
     }
-  }
+  };
 
   const renderLink = (notification) => {
     switch (notification.type) {
-      case "listing":
-        return notification.postId ? `/properties/${notification.postId}` : "#"
-      case "profile":
-        return "/profile"
+      case 'listing':
+        return notification.postId ? `/properties/${notification.postId}` : '#';
+      case 'profile':
+        return '/profile';
       default:
-        return "#"
+        return '#';
     }
-  }
+  };
 
   return (
     <div className="container mx-auto p-4 mt-16 px-4 md:px-16">
@@ -112,14 +113,12 @@ export default function Notifications() {
             </div>
           ) : notifications.length > 0 ? (
             notifications.map((notification) => (
-              <Link 
-                href={renderLink(notification)} 
-                key={notification.id} 
-                className="block"
-              >
+              <Link href={renderLink(notification)} key={notification.id} className="block">
                 <div
-                  className={`flex items-start space-x-4 rounded-lg p-3 sm:p-4 transition-colors ${seenNotifications.includes(notification.id) ? 'bg-gray-200' : ''}`} 
-                  onClick={() => handleNotificationClick(notification.id)} 
+                  className={`flex items-start space-x-4 rounded-lg p-3 sm:p-4 transition-colors ${
+                    clickedNotifications.includes(notification.id) ? '' : 'bg-gray-100' // Keep gray background until clicked
+                  }`}
+                  onClick={() => handleNotificationClick(notification.id)}
                 >
                   {renderIcon(notification.type)}
                   <div className="flex-1 space-y-1">
@@ -129,7 +128,7 @@ export default function Notifications() {
                         {new Date(notification.createdAt).toLocaleTimeString()}
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground">{notification.description || "No additional details."}</p>
+                    <p className="text-sm text-muted-foreground">{notification.description || 'No additional details.'}</p>
                   </div>
                 </div>
               </Link>
@@ -146,5 +145,5 @@ export default function Notifications() {
         </ScrollArea>
       </div>
     </div>
-  )
+  );
 }
