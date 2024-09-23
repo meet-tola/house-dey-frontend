@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
+import { Mail, MapPin, Phone, UserX } from "lucide-react";
 import { fetchAgent } from "@/utils/user";
 import { useParams } from "next/navigation";
 import PageLoader from "@/components/PageLoader";
@@ -11,14 +11,14 @@ import NoPropertiesFound from "@/components/NoPropertiesFound";
 import Link from "next/link";
 
 export default function AgentProfile() {
-  const { id } = useParams();
+  const { username } = useParams();
   const [agent, setAgent] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getAgentData = async () => {
       try {
-        const agentData = await fetchAgent(id);
+        const agentData = await fetchAgent(username);
         setAgent(agentData);
       } catch (error) {
         console.error("Error fetching agent data:", error);
@@ -28,7 +28,7 @@ export default function AgentProfile() {
     };
 
     getAgentData();
-  }, [id]);
+  }, [username]);
 
   if (loading) {
     return <PageLoader />;
@@ -68,11 +68,11 @@ export default function AgentProfile() {
               <div className="flex flex-col items-center">
                 <img
                   src={agent.avatar || "/placeholder.svg?height=150&width=150"}
-                  alt={agent.firstName + " " + agent.lastName}
+                  alt={agent.fullName}
                   className="rounded-full w-32 h-32 object-cover mb-4"
                 />
                 <h1 className="text-2xl font-bold mb-1">
-                  {agent.firstName} {agent.lastName}
+                  {agent.fullName}
                 </h1>
                 <p className="text-muted-foreground mb-4">@{agent.username}</p>
                 <Badge className="mb-4">Verified Agent</Badge>

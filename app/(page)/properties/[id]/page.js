@@ -360,7 +360,7 @@ export default function PropertiesDetails() {
                   </h3>
                   <p>{post.user.username}</p>
                 </div>
-                <Link href={`/agent-profile/${post.user.id}`}>
+                <Link href={`/agent-profile/${post.user.username}`}>
                   <Button variant="outline">View Profile</Button>
                 </Link>
               </CardContent>
