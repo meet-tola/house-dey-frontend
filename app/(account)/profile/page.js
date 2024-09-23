@@ -16,7 +16,7 @@ import {
 import AuthContext from "@/context/AuthContext";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { Loader, UserIcon, Upload } from "lucide-react";
+import { Loader2, UserIcon, Upload } from "lucide-react";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -315,7 +315,7 @@ export default function Component() {
             <div>
               <Button type="submit" className="w-full">
                 {loading ? (
-                  <Loader className="animate-spin" />
+                  <Loader2 className="animate-spin" />
                 ) : (
                   "Update Profile"
                 )}

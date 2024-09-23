@@ -10,7 +10,8 @@ import {
   Settings,
   MessageCircle,
   Trash,
-  Search
+  Search,
+  KeyIcon
 } from "lucide-react";
 import AuthContext from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -86,6 +87,12 @@ const MyAccount = () => {
             icon={<Search className="text-3xl" />}
             link="/notifications"
           />
+          <Card
+            title="Password Settings"
+            description="Change your password"
+            icon={<KeyIcon className="text-3xl" />}
+            link="/password-settings"
+          />
           <DeleteAccountCard
             title="Delete Account"
             description="Permanently delete your account"
@@ -126,6 +133,12 @@ const MyAccount = () => {
             description="Manage your notifications and alerts"
             icon={<Bell className="text-3xl" />}
             link="/notifications"
+          />
+          <Card
+            title="Password Settings"
+            description="Change your password"
+            icon={<KeyIcon className="text-3xl" />}
+            link="/password-settings"
           />
           <DeleteAccountCard
             title="Delete Account"

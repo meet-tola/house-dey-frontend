@@ -37,11 +37,15 @@ export default function Navbar() {
             label: "Properties",
           },
           {
-            href: "/request",
+            href: "/requests",
             label: "Request",
           },
           {
-            href: "#",
+            href: "/account",
+            label: "Profile",
+          },
+          {
+            href: "/support",
             label: "Support",
           },
         ]
