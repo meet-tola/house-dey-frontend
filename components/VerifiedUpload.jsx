@@ -46,13 +46,13 @@ export default function VerifiedUpload() {
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
+  
     setUploading(true);
     setUploadProgress(0);
-
+  
     const reader = new FileReader();
     reader.readAsDataURL(file);
-
+  
     reader.onloadend = async () => {
       const base64Image = reader.result?.toString().split(",")[1];
       if (!base64Image) {
@@ -60,16 +60,16 @@ export default function VerifiedUpload() {
         setUploading(false);
         return;
       }
-
+  
       try {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", "bxmkzdav");
-
+  
         const progressInterval = setInterval(() => {
           setUploadProgress((prev) => Math.min(prev + 10, 90));
         }, 200);
-
+  
         const res = await fetch(
           "https://api.cloudinary.com/v1_1/dvvirefzi/image/upload",
           {
@@ -77,32 +77,28 @@ export default function VerifiedUpload() {
             body: formData,
           }
         );
-
+  
         clearInterval(progressInterval);
         setUploadProgress(100);
-
+  
         if (!res.ok) {
           throw new Error("Failed to upload image");
         }
-
+  
         const fileData = await res.json();
         setFormData((prevFormData) => ({
           ...prevFormData,
           avatar: fileData.secure_url,
         }));
-
+  
         setDetecting(true);
-        const detectedName = await extractTextFromImage(base64Image);
-
-        const normalizedDetectedName = detectedName?.toLowerCase().trim();
-        const normalizedUserName = user.fullName?.toLowerCase().trim();
-
-        if (
-          normalizedDetectedName &&
-          normalizedDetectedName.includes(normalizedUserName)
-        ) {
+        const detectedText = await extractTextFromImage(base64Image);
+  
+        const userFullName = user.fullName?.toLowerCase().trim();
+        const isNameMatched = verifyNames(detectedText, userFullName);
+  
+        if (isNameMatched) {
           toast.success("Credentials verified.");
-
           await verifyAgent(fileData.secure_url);
         } else {
           setShowMismatchDialog(true);
@@ -113,10 +109,11 @@ export default function VerifiedUpload() {
       } finally {
         setUploading(false);
         setDetecting(false);
-        setShowPendingDialog(true);  // Show the pending dialog after upload
+        setShowPendingDialog(true); // Show the pending dialog after upload
       }
     };
   };
+  
 
   const extractTextFromImage = async (base64Image) => {
     const API_KEY = "AIzaSyC8R1JRC2s2quciVEE29OzGOMig-tPGsBw";
@@ -153,6 +150,22 @@ export default function VerifiedUpload() {
       data.responses[0]?.textAnnotations[0]?.description || null;
 
     return extractedText;
+  };
+
+  const verifyNames = (detectedText, userFullName) => {
+    // Normalize and split the detected text and user's full name into arrays of words
+    const detectedWords = detectedText.toLowerCase().split(/\s+/).filter(Boolean);
+    const userWords = userFullName.toLowerCase().split(/\s+/).filter(Boolean);
+  
+    // We only want to verify the first two names (e.g., first and last name)
+    const [userFirstName, userLastName] = userWords;
+  
+    // Check if both first name and last name are present in the detected text
+    const isFirstNameMatched = detectedWords.includes(userFirstName);
+    const isLastNameMatched = detectedWords.includes(userLastName);
+  
+    // Only verify if both first and last names are found in the detected text
+    return isFirstNameMatched && isLastNameMatched;
   };
 
   const verifyAgent = async (imageUrl) => {
