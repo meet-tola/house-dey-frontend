@@ -2,22 +2,38 @@
 import { useState, useEffect, useContext } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ArrowLeftIcon, SendIcon, UserIcon } from "lucide-react";
 import { SocketContext } from "@/context/SocketContext";
+import { fetchChat, addMessage, readChat } from "@/utils/message";
 
-const MessageUI = ({
+export default function MessageUI({
   chatId,
-  messages,
-  onSendMessage,
   onBack,
   chatReceiver,
   currentUser,
   onlineUsers,
-}) => {
+}) {
   const [messageText, setMessageText] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { socket } = useContext(SocketContext);
+
+  useEffect(() => {
+    const fetchChatMessages = async () => {
+      if (chatId) {
+        setIsLoading(true);
+        await readChat(chatId);
+        const chatData = await fetchChat(chatId);
+        setMessages(chatData.message);
+        setIsLoading(false);
+      }
+    };
+
+    fetchChatMessages();
+  }, [chatId]);
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
@@ -35,22 +51,26 @@ const MessageUI = ({
     };
 
     socket.emit("sendMessage", {
-      receiverId: chatReceiver.id,
+      receiverId: chatReceiver?.id,
       message: messageData,
     });
 
-    await onSendMessage(messageText);
+    const newMessage = await addMessage(chatId, messageText);
+
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
     setMessageText("");
   };
 
   useEffect(() => {
-    if (socket) {
+    if (socket && chatId) {
       socket.on("getMessage", (message) => {
+        console.log("Received message:", message);
         if (message.chatId === chatId) {
-          onSendMessage(message.text);
+          setMessages((prevMessages) => [...prevMessages, message]);
         }
       });
     }
+
     return () => socket?.off("getMessage");
   }, [socket, chatId]);
 
@@ -68,29 +88,54 @@ const MessageUI = ({
           className="md:hidden"
         >
           <ArrowLeftIcon className="h-4 w-4" />
+          <span className="sr-only">Back</span>
         </Button>
-        {chatReceiver && (
-          <Avatar>
-            <AvatarImage
-              src={chatReceiver.avatar || ""}
-              alt={chatReceiver.username || "User"}
-            />
-            <AvatarFallback>
-              <UserIcon />
-            </AvatarFallback>
-          </Avatar>
+        {isLoading ? (
+          <Skeleton className="h-10 w-10 rounded-full" />
+        ) : (
+          chatReceiver && (
+            <Avatar>
+              <AvatarImage
+                src={chatReceiver.avatar || ""}
+                alt={chatReceiver.username || "User"}
+              />
+              <AvatarFallback>
+                <UserIcon />
+              </AvatarFallback>
+            </Avatar>
+          )
         )}
         <h2 className="text-xl font-semibold">
-          {chatReceiver?.username || "Unknown User"}
-          {isOnline && (
-            <span className="ml-2 text-sm text-green-500">(Online)</span>
+          {isLoading ? (
+            <Skeleton className="h-6 w-32" />
+          ) : (
+            <>
+              {chatReceiver?.username || "Unknown User"}
+              {isOnline && (
+                <span className="ml-2 text-sm text-green-500">(Online)</span>
+              )}
+            </>
           )}
         </h2>
       </div>
 
       {/* Message List (Scroll Area) */}
       <ScrollArea className="flex-1 p-4 overflow-auto">
-        {messages && messages.length > 0 ? (
+        {isLoading ? (
+          <div className="space-y-4">
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className="flex flex-col items-start mb-6">
+                <div className="flex flex-row items-end">
+                  <Skeleton className="h-10 w-10 rounded-full mr-2" />
+                  <div className="flex flex-col gap-2">
+                    <Skeleton className="h-16 w-64 rounded-lg" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : messages && messages.length > 0 ? (
           messages.map((message) => {
             const isSender = message.userId === currentUser.id;
             return (
@@ -161,6 +206,4 @@ const MessageUI = ({
       </div>
     </div>
   );
-};
-
-export default MessageUI;
+}

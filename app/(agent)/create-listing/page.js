@@ -350,7 +350,7 @@ export default function CreateListing() {
           <h1 className="text-2xl font-bold text-center mb-6">
             Preview Your Property Post
           </h1>
-          <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl p-6 shadow-lg">
+          <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl p-6 ">
             <div className="min-w-[300px] lg:min-w-[250px] w-[300px] rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white relative mx-auto">
               <img
                 className="w-full h-48 object-cover"

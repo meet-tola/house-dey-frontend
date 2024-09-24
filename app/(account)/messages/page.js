@@ -40,7 +40,6 @@ export default function Messages() {
   const [searchResults, setSearchResults] = useState([]);
   const [chats, setChats] = useState([]);
   const [selectedChatId, setSelectedChatId] = useState(null);
-  const [messages, setMessages] = useState({});
   const [isMobile, setIsMobile] = useState(false);
   const [chatReceiver, setChatReceiver] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -100,32 +99,10 @@ export default function Messages() {
 
   const handleSelectChat = async (chatId) => {
     setSelectedChatId(chatId);
-
     await readChat(chatId);
-
     const chatData = await fetchChat(chatId);
-    const { message, receiver } = chatData;
-
-    setMessages((prevMessages) => ({
-      ...prevMessages,
-      [chatId]: message,
-    }));
-
+    const { receiver } = chatData;
     setChatReceiver(receiver);
-  };
-
-  const handleSendMessage = async (chatId, body) => {
-    const newMessage = await addMessage(chatId, body);
-    setMessages((prevMessages) => ({
-      ...prevMessages,
-      [chatId]: [...(prevMessages[chatId] || []), newMessage],
-    }));
-    if (socket) {
-      socket.emit("sendMessage", {
-        receiverId: chatReceiver?.id,
-        message: newMessage,
-      });
-    }
   };
 
   const handleBack = () => {
@@ -230,10 +207,6 @@ export default function Messages() {
           {selectedChatId ? (
             <MessageUI
               chatId={selectedChatId}
-              messages={messages[selectedChatId] || []}
-              onSendMessage={(messageText) =>
-                handleSendMessage(selectedChatId, messageText)
-              }
               onBack={handleBack}
               chatReceiver={chatReceiver}
               currentUser={user}
