@@ -41,17 +41,20 @@ export default function Messages() {
   const [chats, setChats] = useState([]);
   const [selectedChatId, setSelectedChatId] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [chatReceiver, setChatReceiver] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchAgentsAndChats = async () => {
+      setIsLoading(true);
       const fetchedAgents = await fetchAgents();
       setAgents(fetchedAgents);
       setSearchResults(fetchedAgents);
 
       const fetchedChats = await fetchChats();
+      setIsLoading(false);
       setChats(fetchedChats);
     };
 
@@ -188,6 +191,7 @@ export default function Messages() {
               chats={chats}
               onSelectChat={handleSelectChat}
               selectedChatId={selectedChatId}
+              isLoading={isLoading}
             />
           ) : (
             <div className="h-[600px] flex items-center justify-center text-center border-[1.5px] rounded-lg px-5 border-gray-200">
