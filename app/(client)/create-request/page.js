@@ -34,7 +34,6 @@ export default function CreateRequestPage() {
     title: "",
     property: "",
     type: "",
-    address: "",
     city: "",
     state: "",
     bedroom: "",
@@ -50,12 +49,7 @@ export default function CreateRequestPage() {
       [id]: value,
     }));
   };
-  const handleAddressSelect = (address) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      address: address,
-    }));
-  };
+
 
   const handleCitySelect = (city) => {
     setFormData((prevFormData) => ({
@@ -77,7 +71,6 @@ export default function CreateRequestPage() {
 
     const requestPayload = {
       title: formData.property || "",
-      address: formData.address || "",
       budget: parseInt(formData.budget, 10) || "",
       type: formData.type || "",
       property: formData.property || "",
@@ -96,7 +89,6 @@ export default function CreateRequestPage() {
           title: "",
           property: "",
           type: "",
-          address: "",
           city: "",
           state: "",
           bedroom: "",
@@ -188,10 +180,6 @@ export default function CreateRequestPage() {
                 <SelectItem value="buy">For Sale</SelectItem>
               </SelectContent>
             </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
-            <AddressAutocomplete onAddressSelect={handleAddressSelect} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="state">City</Label>

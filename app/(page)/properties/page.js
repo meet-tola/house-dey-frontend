@@ -42,6 +42,7 @@ import GoogleMapComponent from "@/components/map/GoogleMap";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
 import Link from "next/link";
 import CityAutocomplete from "@/components/map/CityAutoComplete";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PropertiesPage() {
   const searchParams = useSearchParams();
@@ -93,6 +94,8 @@ export default function PropertiesPage() {
 
   useEffect(() => {
     const fetchProperties = async () => {
+      setLoading(true);
+
       try {
         const data = await fetchPosts(filters);
         if (!Array.isArray(data)) {
@@ -103,6 +106,8 @@ export default function PropertiesPage() {
         }
       } catch (error) {
         console.error("Error fetching properties:", error);
+      } finally {
+        setLoading(false);
       }
     };
 

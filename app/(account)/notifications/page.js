@@ -34,12 +34,17 @@ export default function Notifications() {
       }
     };
 
+    // Load clicked notifications from localStorage
+    const storedClicked = JSON.parse(localStorage.getItem('clickedNotifications')) || [];
+    setClickedNotifications(storedClicked);
+
     fetchNotifications();
   }, []);
 
   const handleNotificationClick = (id) => {
-    // Add clicked notification to the clickedNotifications array
-    setClickedNotifications((prev) => [...prev, id]);
+    const updatedClicked = [...clickedNotifications, id];
+    setClickedNotifications(updatedClicked);
+    localStorage.setItem('clickedNotifications', JSON.stringify(updatedClicked)); // Persist to localStorage
   };
 
   const renderIcon = (type) => {
@@ -115,8 +120,8 @@ export default function Notifications() {
             notifications.map((notification) => (
               <Link href={renderLink(notification)} key={notification.id} className="block">
                 <div
-                  className={`flex items-start space-x-4 rounded-lg p-3 sm:p-4 transition-colors ${
-                    clickedNotifications.includes(notification.id) ? '' : 'bg-gray-100' // Keep gray background until clicked
+                  className={`flex items-start space-x-4 p-3 sm:p-4 transition-colors border-b-2 border-gray-300 ${
+                    clickedNotifications.includes(notification.id) ? '' : 'bg-gray-100'
                   }`}
                   onClick={() => handleNotificationClick(notification.id)}
                 >

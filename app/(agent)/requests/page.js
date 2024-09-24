@@ -20,9 +20,10 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Pagination } from "@/components/ui/pagination";
 import { Label } from "@/components/ui/label";
-import { Search, Plus, Filter, HouseIcon } from "lucide-react";
+import { Search, Plus, Filter, HouseIcon, HomeIcon } from "lucide-react";
 import { fetchRequests, fetchAllRequests } from "@/utils/request";
 import { useRouter } from "next/navigation";
+import CityAutocomplete from "@/components/map/CityAutoComplete";
 
 export default function PropertyRequestPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -104,6 +105,12 @@ export default function PropertyRequestPage() {
     router.push(`/create-post?requestId=${selectedRequest.id}`);
   };
 
+  const handleCitySelect = (city) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      city: city,
+    }));
+  };
   return (
     <div className="container mx-auto px-4 md:px-16 mt-20">
       <div className="p-6 flex justify-between items-center bg-gray-100 rounded-2xl mb-4">
@@ -196,12 +203,7 @@ export default function PropertyRequestPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="filterCity">City</Label>
-                <Input
-                  id="filterCity"
-                  placeholder="City"
-                  value={filters.city}
-                  onChange={(e) => handleFilterChange("city", e.target.value)}
-                />
+                <CityAutocomplete onCitySelect={handleCitySelect} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="filterState">State</Label>
@@ -223,36 +225,55 @@ export default function PropertyRequestPage() {
         </Dialog>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {currentRequests.map((request) => (
-          <Card key={request.id} className="flex flex-col">
-            <CardContent className="flex-grow">
-              <h3 className="font-semibold mt-4 mb-2">{request.title}</h3>
-              <p>Type: {request.type}</p>
-              <p>Request Type: {request.property}</p>
-              <p>Budget: {request.budget}</p>
-              <p>Location: {request.address}</p>
-            </CardContent>
-            <CardFooter>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => setSelectedRequest(request)}
-              >
-                View Details
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+      {filteredRequests.length === 0 ? (
+        <div className="w-full max-w-md mx-auto h-[400px]">
+          <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-4">
+            <div className="rounded-full bg-muted p-3">
+              <HomeIcon className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              No property requests found
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              We couldn't find any property requests matching your search
+              criteria. Try adjusting your filters or check back later.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {currentRequests.map((request) => (
+              <Card key={request.id} className="flex flex-col">
+                <CardContent className="flex-grow">
+                  <h3 className="font-semibold mt-4 mb-2">{request.title}</h3>
+                  <p>Type: {request.type}</p>
+                  <p>Request Type: {request.property}</p>
+                  <p>Budget: {request.budget}</p>
+                  <p>Location: {request.requestDetail.city}</p>
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setSelectedRequest(request)}
+                  >
+                    View Details
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
 
-      <div className="mt-6">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+          <div className="mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        </>
+      )}
 
       {selectedRequest && (
         <Dialog open={true} onOpenChange={() => setSelectedRequest(null)}>
@@ -272,9 +293,6 @@ export default function PropertyRequestPage() {
               </p>
               <p>
                 <strong>Budget:</strong> {selectedRequest.budget}
-              </p>
-              <p>
-                <strong>Location:</strong> {selectedRequest.address}
               </p>
               <p>
                 <strong>Other:</strong> {selectedRequest.requestDetail.city},{" "}
