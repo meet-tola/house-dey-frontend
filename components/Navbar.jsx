@@ -91,7 +91,7 @@ export default function Navbar() {
             label: "Request",
           },
           {
-            href: "#",
+            href: "/blog",
             label: "Blogs",
           },
         ];
