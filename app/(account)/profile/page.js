@@ -215,7 +215,7 @@ export default function Component() {
                   htmlFor="fullName"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  First Name*
+                  Full Name/Company Name
                 </Label>
                 <Input
                   type="text"
@@ -252,7 +252,7 @@ export default function Component() {
                   Mobile
                 </Label>
                 <Input
-                  type="text"
+                  type="tel"
                   id="mobile"
                   name="mobile"
                   className="mt-1 block w-full"
@@ -265,7 +265,7 @@ export default function Component() {
                   htmlFor="street"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Street*
+                  Street
                 </Label>
                 <Input
                   type="text"

@@ -47,6 +47,11 @@ export default function Notifications() {
     localStorage.setItem('clickedNotifications', JSON.stringify(updatedClicked)); // Persist to localStorage
   };
 
+  // Calculate the number of unread notifications
+  const unreadCount = notifications.filter(
+    (notification) => !clickedNotifications.includes(notification.id)
+  ).length;
+
   const renderIcon = (type) => {
     switch (type) {
       case 'listing':
@@ -99,7 +104,9 @@ export default function Notifications() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0 p-4 sm:p-6">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold">All Notifications</h2>
-            <p className="text-sm text-muted-foreground">You have {notifications.length} notifications</p>
+            <p className="text-sm text-muted-foreground">
+              You have {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+            </p>
           </div>
         </div>
         <ScrollArea className="h-[400px] sm:h-[500px] md:h-[600px]">
