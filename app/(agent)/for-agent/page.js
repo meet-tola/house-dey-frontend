@@ -1,14 +1,21 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { CheckCircle, PlayCircle, Home, DollarSign, Users, MessageCircle, Bell } from "lucide-react"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  CheckCircle,
+  PlayCircle,
+  Home,
+  DollarSign,
+  Users,
+  MessageCircle,
+  Bell,
+} from "lucide-react";
 
 export default function AgentHomePage() {
-
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 mt-16">
@@ -20,12 +27,13 @@ export default function AgentHomePage() {
                   Create Your Property Listing in Minutes
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  Streamline your property management process. List, manage, and grow your real estate portfolio with ease.
+                  Streamline your property management process. List, manage, and
+                  grow your real estate portfolio with ease.
                 </p>
               </div>
               <div className="space-x-4">
                 <Link href="/my-listings">
-                <Button>Get Started</Button>
+                  <Button>Get Started</Button>
                 </Link>
                 <Button variant="outline">Learn More</Button>
               </div>
@@ -34,7 +42,9 @@ export default function AgentHomePage() {
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-16">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">How It Works</h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              How It Works
+            </h2>
             <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
               <Card>
                 <CardHeader>
@@ -66,7 +76,8 @@ export default function AgentHomePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Your listing goes live. Manage inquiries and bookings from your dashboard.
+                  Your listing goes live. Manage inquiries and bookings from
+                  your dashboard.
                 </CardContent>
               </Card>
             </div>
@@ -75,9 +86,12 @@ export default function AgentHomePage() {
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
           <div className="container px-4 md:px-16">
             <div className="flex flex-col items-center space-y-4 text-center">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Video Tutorial</h2>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                Video Tutorial
+              </h2>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Watch our step-by-step guide on creating the perfect property listing.
+                Watch our step-by-step guide on creating the perfect property
+                listing.
               </p>
               <div className="w-full max-w-3xl aspect-video bg-muted rounded-xl overflow-hidden">
                 <div className="w-full h-full flex items-center justify-center bg-muted">
@@ -89,7 +103,9 @@ export default function AgentHomePage() {
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-16">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">Why Choose Us</h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              Why Choose Us
+            </h2>
             <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
               <Card>
                 <CardHeader>
@@ -99,7 +115,8 @@ export default function AgentHomePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Our platform helps you optimize pricing and occupancy to increase your revenue.
+                  Our platform helps you optimize pricing and occupancy to
+                  increase your revenue.
                 </CardContent>
               </Card>
               <Card>
@@ -110,7 +127,8 @@ export default function AgentHomePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Get exposure to our vast network of verified tenants looking for properties like yours.
+                  Get exposure to our vast network of verified tenants looking
+                  for properties like yours.
                 </CardContent>
               </Card>
               <Card>
@@ -121,7 +139,8 @@ export default function AgentHomePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Our tools make it easy to manage bookings, communicate with tenants, and track payments.
+                  Our tools make it easy to manage bookings, communicate with
+                  tenants, and track payments.
                 </CardContent>
               </Card>
             </div>
@@ -130,15 +149,20 @@ export default function AgentHomePage() {
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
           <div className="container px-4 md:px-16">
             <div className="flex flex-col items-center space-y-4 text-center">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Ready to Get Started?</h2>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                Ready to Get Started?
+              </h2>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Join thousands of successful agents and landlords who trust our platform.
+                Join thousands of successful agents and landlords who trust our
+                platform.
               </p>
-              <Button size="lg">Create Your Listing Now</Button>
+              <Link href="/my-listings">
+                <Button size="lg">Create Your Listing Now</Button>
+              </Link>
             </div>
           </div>
         </section>
       </main>
     </div>
-  )
+  );
 }

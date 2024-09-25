@@ -1,4 +1,5 @@
 "use client";
+import { useContext } from "react";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -36,8 +37,10 @@ import GoogleMapComponent from "@/components/map/GoogleMap";
 import { addChat } from "@/utils/message";
 import Link from "next/link";
 import ShareDialog from "@/components/ShareDialog";
+import AuthContext from "@/context/AuthContext";
 
 export default function PropertiesDetails() {
+  const { user } = useContext(AuthContext);
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [error, setError] = useState(null);
@@ -341,30 +344,32 @@ export default function PropertiesDetails() {
                 </ul>
               </CollapsibleContent>
             </Collapsible>
-            <Card>
-              <CardContent className="flex items-center space-x-4 py-4">
-                <div className="rounded-full bg-muted p-2">
-                  <Avatar className="w-10 h-10 border">
-                    <AvatarImage
-                      src={post.user.avatar}
-                      alt={post.user.username}
-                    />
-                    <AvatarFallback>
-                      {post.user.username.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="flex-grow">
-                  <h3 className="font-semibold text-sm">
-                    {post.user?.fullName}
-                  </h3>
-                  <p>{post.user.username}</p>
-                </div>
-                <Link href={`/agent-profile/${post.user.username}`}>
-                  <Button variant="outline">View Profile</Button>
-                </Link>
-              </CardContent>
-            </Card>
+            {user?.role !== "AGENT" && (
+              <Card>
+                <CardContent className="flex items-center space-x-4 py-4">
+                  <div className="rounded-full bg-muted p-2">
+                    <Avatar className="w-10 h-10 border">
+                      <AvatarImage
+                        src={post.user.avatar}
+                        alt={post.user.username}
+                      />
+                      <AvatarFallback>
+                        {post.user.username.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div className="flex-grow">
+                    <h3 className="font-semibold text-sm">
+                      {post.user?.fullName}
+                    </h3>
+                    <p>{post.user.username}</p>
+                  </div>
+                  <Link href={`/agent-profile/${post.user.username}`}>
+                    <Button variant="outline">View Profile</Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
           </div>
           <div>
             <GoogleMapComponent address={post.address} />
@@ -372,27 +377,29 @@ export default function PropertiesDetails() {
         </div>
       </div>
 
-      <div className="sticky inset-x-0 bottom-0 z-10 flex items-center justify-between bg-primary px-4 lg:px-20 py-3">
-        <div className="flex items-center text-white text-sm">
-          <img
-            src={post.user.avatar}
-            alt={post.user.username}
-            className="w-12 h-12 rounded-full mr-4"
-          />
-          <div>
-            <h2 className="font-semibold">{post.user?.fullName}</h2>
-            <p>{post.user.username}</p>
+      {user?.role !== "AGENT" && (
+        <div className="sticky inset-x-0 bottom-0 z-10 flex items-center justify-between bg-primary px-4 lg:px-20 py-3">
+          <div className="flex items-center text-white text-sm">
+            <img
+              src={post.user.avatar}
+              alt={post.user.username}
+              className="w-12 h-12 rounded-full mr-4"
+            />
+            <div>
+              <h2 className="font-semibold">{post.user?.fullName}</h2>
+              <p>{post.user.username}</p>
+            </div>
           </div>
+          <Button
+            variant="outline"
+            className="gap-2 text-primary"
+            onClick={() => handleSendMessage(post.user.id)}
+          >
+            <MailIcon />
+            Send Message
+          </Button>
         </div>
-        <Button
-          variant="outline"
-          className="gap-2 text-primary"
-          onClick={() => handleSendMessage(post.user.id)}
-        >
-          <MailIcon />
-          Send Message
-        </Button>
-      </div>
+      )}
 
       <Dialog open={isModalOpen} onOpenChange={handleClose}>
         <DialogContent className="bg-black bg-opacity-80 p-4 sm:p-6 md:p-8 max-w-full w-full h-full">
