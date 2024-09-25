@@ -1,53 +1,74 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Mail, MapPin, Phone, UserX, Star, X } from "lucide-react"
-import { fetchAgent } from "@/utils/user"
-import { useParams } from "next/navigation"
-import PageLoader from "@/components/PageLoader"
-import NoPropertiesFound from "@/components/NoPropertiesFound"
-import Link from "next/link"
-import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useEffect, useState, useContext } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Mail, MapPin, Phone, UserX, Star, X, Trash2 } from "lucide-react";
+import { fetchAgent } from "@/utils/user";
+import {
+  fetchReviewsByAgent,
+  fetchReviewsByUser,
+  addReview,
+  deleteReview,
+} from "@/utils/reviews";
+import { useParams } from "next/navigation";
+import PageLoader from "@/components/PageLoader";
+import NoPropertiesFound from "@/components/NoPropertiesFound";
+import Link from "next/link";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AuthContext from "@/context/AuthContext";
+import { toast } from "react-hot-toast";
+
+const NoReviewsFound = () => (
+  <div className="text-center py-8">
+    <p className="text-gray-500">No reviews found.</p>
+  </div>
+);
 
 export default function AgentProfile() {
-  const { username } = useParams()
-  const [agent, setAgent] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [reviewText, setReviewText] = useState("")
-  const [rating, setRating] = useState(0)
-  const [reviews, setReviews] = useState([])
-  const [userReviews, setUserReviews] = useState([])
+  const { username } = useParams();
+  const { user } = useContext(AuthContext); // Get user from AuthContext
+  const [agent, setAgent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [reviewText, setReviewText] = useState("");
+  const [rating, setRating] = useState(0); // Ensure rating is an integer
+  const [reviews, setReviews] = useState([]); // All reviews
+  const [userReviews, setUserReviews] = useState([]); // User's reviews
 
   useEffect(() => {
     const getAgentData = async () => {
       try {
-        const agentData = await fetchAgent(username)
-        setAgent(agentData)
-        // Simulating fetched reviews
-        setReviews([
-          { id: 1, user: "John Doe", rating: 4, text: "Great agent!" },
-          { id: 2, user: "Jane Smith", rating: 5, text: "Very professional." },
-        ])
-        setUserReviews([
-          { id: 3, user: "Current User", rating: 3, text: "Good experience overall." },
-        ])
-      } catch (error) {
-        console.error("Error fetching agent data:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
+        const agentData = await fetchAgent(username);
+        setAgent(agentData);
 
-    getAgentData()
-  }, [username])
+        // Fetch all reviews for this agent
+        const fetchedReviews = await fetchReviewsByAgent(agentData.id);
+        setReviews(fetchedReviews || []);
+
+        // Fetch reviews written by the logged-in user
+        const fetchedUserReviews = await fetchReviewsByUser(user.id);
+        setUserReviews(fetchedUserReviews || []);
+      } catch (error) {
+        console.error("Error fetching agent data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getAgentData();
+  }, [username, user.id]);
 
   if (loading) {
-    return <PageLoader />
+    return <PageLoader />;
   }
 
   if (!agent) {
@@ -57,13 +78,16 @@ export default function AgentProfile() {
           <div className="rounded-full bg-muted p-3">
             <UserX className="h-6 w-6 text-muted-foreground" />
           </div>
-          <h2 className="text-2xl font-semibold tracking-tight">Agent Not Found</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Agent Not Found
+          </h2>
           <p className="text-sm text-muted-foreground">
-            We couldn't find the agent you're looking for. They may have moved or no longer be with our agency.
+            We couldn't find the agent you're looking for. They may have moved
+            or no longer be with our agency.
           </p>
         </div>
       </div>
-    )
+    );
   }
 
   const formatPrice = (price) => {
@@ -71,20 +95,39 @@ export default function AgentProfile() {
       style: "currency",
       currency: "NGN",
       minimumFractionDigits: 0,
-    }).format(price)
-  }
+    }).format(price);
+  };
 
-  const handleReviewSubmit = () => {
-    // Here you would typically send the review to your backend
-    console.log("Submitting review:", { rating, reviewText })
-    setReviewText("")
-    setRating(0)
-  }
+  const handleReviewSubmit = async () => {
+    try {
+      await addReview({
+        message: reviewText,
+        rating: parseInt(rating),
+        userId: user.id,
+        agentId: agent.id,
+      });
 
-  const handleDeleteReview = (reviewId) => {
-    // Here you would typically send a delete request to your backend
-    setUserReviews(userReviews.filter(review => review.id !== reviewId))
-  }
+      toast.success("Review Added Successfully");
+
+      setReviewText("");
+      setRating(0);
+
+      const updatedReviews = await fetchReviewsByAgent(agent.id);
+      setReviews(updatedReviews);
+    } catch (error) {
+      console.error("Error adding review:", error);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await deleteReview(reviewId);
+      toast.success("Review deleted Successfully");
+      setUserReviews(userReviews.filter((review) => review.id !== reviewId));
+    } catch (error) {
+      console.error("Error deleting review:", error);
+    }
+  };
 
   return (
     <div className="container mx-auto p-4 mt-16 px-4 md:px-16">
@@ -99,13 +142,11 @@ export default function AgentProfile() {
                   alt={agent.fullName}
                   className="rounded-full w-32 h-32 object-cover mb-4"
                 />
-                <h1 className="text-2xl font-bold mb-1">
-                  {agent.fullName}
-                </h1>
+                <h1 className="text-2xl font-bold mb-1">{agent.fullName}</h1>
                 <p className="text-muted-foreground mb-4">@{agent.username}</p>
                 <Badge className="mb-4">Verified Agent</Badge>
                 <Button className="w-full mb-4">Contact Agent</Button>
-    
+
                 <div className="w-full space-y-2">
                   <div className="flex items-center">
                     <Phone className="w-4 h-4 mr-2" />
@@ -136,9 +177,11 @@ export default function AgentProfile() {
                   <Star
                     key={star}
                     className={`w-6 h-6 cursor-pointer ${
-                      star <= rating ? "text-yellow-400 fill-current" : "text-gray-300"
+                      star <= rating
+                        ? "text-yellow-400 fill-current"
+                        : "text-gray-300"
                     }`}
-                    onClick={() => setRating(star)}
+                    onClick={() => setRating(star)} // Ensure rating is an integer
                   />
                 ))}
               </div>
@@ -167,47 +210,66 @@ export default function AgentProfile() {
                   <TabsTrigger value="user">My Reviews</TabsTrigger>
                 </TabsList>
                 <TabsContent value="all">
-                  {reviews.map((review) => (
-                    <Card key={review.id} className="mb-4">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-bold">{review.user}</span>
-                          <div className="flex">
-                            {[...Array(review.rating)].map((_, i) => (
-                              <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                            ))}
-                          </div>
-                        </div>
-                        <p>{review.text}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </TabsContent>
-                <TabsContent value="user">
-                  {userReviews.map((review) => (
-                    <Card key={review.id} className="mb-4">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-bold">{review.user}</span>
-                          <div className="flex items-center">
-                            <div className="flex mr-2">
+                  {reviews.length === 0 ? (
+                    <NoReviewsFound />
+                  ) : (
+                    reviews.map((review) => (
+                      <Card key={review.id} className="mb-4">
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-bold">
+                              {review.user.username || review.user.fullName}
+                            </span>
+                            <div className="flex">
                               {[...Array(review.rating)].map((_, i) => (
-                                <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                                <Star
+                                  key={i}
+                                  className="w-4 h-4 text-yellow-400 fill-current"
+                                />
                               ))}
                             </div>
+                          </div>
+                          <p>{review.message}</p>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </TabsContent>
+                <TabsContent value="user">
+                  {userReviews.length === 0 ? (
+                    <NoReviewsFound />
+                  ) : (
+                    userReviews.map((review) => (
+                      <Card key={review.id} className="mb-4">
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-bold">
+                              {review.user.username || review.user.fullName}
+                            </span>
+                            <div className="flex">
+                              {[...Array(review.rating)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className="w-4 h-4 text-yellow-400 fill-current"
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          <div className="flex justify-between">
+                            <p>{review.message}</p>
+
                             <Button
-                              variant="ghost"
-                              size="sm"
+                              variant="outline"
+                              size="icon"
                               onClick={() => handleDeleteReview(review.id)}
                             >
-                              <X className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
-                        </div>
-                        <p>{review.text}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
                 </TabsContent>
               </Tabs>
             </DialogContent>
@@ -226,7 +288,8 @@ export default function AgentProfile() {
                     <img
                       className="w-full h-48 object-cover"
                       src={
-                        property.images?.[0] || "https://via.placeholder.com/300x200"
+                        property.images?.[0] ||
+                        "https://via.placeholder.com/300x200"
                       }
                       alt={property.address}
                     />
@@ -248,7 +311,7 @@ export default function AgentProfile() {
                           <span className="truncate">{property.address}</span>
                         </div>
                         <div className="text-xl font-semibold truncate">
-                        {formatPrice(property.price)}
+                          {formatPrice(property.price)}
                         </div>
                       </div>
                     </div>
@@ -262,5 +325,5 @@ export default function AgentProfile() {
         </div>
       </div>
     </div>
-  )
+  );
 }
