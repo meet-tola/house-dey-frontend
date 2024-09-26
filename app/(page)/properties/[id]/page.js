@@ -19,10 +19,12 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   XIcon,
+  Star,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useParams, useRouter } from "next/navigation";
 import { fetchPost, savePost } from "@/utils/post";
+import { fetchReviewsByAgent } from "@/utils/reviews";
 import { useEffect, useState, useRef } from "react";
 import PageLoader from "@/components/PageLoader";
 import {
@@ -46,6 +48,7 @@ export default function PropertiesDetails() {
   const [error, setError] = useState(null);
   const [isDescriptionOpen, setDescriptionOpen] = useState(true);
   const [isFeaturesOpen, setFeaturesOpen] = useState(false);
+  const [reviewRating, setReviewRating] = useState([]);
 
   const [isSaved, setIsSaved] = useState(false);
   const router = useRouter();
@@ -68,6 +71,8 @@ export default function PropertiesDetails() {
         const data = await fetchPost(id);
         if (data) {
           setPost(data);
+          const fetchedReviews = await fetchReviewsByAgent(data.user.id);
+          setReviewRating(fetchedReviews || []);
         } else {
           setError("Failed to fetch post");
         }
@@ -359,20 +364,38 @@ export default function PropertiesDetails() {
                     </Avatar>
                   </div>
                   <div className="flex-grow">
-                    <h3 className="font-semibold text-sm">
+                    <h3 className="font-semibold text-sm truncate">
                       {post.user?.fullName}
                     </h3>
-                    <p>{post.user.username}</p>
-
-                    {/* Render Rating Icons */}
-                    {/* <div className="flex items-center mt-1">
-                      {[...Array(post.review?.rating)].map((_, index) => (
-                        <StarIcon
-                          key={index}
-                          className="w-4 h-4 text-yellow-500"
-                        />
-                      ))}
-                    </div> */}
+                    {/* <p>{post.user.username}</p> */}
+                    <div className="flex items-center mb-4">
+                      {reviewRating.totalReviews > 0 ? (
+                        <>
+                          {/* <div className="flex items-center">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                className={`w-3 h-3 ${
+                                  star <= (reviewRating.averageRating || 0)
+                                    ? "text-yellow-400 fill-current"
+                                    : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="ml-2 text-sm font-semibold">
+                            {reviewRating.averageRating}
+                          </span> */}
+                          <span className="text-sm text-muted-foreground">
+                            ({reviewRating.totalReviews} reviews)
+                          </span>
+                        </>
+                      ) : (
+                        <span className="ml-2 text-sm font-semibold text-gray-500">
+                          No reviews yet
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <Link href={`/agent-profile/${post.user.username}`}>
                     <Button variant="outline">View Profile</Button>

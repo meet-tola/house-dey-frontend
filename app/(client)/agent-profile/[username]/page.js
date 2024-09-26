@@ -3,7 +3,6 @@
 import { useEffect, useState, useContext } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Mail, MapPin, Phone, UserX, Star, X, Trash2 } from "lucide-react";
 import { fetchAgent } from "@/utils/user";
 import {
@@ -36,13 +35,14 @@ const NoReviewsFound = () => (
 
 export default function AgentProfile() {
   const { username } = useParams();
-  const { user } = useContext(AuthContext); // Get user from AuthContext
+  const { user } = useContext(AuthContext); 
   const [agent, setAgent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reviewText, setReviewText] = useState("");
-  const [rating, setRating] = useState(0); // Ensure rating is an integer
-  const [reviews, setReviews] = useState([]); // All reviews
-  const [userReviews, setUserReviews] = useState([]); // User's reviews
+  const [rating, setRating] = useState(0); 
+  const [reviews, setReviews] = useState([]); 
+  const [reviewRating, setReviewRating] = useState([]); 
+  const [userReviews, setUserReviews] = useState([]); 
 
   useEffect(() => {
     const getAgentData = async () => {
@@ -52,7 +52,8 @@ export default function AgentProfile() {
 
         // Fetch all reviews for this agent
         const fetchedReviews = await fetchReviewsByAgent(agentData.id);
-        setReviews(fetchedReviews || []);
+        setReviewRating(fetchedReviews || []);
+        setReviews(fetchedReviews?.reviews || []);
 
         // Fetch reviews written by the logged-in user
         const fetchedUserReviews = await fetchReviewsByUser(user.id);
@@ -144,8 +145,36 @@ export default function AgentProfile() {
                 />
                 <h1 className="text-2xl font-bold mb-1">{agent.fullName}</h1>
                 <p className="text-muted-foreground mb-4">@{agent.username}</p>
-                <Badge className="mb-4">Verified Agent</Badge>
-                <Button className="w-full mb-4">Contact Agent</Button>
+                <div className="flex items-center mb-4">
+                  {reviewRating.totalReviews > 0 ? (
+                    <>
+                      <div className="flex items-center">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`w-6 h-6 ${
+                              star <= (reviewRating.averageRating || 0)
+                                ? "text-yellow-400 fill-current"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="ml-2 text-lg font-semibold">
+                        {reviewRating.averageRating}
+                      </span>
+                      <span className="ml-4 text-sm text-muted-foreground">
+                        ({reviewRating.totalReviews} reviews)
+                      </span>
+                    </>
+                  ) : (
+                    <span className="ml-2 text-lg font-semibold text-gray-500">
+                      No reviews yet
+                    </span>
+                  )}
+                </div>
+
+                <Button className="w-full mb-4">Send a Message</Button>
 
                 <div className="w-full space-y-2">
                   <div className="flex items-center">
@@ -210,9 +239,7 @@ export default function AgentProfile() {
                   <TabsTrigger value="user">My Reviews</TabsTrigger>
                 </TabsList>
                 <TabsContent value="all">
-                  {reviews.length === 0 ? (
-                    <NoReviewsFound />
-                  ) : (
+                  {reviews.length > 0 ? (
                     reviews.map((review) => (
                       <Card key={review.id} className="mb-4">
                         <CardContent className="p-4">
@@ -233,12 +260,12 @@ export default function AgentProfile() {
                         </CardContent>
                       </Card>
                     ))
+                  ) : (
+                    <NoReviewsFound />
                   )}
                 </TabsContent>
                 <TabsContent value="user">
-                  {userReviews.length === 0 ? (
-                    <NoReviewsFound />
-                  ) : (
+                  {userReviews.length > 0 ? (
                     userReviews.map((review) => (
                       <Card key={review.id} className="mb-4">
                         <CardContent className="p-4">
@@ -269,6 +296,8 @@ export default function AgentProfile() {
                         </CardContent>
                       </Card>
                     ))
+                  ) : (
+                    <NoReviewsFound />
                   )}
                 </TabsContent>
               </Tabs>
