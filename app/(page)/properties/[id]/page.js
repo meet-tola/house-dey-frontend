@@ -365,14 +365,14 @@ export default function PropertiesDetails() {
                     <p>{post.user.username}</p>
 
                     {/* Render Rating Icons */}
-                    <div className="flex items-center mt-1">
+                    {/* <div className="flex items-center mt-1">
                       {[...Array(post.review?.rating)].map((_, index) => (
                         <StarIcon
                           key={index}
                           className="w-4 h-4 text-yellow-500"
                         />
                       ))}
-                    </div>
+                    </div> */}
                   </div>
                   <Link href={`/agent-profile/${post.user.username}`}>
                     <Button variant="outline">View Profile</Button>
