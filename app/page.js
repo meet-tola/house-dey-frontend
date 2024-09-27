@@ -9,7 +9,7 @@ import Features from "@/components/Features";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import Video from "@/components/Video";
-
+ 
 const Page = () => {
   const { user } = useContext(AuthContext); 
   const router = useRouter(); 
