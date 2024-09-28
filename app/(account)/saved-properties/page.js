@@ -25,6 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { PropertySkeleton } from "@/components/PropertySkeleton";
 
 const SavedProperties = () => {
   const [savedProperties, setSavedProperties] = useState([]);
@@ -100,13 +101,7 @@ const SavedProperties = () => {
           <div className="flex gap-6 overflow-x-auto scrollbar-none">
             {loading
               ? Array.from({ length: 5 }).map((_, index) => (
-                  <div key={index} className="flex flex-col space-y-3 mb-4">
-                    <Skeleton className="h-[150px] w-[250px] rounded-xl" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[250px]" />
-                      <Skeleton className="h-4 w-[200px]" />
-                    </div>
-                  </div>
+                <PropertySkeleton key={index} />
                 ))
               : savedProperties.map((property, index) => (
                   <div

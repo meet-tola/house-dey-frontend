@@ -1,50 +1,45 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { MapPin } from "lucide-react";
-import { fetchAllPosts } from "@/utils/post";
-import Link from "next/link";
-import { Button } from "./ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+'use client'
 
-const FeaturedProperties = () => {
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
+import React, { useState, useEffect } from "react"
+import { MapPin } from "lucide-react"
+import { fetchAllPosts } from "@/utils/post"
+import Link from "next/link"
+import { Button } from "./ui/button"
+import PropertySkeleton from "./PropertySkeleton"
+
+export default function FeaturedProperties() {
+  const [properties, setProperties] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchAndSetPosts = async () => {
-      const fetchedProperties = await fetchAllPosts();
+      const fetchedProperties = await fetchAllPosts()
       if (fetchedProperties) {
-        setProperties(fetchedProperties);
+        setProperties(fetchedProperties)
       }
-      setLoading(false);
-    };
+      setLoading(false)
+    }
 
-    fetchAndSetPosts();
-  }, []);
+    fetchAndSetPosts()
+  }, [])
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("en-NG", {
       style: "currency",
       currency: "NGN",
       minimumFractionDigits: 0,
-    }).format(price);
-  };
+    }).format(price)
+  }
 
   return (
     <div className="py-10 px-4 md:px-16">
       <h2 className="text-2xl font-semibold mb-4">
-      Sponsored Properties for Rent
+        Sponsored Properties for Rent
       </h2>
       <div className="flex gap-6 overflow-x-auto scrollbar-none">
         {loading
           ? Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="flex flex-col space-y-3 mb-4">
-                <Skeleton className="h-[150px] w-[250px] rounded-xl" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-[250px]" />
-                  <Skeleton className="h-4 w-[200px]" />
-                </div>
-              </div>
+              <PropertySkeleton key={index} />
             ))
           : properties.map((property, index) => (
               <div
@@ -92,7 +87,5 @@ const FeaturedProperties = () => {
         </Link>
       </div>
     </div>
-  );
-};
-
-export default FeaturedProperties;
+  )
+}

@@ -28,7 +28,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import { PropertySkeleton } from "@/components/PropertySkeleton";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -127,77 +127,71 @@ const MyRequest = () => {
           <div className="flex gap-6 overflow-x-auto scrollbar-none">
             {loading
               ? Array.from({ length: 5 }).map((_, index) => (
-                  <div key={index} className="flex flex-col space-y-3 mb-4">
-                    <Skeleton className="h-[150px] w-[250px] rounded-xl" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[250px]" />
-                      <Skeleton className="h-4 w-[200px]" />
-                    </div>
-                  </div>
+                  <PropertySkeleton key={index} />
                 ))
-              :
-            requests.map((request, index) => (
-              <Card
-                key={index}
-                className="flex flex-col min-w-[300px] lg:min-w-[250px] w-[300px] bg-white rounded-lg overflow-hidden duration-300 ease-in-out"
-              >
-                <CardContent className="flex-grow p-6">
-                  <h3 className="font-semibold text-lg mb-2">
-                    {request.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Type:</span> {request.type}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Request Type:</span>{" "}
-                    {request.property}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Budget:</span>{" "}
-                    {formatPrice(request.budget)}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Location:</span>{" "}
-                    {request.address}
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Date:</span>{" "}
-                    {formatDate(request.createdAt)}
-                  </p>
-                </CardContent>
-                <CardFooter className="p-4">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="w-full">
-                        Delete
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Confirm Deletion</DialogTitle>
-                        <DialogDescription>
-                          Are you sure you want to delete this request? This
-                          action cannot be undone.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button type="button" variant="secondary">
-                            Close
+              : requests.map((request, index) => (
+                  <Card
+                    key={index}
+                    className="flex flex-col min-w-[300px] lg:min-w-[250px] w-[300px] bg-white rounded-lg overflow-hidden duration-300 ease-in-out"
+                  >
+                    <CardContent className="flex-grow p-6">
+                      <h3 className="font-semibold text-lg mb-2">
+                        {request.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-1">
+                        <span className="font-semibold">Type:</span>{" "}
+                        {request.type}
+                      </p>
+                      <p className="text-sm text-gray-600 mb-1">
+                        <span className="font-semibold">Request Type:</span>{" "}
+                        {request.property}
+                      </p>
+                      <p className="text-sm text-gray-600 mb-1">
+                        <span className="font-semibold">Budget:</span>{" "}
+                        {formatPrice(request.budget)}
+                      </p>
+                      <p className="text-sm text-gray-600 mb-1">
+                        <span className="font-semibold">Location:</span>{" "}
+                        {request.address}
+                      </p>
+                      <p className="text-sm text-gray-600 mb-1">
+                        <span className="font-semibold">Date:</span>{" "}
+                        {formatDate(request.createdAt)}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="p-4">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" className="w-full">
+                            Delete
                           </Button>
-                        </DialogClose>
-                        <Button
-                          variant="destructive"
-                          onClick={() => handleDelete(request.id)}
-                        >
-                          Delete
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </CardFooter>
-              </Card>
-            ))}
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>Confirm Deletion</DialogTitle>
+                            <DialogDescription>
+                              Are you sure you want to delete this request? This
+                              action cannot be undone.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button type="button" variant="secondary">
+                                Close
+                              </Button>
+                            </DialogClose>
+                            <Button
+                              variant="destructive"
+                              onClick={() => handleDelete(request.id)}
+                            >
+                              Delete
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </CardFooter>
+                  </Card>
+                ))}
           </div>
         ) : (
           <NoPropertiesFound />
