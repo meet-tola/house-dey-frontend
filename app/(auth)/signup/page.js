@@ -39,9 +39,6 @@ const SignupPage = () => {
   const [loading, setLoading] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
-  const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
-    useState(false);
-  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [isUsernameFocused, setIsUsernameFocused] = useState(false);
   const [usernameLength, setUsernameLength] = useState(0);
 
@@ -60,14 +57,14 @@ const SignupPage = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    
+
     const formattedMobile = formatMobileNumber(mobile);
-    
+
     if (!formattedMobile) {
       toast.error("Please enter a valid mobile number.");
       return;
     }
-    
+
     if (password !== confirmPassword) {
       toast.error("Passwords do not match.");
       return;
@@ -78,7 +75,14 @@ const SignupPage = () => {
     }
     setLoading(true);
     try {
-      await signup(fullName, username, email, formattedMobile, password, role.toUpperCase());
+      await signup(
+        fullName,
+        username,
+        email,
+        formattedMobile,
+        password,
+        role.toUpperCase()
+      );
       toast.success("Check your email for verification.");
       router.push("/verify-email");
     } catch (error) {
@@ -87,24 +91,23 @@ const SignupPage = () => {
       setLoading(false);
     }
   };
-  
+
   const formatMobileNumber = (mobileNumber) => {
     let sanitizedMobile = mobileNumber.trim();
-  
-    sanitizedMobile = sanitizedMobile.replace(/\D/g, '');
-  
-    if (sanitizedMobile.startsWith('0')) {
-      sanitizedMobile = '+234' + sanitizedMobile.slice(1);
+
+    sanitizedMobile = sanitizedMobile.replace(/\D/g, "");
+
+    if (sanitizedMobile.startsWith("0")) {
+      sanitizedMobile = "+234" + sanitizedMobile.slice(1);
     }
-  
+
     const validNumberPattern = /^\+234\d{10}$/;
     if (!validNumberPattern.test(sanitizedMobile)) {
-      return null;  
+      return null;
     }
-  
+
     return sanitizedMobile;
   };
-  
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -144,13 +147,6 @@ const SignupPage = () => {
     return "Strong";
   };
 
-  const handleForgotPassword = (e) => {
-    e.preventDefault();
-    console.log("Forgot password for:", forgotPasswordEmail);
-    toast.success("Password reset link sent to your email");
-    setIsForgotPasswordModalOpen(false);
-  };
-
   const getUsernameMessage = (length) => {
     if (length === 0) return "";
     if (length < 4) return "Username must be at least 4 characters long.";
@@ -171,7 +167,7 @@ const SignupPage = () => {
             <div className="flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full bg-purple-100 px-5 py-2">
               <HomeIcon className="h-4 w-4 text-[#3aaaf5]" />
               <p className="text-sm font-semibold text-[#1d9bf0]">
-                Finding Your Dream Home
+                Find Your Dream Home
               </p>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold">
@@ -340,19 +336,6 @@ const SignupPage = () => {
               </div>
             </div>
 
-            {/* Forgot Password Link */}
-            <div className="w-full text-sm">
-              <Button
-                type="button"
-                variant="link"
-                className="text-blue-600 hover:underline p-0"
-                onClick={() => setIsForgotPasswordModalOpen(true)}
-              >
-                Forgot your Password?
-              </Button>{" "}
-              Let get you back in.
-            </div>
-
             {/* Signup Button */}
             <Button
               type="submit"
@@ -383,39 +366,6 @@ const SignupPage = () => {
           />
         </div>
       </div>
-
-      {/* Forgot Password Modal */}
-      <Dialog
-        open={isForgotPasswordModalOpen}
-        onOpenChange={setIsForgotPasswordModalOpen}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Forgot Password</DialogTitle>
-            <DialogDescription>
-              Enter your email address and we'll send you a link to reset your
-              password.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleForgotPassword} className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="forgot-password-email">Email</Label>
-              <Input
-                id="forgot-password-email"
-                type="email"
-                placeholder="Enter your email"
-                value={forgotPasswordEmail}
-                onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                className="w-full h-10"
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              Send Reset Link
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };

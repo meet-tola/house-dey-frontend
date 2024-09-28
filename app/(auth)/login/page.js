@@ -80,7 +80,7 @@ const LoginPage = () => {
             <div className="flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full bg-purple-100 px-7 py-2">
               <HomeIcon className="h-5 w-5 text-[#3aaaf5]" />
               <p className="text-sm font-semibold text-[#1d9bf0]">
-                Finding Your Dream Home
+                Find Your Dream Home
               </p>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold">Welcome Back!</h1>

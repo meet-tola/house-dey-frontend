@@ -1,19 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  CheckCircle,
-  PlayCircle,
-  Home,
-  DollarSign,
-  Users,
-  MessageCircle,
-  Bell,
-} from "lucide-react";
+import { CheckCircle, PlayCircle, Home, DollarSign, Users } from "lucide-react";
 
 export default function AgentHomePage() {
   return (
@@ -24,22 +14,26 @@ export default function AgentHomePage() {
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                  Create Your Property Listing in Minutes
+                  List Your Property in less than a Minute
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                  Streamline your property management process. List, manage, and
-                  grow your real estate portfolio with ease.
+                  Find an easier, faster way to connect with potential
+                  tenants/buyers. No more waiting for a long period of time just
+                  to get a tenant/buyer.
                 </p>
               </div>
               <div className="space-x-4">
                 <Link href="/my-listings">
                   <Button>Get Started</Button>
                 </Link>
-                <Button variant="outline">Learn More</Button>
+                <Link href="#video-tutorial">
+                  <Button variant="outline">Learn More</Button>
+                </Link>
               </div>
             </div>
           </div>
         </section>
+        
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-16">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
@@ -54,7 +48,7 @@ export default function AgentHomePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Create your account and verify your agent or landlord status.
+                  Create an account and verify your status.
                 </CardContent>
               </Card>
               <Card>
@@ -65,7 +59,8 @@ export default function AgentHomePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Enter property information, upload photos, and set your terms.
+                  Enter property information, upload photos/videos, set your
+                  terms and price.
                 </CardContent>
               </Card>
               <Card>
@@ -76,14 +71,19 @@ export default function AgentHomePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Your listing goes live. Manage inquiries and bookings from
-                  your dashboard.
+                  Your listing goes live. Manage inquiries and engage with
+                  potential customers.
                 </CardContent>
               </Card>
             </div>
           </div>
         </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+        
+        {/* Video Tutorial Section */}
+        <section
+          id="video-tutorial"
+          className="w-full py-12 md:py-24 lg:py-32 bg-muted"
+        >
           <div className="container px-4 md:px-16">
             <div className="flex flex-col items-center space-y-4 text-center">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
@@ -101,6 +101,7 @@ export default function AgentHomePage() {
             </div>
           </div>
         </section>
+        
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-16">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
@@ -115,8 +116,8 @@ export default function AgentHomePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  Our platform helps you optimize pricing and occupancy to
-                  increase your revenue.
+                  We help bring you closer to potential tenants or buyers,
+                  making it easier to close deals quickly and effectively.
                 </CardContent>
               </Card>
               <Card>
@@ -146,6 +147,7 @@ export default function AgentHomePage() {
             </div>
           </div>
         </section>
+        
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
           <div className="container px-4 md:px-16">
             <div className="flex flex-col items-center space-y-4 text-center">

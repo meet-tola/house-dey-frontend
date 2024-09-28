@@ -27,7 +27,7 @@ const Hero = () => {
         <div className="mx-auto mb-5 mt-[8rem] lg:mt-0 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full backdrop-blur-sm bg-white/30 px-7 py-2">
           <HomeIcon className="h-5 w-5 text-white" />
           <p className="text-sm font-semibold text-white">
-            Finding Your Dream Home
+            Find Your Dream Home
           </p>
         </div>
         <h1 className="text-4xl md:text-6xl lg:text-7xl text-white font-black transition-opacity duration-1000 ease-in-out">

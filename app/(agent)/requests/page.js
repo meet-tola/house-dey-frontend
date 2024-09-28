@@ -235,8 +235,7 @@ export default function PropertyRequestPage() {
               No property requests found
             </h2>
             <p className="text-sm text-muted-foreground">
-              We couldn't find any property requests matching your search
-              criteria. Try adjusting your filters or check back later.
+            Check back later or search for a different property.
             </p>
           </div>
         </div>
