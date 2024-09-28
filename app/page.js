@@ -1,7 +1,7 @@
 "use client";
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import AuthContext from "@/context/AuthContext"; 
+import AuthContext from "@/context/AuthContext";
 
 import AgentBanner from "@/components/AgentBanner";
 import FeaturedProperties from "@/components/FeaturedListing";
@@ -9,10 +9,11 @@ import Features from "@/components/Features";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import Video from "@/components/Video";
- 
+import InstallPrompt from "@/components/InstallPrompt";
+
 const Page = () => {
-  const { user } = useContext(AuthContext); 
-  const router = useRouter(); 
+  const { user } = useContext(AuthContext);
+  const router = useRouter();
 
   useEffect(() => {
     if (user && user.role === "AGENT") {
@@ -22,6 +23,7 @@ const Page = () => {
 
   return (
     <div>
+      <InstallPrompt />
       <Hero />
       <Services />
       <FeaturedProperties />

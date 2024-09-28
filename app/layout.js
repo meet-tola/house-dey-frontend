@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
 import { SocketContextProvider } from "@/context/SocketContext";
 import { MapProvider } from "@/provider/map-provider";
-import InstallPrompt from "@/components/InstallPrompt";
 
 const plus = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
@@ -32,11 +31,12 @@ export default function RootLayout({ children }) {
           rel="apple-touch-startup-image"
         />
         <link href="/apple_splash_750.png" sizes="750x1334" rel="apple-touch-startup-image" />
+        <link href="/apple_splash_750.png" sizes="640x1136" rel="apple-touch-startup-image" />
+
       </head>
       <AuthProvider>
         <SocketContextProvider>
           <body className={plus.className}>
-            <InstallPrompt />
             <Toaster />
             <Navbar />
             <MapProvider>{children}</MapProvider>
