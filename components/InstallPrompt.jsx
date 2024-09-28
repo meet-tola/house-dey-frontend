@@ -1,34 +1,35 @@
-"use client";
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const InstallPrompt = () => {
-  const [showInstallMessage, setShowInstallMessage] = useState(false);
+const InstallAppPrompt = () => {
+  const [isIphone, setIsIphone] = useState(false);
 
   useEffect(() => {
-    // Function to detect if the device is iOS
-    const isIos = () => {
-      const userAgent = window.navigator.userAgent.toLowerCase();
-      return /iphone|ipad|ipod/.test(userAgent);
-    };
-
-    // Function to detect if the app is in standalone mode
-    const isInStandaloneMode = () => 'standalone' in window.navigator && window.navigator.standalone;
-
-    // Check if the app is on iOS and not in standalone mode
-    if (isIos() && !isInStandaloneMode()) {
-      setShowInstallMessage(true);
+    const userAgent = window.navigator.userAgent;
+    // Check if the device is an iPhone
+    if (/iphone|ipad|ipod/.test(userAgent)) {
+      setIsIphone(true);
     }
-  }, []); // The empty dependency array ensures this runs only on component mount
+  }, []);
 
   return (
     <>
-      {showInstallMessage && (
-        <div className="install-popup">
-          <p>Install this app on your iOS device: tap the share icon and then "Add to Home Screen".</p>
+      {isIphone && (
+        <div className="fixed bottom-0 left-0 right-0 bg-blue-500 text-white p-4 flex justify-between items-center shadow-lg">
+          <p className="text-sm">
+            Install this app on your iOS device: tap the 
+            <span className="inline-block mx-1 bg-white text-blue-500 px-2 py-1 rounded">share</span> 
+            icon and then "Add to Home Screen".
+          </p>
+          <button
+            className="ml-4 bg-white text-blue-500 px-3 py-1 rounded-md hover:bg-gray-200"
+            onClick={() => setIsIphone(false)}
+          >
+            Close
+          </button>
         </div>
       )}
     </>
   );
 };
 
-export default InstallPrompt;
+export default InstallAppPrompt;

@@ -20,7 +20,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-      <meta name="theme-color" content="#8936FF" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
 
         <link rel="icon" href="/favicon.png" sizes="any" />
