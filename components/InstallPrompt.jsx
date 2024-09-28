@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Button } from './ui/button';
+import { Share } from 'lucide-react';
 
 const InstallAppPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
@@ -38,7 +39,7 @@ const InstallAppPrompt = () => {
         <div className="fixed bottom-0 left-0 right-0 bg-primary text-white p-4 flex justify-between items-center shadow-lg">
           <p className="text-sm">
             Install this app on your iOS device: tap the 
-            <span className="inline-block mx-1 bg-white text-primary px-2 py-1 rounded">share</span> 
+            <span className="inline-block mx-1 bg-white text-primary px-2 py-1 rounded"><Share /></span> 
             icon and then "Add to Home Screen".
           </p>
           <Button
