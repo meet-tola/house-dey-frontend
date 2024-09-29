@@ -7,7 +7,7 @@ import {
   FilterIcon,
   ShowerHeadIcon,
   HomeIcon,
-  Loader,
+  Loader2,
   Heart,
   Bed,
   Bath,
@@ -304,7 +304,7 @@ export default function PropertiesPage() {
               >
                 {loading ? (
                   <>
-                    <Loader className="animate-spin mr-2 h-4 w-4" /> Searching
+                    <Loader2 className="animate-spin mr-2 h-4 w-4" /> Searching
                   </>
                 ) : (
                   <>
@@ -329,7 +329,7 @@ export default function PropertiesPage() {
             >
               {loading ? (
                 <>
-                  <Loader className="animate-spin" />
+                  <Loader2 className="animate-spin" />
                 </>
               ) : (
                 <>
@@ -453,7 +453,7 @@ export default function PropertiesPage() {
                 <DialogFooter className="gap-2">
                   <Button onClick={handleSearch} disabled={loading}>
                     {loading ? (
-                      <Loader className="animate-spin" />
+                      <Loader2 className="animate-spin" />
                     ) : (
                       "Apply Filters"
                     )}

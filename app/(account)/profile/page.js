@@ -201,7 +201,7 @@ export default function Component() {
                   className="cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary"
                 >
                   {uploading ? (
-                    <Loader className="animate-spin mr-2" />
+                    <Loader2 className="animate-spin mr-2" />
                   ) : (
                     <Upload className="mr-2" />
                   )}
