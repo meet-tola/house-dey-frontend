@@ -99,7 +99,11 @@ export default function Navbar() {
               <SheetContent side="left" className="p-4">
                 <SheetHeader>
                   <SheetTitle>
-                    <Link href="/" className="flex items-center gap-2" prefetch={false}>
+                    <Link
+                      href="/"
+                      className="flex items-center gap-2"
+                      prefetch={false}
+                    >
                       <Image
                         src="/logo.png"
                         width={160}
@@ -171,16 +175,20 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
                     <AvatarImage src={user?.avatar} alt="User Avatar" />
-                    <AvatarFallback>{user.email[0].toUpperCase()}</AvatarFallback>
+                    <AvatarFallback>
+                      {user.email[0].toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuLabel>User Profile</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Link href="/account" prefetch={false}>
-                      My Account
-                    </Link>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      window.location.href = "/account";
+                    }}
+                  >
+                    My Account
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link
