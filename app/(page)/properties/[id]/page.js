@@ -415,7 +415,7 @@ export default function PropertiesDetails() {
           <div className="flex items-center text-white text-sm">
             <Avatar className="w-12 h-12 rounded-full mr-4">
               <AvatarImage src={post.user.avatar} alt={post.user.username} />
-              <AvatarFallback>
+              <AvatarFallback className="text-primary">
                 {post.user.username.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
