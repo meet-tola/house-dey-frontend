@@ -200,6 +200,11 @@ const MyListings = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem>
+                            <Link href={`/properties/${property.id}`}>
+                              <div className="p-1">View</div>
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
                             <Link href={`/edit-listing/${property.id}`}>
                               <div className="p-1">Edit</div>
                             </Link>
