@@ -413,11 +413,12 @@ export default function PropertiesDetails() {
       {user?.role !== "AGENT" && (
         <div className="sticky inset-x-0 bottom-0 z-10 flex items-center justify-between bg-primary px-4 lg:px-20 py-3">
           <div className="flex items-center text-white text-sm">
-            <img
-              src={post.user.avatar}
-              alt={post.user.username}
-              className="w-12 h-12 rounded-full mr-4"
-            />
+            <Avatar className="w-12 h-12 rounded-full mr-4">
+              <AvatarImage src={post.user.avatar} alt={post.user.username} />
+              <AvatarFallback>
+                {post.user.username.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
             <div>
               <h2 className="font-semibold">{post.user?.fullName}</h2>
               <p>{post.user.username}</p>
