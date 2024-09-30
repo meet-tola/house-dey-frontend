@@ -21,6 +21,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const [isForgotPasswordModalOpen, setIsForgotPasswordModalOpen] =
     useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
@@ -61,14 +62,14 @@ const LoginPage = () => {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setResetLoading(true);
     try {
       await requestPasswordReset(forgotPasswordEmail);
       setEmailSent(true); // Indicate that the email has been sent
     } catch (error) {
       toast.error(error.message);
     } finally {
-      setLoading(false);
+      setResetLoading(false);
     }
   };
 
@@ -192,7 +193,7 @@ const LoginPage = () => {
                 />
               </div>
               <Button type="submit" className="w-full">
-                {loading ? (
+                {resetLoading ? (
                   <Loader2 className="animate-spin" />
                 ) : (
                   "Send Reset Link"

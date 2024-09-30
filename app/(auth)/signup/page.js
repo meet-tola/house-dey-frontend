@@ -16,13 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import AuthContext from "@/context/AuthContext";
 
@@ -150,7 +143,7 @@ const SignupPage = () => {
   const getUsernameMessage = (length) => {
     if (length === 0) return "";
     if (length < 4) return "Username must be at least 4 characters long.";
-    return "Username is valid.";
+    return "";
   };
 
   const getUsernameColor = (length) => {
