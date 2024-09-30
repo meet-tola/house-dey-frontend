@@ -55,6 +55,8 @@ const MyListings = () => {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
+    setLoading(true);
+
     const getUserPosts = async () => {
       const userPosts = await fetchUserPosts();
       if (userPosts) {

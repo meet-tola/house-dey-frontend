@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, PlayCircle, Home, DollarSign, Users } from "lucide-react";
+import { CheckCircle, Home, DollarSign, Users } from "lucide-react";
 
 export default function AgentHomePage() {
   return (
@@ -33,7 +33,7 @@ export default function AgentHomePage() {
             </div>
           </div>
         </section>
-        
+
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-background to-muted">
           <div className="container px-4 md:px-16">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
@@ -41,7 +41,9 @@ export default function AgentHomePage() {
             </h2>
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="relative">
-                <div className="absolute left-0 top-0 w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xl font-bold">1</div>
+                <div className="absolute left-0 top-0 w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xl font-bold">
+                  1
+                </div>
                 <Card className="pt-8 h-full">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -50,12 +52,15 @@ export default function AgentHomePage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    Create an account and verify your status. It's quick, easy, and secure.
+                    Create an account and verify your status. It's quick, easy,
+                    and secure.
                   </CardContent>
                 </Card>
               </div>
               <div className="relative">
-                <div className="absolute left-0 top-0 w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xl font-bold">2</div>
+                <div className="absolute left-0 top-0 w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xl font-bold">
+                  2
+                </div>
                 <Card className="pt-8 h-full">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -70,7 +75,9 @@ export default function AgentHomePage() {
                 </Card>
               </div>
               <div className="relative">
-                <div className="absolute left-0 top-0 w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xl font-bold">3</div>
+                <div className="absolute left-0 top-0 w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xl font-bold">
+                  3
+                </div>
                 <Card className="pt-8 h-full">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -79,15 +86,16 @@ export default function AgentHomePage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    Your listing goes live instantly. Manage inquiries and engage with
-                    potential customers through our user-friendly dashboard.
+                    Your listing goes live instantly. Manage inquiries and
+                    engage with potential customers through our user-friendly
+                    dashboard.
                   </CardContent>
                 </Card>
               </div>
             </div>
           </div>
         </section>
-        
+
         <section
           id="video-tutorial"
           className="w-full py-12 md:py-24 lg:py-32 bg-muted"
@@ -98,7 +106,8 @@ export default function AgentHomePage() {
                 Video Tutorial
               </h2>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl mb-8">
-                Watch our step-by-step guide on creating the perfect property listing.
+                Watch our step-by-step guide on creating the perfect property
+                listing.
               </p>
               <div className="w-full max-w-3xl aspect-video bg-muted rounded-xl overflow-hidden shadow-lg">
                 <video
@@ -113,65 +122,53 @@ export default function AgentHomePage() {
             </div>
           </div>
         </section>
-        
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-muted to-background">
+
+        <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-16">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Why Choose Us
             </h2>
-            <div className="grid gap-8 lg:grid-cols-3">
-              <Card className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200">
+            <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-2xl">
-                    <DollarSign className="h-8 w-8" />
+                  <CardTitle className="flex items-center gap-2">
+                    <DollarSign className="h-6 w-6 text-primary" />
                     Maximize Your Earnings
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg">
-                    We help bring you closer to potential tenants or buyers,
-                    making it easier to close deals quickly and effectively.
-                    Our platform is designed to optimize your property's visibility
-                    and attract high-quality leads.
-                  </p>
+                  We help bring you closer to potential tenants or buyers,
+                  making it easier to close deals quickly and effectively.
                 </CardContent>
               </Card>
-              <Card className="bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors duration-200">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-2xl">
-                    <Users className="h-8 w-8" />
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-6 w-6 text-primary" />
                     Reach More Tenants
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg">
-                    Get exposure to our vast network of verified tenants looking
-                    for properties like yours. Our advanced matching algorithms
-                    ensure your property reaches the right audience, increasing
-                    your chances of finding the perfect tenant or buyer.
-                  </p>
+                  Get exposure to our vast network of verified tenants looking
+                  for properties like yours.
                 </CardContent>
               </Card>
-              <Card className="bg-accent text-accent-foreground hover:bg-accent/90 transition-colors duration-200">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-2xl">
-                    <Home className="h-8 w-8" />
+                  <CardTitle className="flex items-center gap-2">
+                    <Home className="h-6 w-6 text-primary" />
                     Effortless Management
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg">
-                    Our tools make it easy to manage bookings, communicate with
-                    tenants, and track payments. From scheduling viewings to
-                    signing contracts, our platform streamlines every aspect of
-                    property management, saving you time and hassle.
-                  </p>
+                  Our tools make it easy to manage bookings, communicate with
+                  tenants, and track payments.
                 </CardContent>
               </Card>
             </div>
           </div>
         </section>
-        
+
         <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
           <div className="container px-4 md:px-16">
             <div className="flex flex-col items-center space-y-4 text-center">
@@ -184,7 +181,9 @@ export default function AgentHomePage() {
                 difference.
               </p>
               <Link href="/my-listings">
-                <Button size="lg" className="mt-4">Create Your Listing Now</Button>
+                <Button size="lg" className="mt-4">
+                  Create Your Listing Now
+                </Button>
               </Link>
             </div>
           </div>
