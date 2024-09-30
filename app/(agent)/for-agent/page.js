@@ -110,12 +110,8 @@ export default function AgentHomePage() {
                 listing.
               </p>
               <div className="w-full max-w-3xl aspect-video bg-muted rounded-xl overflow-hidden shadow-lg">
-                <video
-                  controls
-                  poster="/placeholder.svg"
-                  className="w-full h-full object-cover"
-                >
-                  <source src="/path-to-your-video.mp4" type="video/mp4" />
+                <video controls className="w-full h-full object-cover">
+                  <source src="/tutorial.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               </div>
