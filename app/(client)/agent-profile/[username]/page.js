@@ -23,6 +23,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AuthContext from "@/context/AuthContext";
 import { toast } from "react-hot-toast";
@@ -35,14 +36,14 @@ const NoReviewsFound = () => (
 
 export default function AgentProfile() {
   const { username } = useParams();
-  const { user } = useContext(AuthContext); 
+  const { user } = useContext(AuthContext);
   const [agent, setAgent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reviewText, setReviewText] = useState("");
-  const [rating, setRating] = useState(0); 
-  const [reviews, setReviews] = useState([]); 
-  const [reviewRating, setReviewRating] = useState([]); 
-  const [userReviews, setUserReviews] = useState([]); 
+  const [rating, setRating] = useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [reviewRating, setReviewRating] = useState([]);
+  const [userReviews, setUserReviews] = useState([]);
 
   useEffect(() => {
     const getAgentData = async () => {
@@ -138,11 +139,12 @@ export default function AgentProfile() {
           <Card>
             <CardContent className="p-6">
               <div className="flex flex-col items-center">
-                <img
-                  src={agent.avatar || "/placeholder.svg?height=150&width=150"}
-                  alt={agent.fullName}
-                  className="rounded-full w-32 h-32 object-cover mb-4"
-                />
+                <Avatar className="rounded-full w-32 h-32 object-cover mb-4">
+                  <AvatarImage src={agent.avatar} alt={agent.fullName} />
+                  <AvatarFallback className="text-primary">
+                    {agent.username.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
                 <h1 className="text-2xl font-bold mb-1">{agent.fullName}</h1>
                 <p className="text-muted-foreground mb-4">@{agent.username}</p>
                 <div className="flex items-center mb-4">
