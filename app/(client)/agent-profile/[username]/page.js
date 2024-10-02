@@ -11,6 +11,7 @@ import {
   addReview,
   deleteReview,
 } from "@/utils/reviews";
+import { addChat } from "@/utils/message";
 import { useParams } from "next/navigation";
 import PageLoader from "@/components/PageLoader";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
@@ -100,6 +101,15 @@ export default function AgentProfile() {
     }).format(price);
   };
 
+  const handleSendMessage = async (userId) => {
+    try {
+      await addChat(userId);
+      router.push("/messages");
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
+
   const handleReviewSubmit = async () => {
     try {
       await addReview({
@@ -176,7 +186,12 @@ export default function AgentProfile() {
                   )}
                 </div>
 
-                <Button className="w-full mb-4">Send a Message</Button>
+                <Button
+                  className="w-full mb-4"
+                  onClick={() => handleSendMessage(agent.id)}
+                >
+                  Send a Message
+                </Button>
 
                 <div className="w-full space-y-2">
                   <div className="flex items-center">
