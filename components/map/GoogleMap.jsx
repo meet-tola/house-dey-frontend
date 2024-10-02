@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { GoogleMap, Marker } from "@react-google-maps/api";
+import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
 import { Loader2 } from "lucide-react";
 
 const GoogleMapComponent = ({ address }) => {
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [showInfoWindow, setShowInfoWindow] = useState(false);
   const [mapContainerStyle, setMapContainerStyle] = useState({
     width: "100%",
     height: "60vh",
@@ -74,7 +75,18 @@ const GoogleMapComponent = ({ address }) => {
         center={center}
         zoom={15}
       >
-        <Marker position={center} />
+        <Marker
+          position={center}
+          onClick={() => setShowInfoWindow(true)}
+        >
+          {showInfoWindow && (
+            <InfoWindow onCloseClick={() => setShowInfoWindow(false)}>
+              <div>
+                <p>{address}</p>
+              </div>
+            </InfoWindow>
+          )}
+        </Marker>
       </GoogleMap>
     </div>
   );
