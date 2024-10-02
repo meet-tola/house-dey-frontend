@@ -20,6 +20,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
       <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="google-site-verification" content="UrZvhxnWWQ8QpfF_jt_HZqcjjdxLjBqzvB3x6F_Gaw8" />
 
         <link rel="icon" href="/favicon.png" sizes="any" />
 
