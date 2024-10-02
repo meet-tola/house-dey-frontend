@@ -16,7 +16,7 @@ import {
 import AuthContext from "@/context/AuthContext";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import { Loader2, UserIcon, Upload } from "lucide-react";
+import { Loader2, UserIcon, Upload, Trash2 } from "lucide-react";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -65,35 +65,75 @@ export default function Component() {
     }));
   };
 
+  // Updated Image Upload Logic
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "bxmkzdav");
+    const formDataUpload = new FormData();
+    formDataUpload.append("file", file);
+    formDataUpload.append("upload_preset", "bxmkzdav");
 
     try {
       const res = await fetch(
         "https://api.cloudinary.com/v1_1/dvvirefzi/image/upload",
         {
           method: "POST",
-          body: formData,
+          body: formDataUpload,
         }
       );
-      const file = await res.json();
+      const fileData = await res.json();
 
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        avatar: file.secure_url,
-      }));
-      toast.success("Image uploaded successfully!");
+      const updatedData = { ...formData, avatar: fileData.secure_url };
+      const response = await axios.put(
+        `${API_URL}/api/user/${user.id}`,
+        updatedData
+      );
+
+      if (response.status === 200) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          avatar: fileData.secure_url,
+        }));
+        updateUser({ ...user, avatar: fileData.secure_url });
+        toast.success("Profile image uploaded successfully!");
+      } else {
+        toast.error("Failed to update profile after image upload.");
+      }
     } catch (error) {
       console.error("Error uploading image:", error);
       toast.error("Failed to upload image.");
     } finally {
       setUploading(false);
+    }
+  };
+
+  // Updated Image Delete Logic
+  const handleImageDelete = async () => {
+    setLoading(true);
+    try {
+      const updatedData = { ...formData, avatar: "" };
+      const response = await axios.put(
+        `${API_URL}/api/user/${user.id}`,
+        updatedData
+      );
+
+      if (response.status === 200) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          avatar: "",
+        }));
+        updateUser({ ...user, avatar: "" });
+        toast.success("Profile image deleted successfully!");
+      } else {
+        toast.error("Failed to delete profile image.");
+      }
+    } catch (error) {
+      console.error("Error deleting profile image:", error);
+      toast.error("Failed to delete profile image.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -151,13 +191,13 @@ export default function Component() {
         <div className="p-6">
           <div className="flex items-center mb-6">
             {formData.avatar ? (
-              <img
-                src={formData.avatar}
-                width={100}
-                height={100}
-                className="h-20 w-20 mr-4 object-cover rounded-full"
-                alt="Profile image"
-              />
+                <img
+                  src={formData.avatar}
+                  width={100}
+                  height={100}
+                  className="h-20 w-20 mr-4 object-cover rounded-full"
+                  alt="Profile image"
+                />
             ) : (
               <div className="rounded-full h-20 w-20 mr-4 flex items-center justify-center bg-gray-200">
                 <UserIcon className="h-10 w-10 text-gray-500" />
@@ -175,15 +215,24 @@ export default function Component() {
           <h2 className="text-xl font-semibold my-4">My Details</h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex flex-col items-center space-y-4">
-              <div className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200">
+              <div className="relative w-32 h-32 rounded-full bg-gray-200">
                 {formData.avatar ? (
-                  <img
-                    src={formData.avatar}
-                    width={128}
-                    height={128}
-                    className="w-full h-full rounded-full object-cover"
-                    alt="Profile image"
-                  />
+                  <>
+                    <img
+                      src={formData.avatar}
+                      width={128}
+                      height={128}
+                      className="w-full h-full rounded-full object-cover"
+                      alt="Profile image"
+                    />
+                    <button
+                      onClick={handleImageDelete}
+                      className="absolute top-2 right-2 p-2 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors"
+                      aria-label="Delete profile image"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </>
                 ) : (
                   <UserIcon className="w-full h-full p-4 text-gray-400" />
                 )}
