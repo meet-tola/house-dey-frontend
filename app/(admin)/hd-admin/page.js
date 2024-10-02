@@ -17,8 +17,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -30,6 +28,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import PageLoader from "@/components/PageLoader";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -81,7 +80,7 @@ export default function Dashboard() {
       setAgentDetails(response.data);
     } catch (error) {
       console.error("Error fetching agent details:", error);
-      toast.error("Failed to fetch agents details. Please try again.");
+      toast.error("Failed to fetch agent details. Please try again.");
     }
   };
 
@@ -96,7 +95,7 @@ export default function Dashboard() {
     setIsUpdating(true);
     try {
       await axios.put(`${API_URL}/api/admin/verification/${selectedAgent.id}`, {
-        status: newStatus,
+        verificationStatus: newStatus,
       });
 
       setAgents(
@@ -109,7 +108,7 @@ export default function Dashboard() {
       setSelectedAgent((prev) =>
         prev ? { ...prev, status: newStatus } : null
       );
-      toast.error("Failed to fetch agents. Please try again.");
+      toast.success("Agent status updated successfully.");
     } catch (error) {
       console.error("Error updating agent status:", error);
       toast.error("Failed to update agent status. Please try again.");
@@ -125,7 +124,7 @@ export default function Dashboard() {
           onSubmit={handleLogin}
           className="p-8 bg-white rounded-lg shadow-md"
         >
-          <h2 className="mb-4 text-2xl font-bold">Login Required</h2>
+          <h2 className="mb-4 text-2xl font-bold">Admin Login</h2>
           <div className="mb-4">
             <Label htmlFor="password">Password</Label>
             <Input
@@ -147,77 +146,95 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
+    <PageLoader />
     );
   }
 
   return (
     <div className="container mx-auto p-4 px-4 md:px-16 mt-20">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">User Dashboard</h1>
+        <h1 className="text-2xl font-bold">User Dashboard(Agents)</h1>
         <Button onClick={handleLogout}>Logout</Button>
-      </div>{" "}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {agents.map((agent) => (
-            <TableRow
-              key={agent.id}
-              onClick={() => handleAgentClick(agent)}
-              className="cursor-pointer"
-            >
-              <TableCell>{agent.fullName}</TableCell>
-              <TableCell>{agent.email}</TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    agent.verificationStatus === "approved"
-                      ? "default"
-                      : agent.verificationStatus === "pending"
-                      ? "secondary"
-                      : "destructive"
-                  }
+      </div>
+      <div className="h-screen overflow-auto">
+        {agents.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {agents.map((agent) => (
+                <TableRow
+                  key={agent.id}
+                  onClick={() => handleAgentClick(agent)}
+                  className="cursor-pointer hover:bg-gray-100"
                 >
-                  {agent.verificationStatus}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                  <TableCell>{agent.fullName}</TableCell>
+                  <TableCell>{agent.email}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        agent.verificationStatus === "approved"
+                          ? "default"
+                          : agent.verificationStatus === "pending"
+                          ? "secondary"
+                          : "destructive"
+                      }
+                    >
+                      {agent.verificationStatus}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <div className="text-center text-gray-500 mt-8">
+            No agents available
+          </div>
+        )}
+      </div>
       {selectedAgent && agentDetails && (
         <Dialog
           open={!!selectedAgent}
           onOpenChange={() => setSelectedAgent(null)}
         >
-          <DialogContent className="max-w-3xl">
+          <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Agent Details</DialogTitle>
-              <DialogDescription>
-                View and update agent information
-              </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-6 py-4">
-              <div className="grid gap-2">
+            <div className="grid gap-4 py-4">
+              {/* <div className="flex justify-center">
+                {agentDetails.profileImage ? (
+                  <img
+                    src={agentDetails.profileImage}
+                    alt="Profile"
+                    className="w-24 h-24 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-2xl">
+                      {agentDetails.fullName.charAt(0)}
+                    </span>
+                  </div>
+                )}
+              </div> */}
+              <div>
                 <Label htmlFor="name">Name</Label>
                 <Input id="name" value={agentDetails.fullName} readOnly />
               </div>
-              <div className="grid gap-2">
+              <div>
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" value={agentDetails.email} readOnly />
               </div>
-              <div className="grid gap-2">
+              <div>
                 <Label htmlFor="status">Status</Label>
                 <Select
-                  onValueChange={handleStatusChange}
+                  onValueChange={(value) => handleStatusChange(value)}
                   defaultValue={selectedAgent.verificationStatus}
                   disabled={isUpdating}
                 >
@@ -231,14 +248,22 @@ export default function Dashboard() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid gap-2">
+              <div>
                 <Label htmlFor="verificationImage">Verification Document</Label>
                 <div className="border rounded-lg p-4">
                   <img
                     src={agentDetails.verificationImage}
                     alt="Verification Document"
-                    className="w-full h-auto max-h-96 object-contain"
+                    className="w-full h-[150px] max-h-64 object-contain"
                   />
+                  {/* Download Button */}
+                  <a
+                    href={agentDetails.verificationImage}
+                    download="verification_document.jpg" 
+                    target="_blank"
+                  >
+                    <Button>Download Full Image</Button>
+                  </a>
                 </div>
               </div>
             </div>
