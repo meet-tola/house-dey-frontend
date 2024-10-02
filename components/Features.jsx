@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "./ui/badge";
 
 const Features = () => {
   return (
@@ -16,8 +17,7 @@ const Features = () => {
             <CardContent>
               <CardTitle className="my-4">Message Agents/Clients</CardTitle>
               <p>
-                With our secure messaging platform, chat privately, hop on calls
-                and get familiar with your agent or client.
+                Privately chat with agents or clients using our secure messaging platform. Stay connected and informed throughout the process.
               </p>
             </CardContent>
           </Card>
@@ -30,8 +30,7 @@ const Features = () => {
             <CardContent>
               <CardTitle className="my-4">Advanced Search</CardTitle>
               <p>
-                Search for properties in different locations, filter between
-                different types of categories and tags.
+                Discover properties by filtering categories, tags, and locations. Tailor your search to meet all your specific needs.
               </p>
             </CardContent>
           </Card>
@@ -44,23 +43,23 @@ const Features = () => {
             <CardContent>
               <CardTitle className="my-4">Map Navigation</CardTitle>
               <p>
-                Use our advanced map geolocation to see the location and
-                direction of any property, anywhere in the world.
+                Use our advanced map feature to view property locations and directions worldwide, helping you navigate effortlessly.
               </p>
             </CardContent>
           </Card>
           <Card className="border shadow-sm">
-            <img
-              src="/secure-escrows.svg"
-              alt="Secure-Escrow"
-              className="w-full h-40 object-cover rounded-t-lg"
-            />
+            <div className="relative">
+              <img
+                src="/secure-escrows.svg"
+                alt="Secure-Escrow"
+                className="w-full h-40 object-cover rounded-t-lg"
+              />
+              <Badge className="absolute bottom-2 right-2">coming soon</Badge>
+            </div>
             <CardContent>
               <CardTitle className="my-4">Secure Escrow</CardTitle>
               <p>
-                Wish to protect your funds? With our optional escrow service,
-                you can deposit your money and we will pay the agent when you
-                are satisfied with your choice.
+                Safeguard your funds with our escrow service. Payments are held securely until you're satisfied with the final deal.
               </p>
             </CardContent>
           </Card>
