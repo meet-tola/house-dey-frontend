@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { MapPin } from "lucide-react"
-import { fetchAllPosts } from "@/utils/post"
+import { fetchFeaturedPosts } from "@/utils/post"
 import Link from "next/link"
 import { Button } from "./ui/button"
 import { PropertySkeleton } from "./PropertySkeleton"

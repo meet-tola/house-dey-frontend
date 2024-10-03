@@ -33,6 +33,19 @@ export const fetchAllPosts = async () => {
   }
 };
 
+export const fetchFeaturedPosts = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/api/posts/featured`);
+    if (response.status === 200) {
+      return response.data;
+    }
+    throw new Error("Failed to fetch user posts");
+  } catch (error) {
+    console.error("Error fetching user posts:", error);
+    return null;
+  }
+};
+
 export const fetchPost = async (id) => {
   try {
     const response = await axios.get(`${API_URL}/api/posts/${id}`);
