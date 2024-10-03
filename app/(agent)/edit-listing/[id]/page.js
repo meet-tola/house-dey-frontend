@@ -31,12 +31,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ImageUploader from "@/components/ui/ImageUploader";
 import AuthContext from "@/context/AuthContext";
-import { Edit3, Loader2 } from "lucide-react";
+import { Edit3, Loader2, MapPin } from "lucide-react";
 import AddressAutocomplete from "@/components/map/AddressAutoComplete";
 import CityAutocomplete from "@/components/map/CityAutoComplete";
 
@@ -162,11 +161,12 @@ export default function EditListing() {
 
     try {
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`,
+        `${API_URL}/api/posts/${id}`,
         postPayload
       );
       if (response.status === 200) {
         toast.success("Post updated successfully!");
+        router.push("/my-listings");
       } else {
         toast.error("Failed to update post.");
       }
@@ -181,7 +181,7 @@ export default function EditListing() {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${id}`
+        `${API_URL}/api/posts/${id}`
       );
       if (response.status === 200) {
         toast.success("Post deleted successfully!");
@@ -193,6 +193,14 @@ export default function EditListing() {
       toast.error("An error occurred while deleting the post.");
       console.error("Error deleting post:", error);
     }
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 0,
+    }).format(price);
   };
 
   return (
@@ -405,8 +413,8 @@ export default function EditListing() {
             </div>
             <Button type="submit">
               {loading ? (
-                <div>
-                  <Loader2 className="animate-spin" />
+                <div className="flex gap-2">
+                  <Loader2 className="animate-spin" /> Updating Post
                 </div>
               ) : (
                 "Update Post"
@@ -415,43 +423,44 @@ export default function EditListing() {
           </form>
         </div>
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Preview Your Property Post</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="bg-muted rounded-lg overflow-hidden">
-                <img
-                  src={formData.images[0]}
-                  alt="Property Image"
-                  width={800}
-                  height={500}
-                  className="w-full h-auto"
-                />
+          <h1 className="text-2xl font-bold text-center mb-6">
+            Preview Your Property Post
+          </h1>
+          <div className="bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl p-6 ">
+            <div className="min-w-[300px] lg:min-w-[250px] w-[300px] rounded-lg shadow-sm overflow-hidden flex flex-col justify-between border-2 border-gray-100 bg-white relative mx-auto">
+              <img
+                className="w-full h-48 object-cover"
+                src={
+                  formData.images?.[0] || "https://via.placeholder.com/300x200"
+                }
+                alt={formData.address || "Property Image"}
+              />
+              <div className="p-4 flex flex-col justify-between flex-grow">
+                <div>
+                  <div className="flex gap-2">
+                    <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm truncate">
+                      {formData.type || "Rent"}
+                    </div>
+                    <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm truncate">
+                      {formData.property || "Apartment"}
+                    </div>
+                  </div>
+                  <div className="text-lg font-semibold mt-2 truncate">
+                    {formData.title || "HouseDey"}
+                  </div>
+                  <div className="text-gray-600 flex items-center mb-2 truncate">
+                    <MapPin className="w-4 h-4 mr-1" />
+                    <span className="truncate">
+                      {formData.address || "123 Main St, City, Country"}
+                    </span>
+                  </div>
+                  <div className="text-xl font-semibold truncate">
+                    {formatPrice(formData.price || 1000000)}
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold">
-                  {formData.title || "HouseDey"}
-                </h2>
-                <p className="text-muted-foreground text-lg">
-                  Address: {formData.address || "123 Main Street"}
-                </p>
-                <p className="text-muted-foreground text-lg">
-                  Bedrooms: {formData.bedrooms || 32} | Bathrooms:{" "}
-                  {formData.bathrooms || 24}
-                </p>
-                <p className="text-muted-foreground text-lg">
-                  Property Type: {formData.property || "Apartment"} | Type:{" "}
-                  {formData.type || "Rent"}
-                </p>
-                <p className="text-muted-foreground text-lg">
-                  Description:{" "}
-                  {formData.desc ||
-                    "beautiful family house with spacious rooms and a large garden."}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>

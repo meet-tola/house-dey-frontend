@@ -34,6 +34,7 @@ const API_URL =
   process.env.NODE_ENV === "production"
     ? process.env.NEXT_PUBLIC_API_URL
     : "http://localhost:8800";
+
 export default function CreateListing() {
   const router = useRouter();
   const { user } = useContext(AuthContext);
@@ -101,17 +102,17 @@ export default function CreateListing() {
     const postDetail = {
       desc: formData.desc || "",
       utilities: formData.utilities || "",
-      size: parseInt(formData.size, 10) || "",
+      size: parseInt(formData.size, 10) || null,
     };
 
     const postPayload = {
       title: formData.title || "",
-      price: parseInt(formData.price, 10) || "",
+      price: parseInt(formData.price, 10) || null,
       images: formData.images || "",
       address: formData.address || "",
       city: formData.city || "",
-      bedroom: parseInt(formData.bedrooms, 10) || "",
-      bathroom: parseInt(formData.bathrooms, 10) || "",
+      bedroom: formData.bedrooms ? parseInt(formData.bedrooms, 10) : null,
+      bathroom: formData.bathrooms ? parseInt(formData.bathrooms, 10) : null,
       property: formData.property || "",
       type: formData.type || "",
       postDetail,
@@ -337,8 +338,8 @@ export default function CreateListing() {
             </div>
             <Button type="submit">
               {loading ? (
-                <div>
-                  <Loader2 className="animate-spin" />
+                <div className="flex gap-2">
+                  <Loader2 className="animate-spin" /> Creating Post
                 </div>
               ) : (
                 "Create Post"
@@ -355,8 +356,7 @@ export default function CreateListing() {
               <img
                 className="w-full h-48 object-cover"
                 src={
-                  formData.images?.[0] ||
-                  "https://via.placeholder.com/300x200"
+                  formData.images?.[0] || "https://via.placeholder.com/300x200"
                 }
                 alt={formData.address || "Property Image"}
               />

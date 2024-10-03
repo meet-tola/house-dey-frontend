@@ -45,6 +45,11 @@ import {
 import AuthContext from "@/context/AuthContext";
 import { PropertySkeleton } from "@/components/PropertySkeleton";
 
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "http://localhost:8800";
+
 const MyListings = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -81,7 +86,7 @@ const MyListings = () => {
 
     try {
       const response = await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/posts/${deleteId}`
+        `${API_URL}/api/posts/${deleteId}`
       );
       if (response.status === 200) {
         toast.success("Post deleted successfully!");
