@@ -98,7 +98,7 @@ const MyListings = () => {
         toast.error("Failed to delete post.");
       }
     } catch (error) {
-      toast.error("An error occurred while deleting the post.");
+      toast.error("Failed to delete post.");
       console.error("Error deleting post:", error);
     } finally {
       setDeleteId(null);
