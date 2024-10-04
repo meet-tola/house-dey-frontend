@@ -101,6 +101,7 @@ export default function Component() {
         }));
         updateUser({ ...user, avatar: fileData.secure_url });
         toast.success("Profile image uploaded successfully!");
+        router.push("/profile")
       } else {
         toast.error("Failed to update profile after image upload.");
       }
