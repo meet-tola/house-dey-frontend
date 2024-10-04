@@ -120,7 +120,7 @@ export default function Component() {
       const response = await axios.put(
         `${API_URL}/api/user/${user.id}`,
         updatedData
-      );
+      );      
 
       if (response.status === 200) {
         setFormData((prevFormData) => ({

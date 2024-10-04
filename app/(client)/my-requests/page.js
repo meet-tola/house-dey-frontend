@@ -116,7 +116,7 @@ const MyRequest = () => {
           </div>
           Requests
         </div>
-        <Button>
+        <Button variant="outline">
           <Link href="/create-request">Create a Request</Link>
         </Button>
       </div>
