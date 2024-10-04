@@ -17,6 +17,7 @@ import AuthContext from "@/context/AuthContext";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { Loader2, UserIcon, Upload, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const API_URL =
   process.env.NODE_ENV === "production"
@@ -28,6 +29,8 @@ export default function Component() {
   const { user, updateUser } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
   const [uploading, setUploading] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (user) {
@@ -109,7 +112,6 @@ export default function Component() {
     }
   };
 
-  // Updated Image Delete Logic
   const handleImageDelete = async () => {
     setLoading(true);
     try {
@@ -126,6 +128,7 @@ export default function Component() {
         }));
         updateUser({ ...user, avatar: "" });
         toast.success("Profile image deleted successfully!");
+        router.push("/profile")
       } else {
         toast.error("Failed to delete profile image.");
       }
