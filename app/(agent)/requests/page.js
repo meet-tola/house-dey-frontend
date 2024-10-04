@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,13 +19,12 @@ import {
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Pagination } from "@/components/ui/pagination";
 import { Label } from "@/components/ui/label";
-import { Search, Plus, Filter, HouseIcon, HomeIcon } from "lucide-react";
-import { fetchRequests, fetchAllRequests } from "@/utils/request";
+import { Filter, HouseIcon, HomeIcon } from "lucide-react";
+import { fetchRequests } from "@/utils/request";
 import { useRouter } from "next/navigation";
 import CityAutocomplete from "@/components/map/CityAutoComplete";
 
 export default function PropertyRequestPage() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
   const [filters, setFilters] = useState({
@@ -43,46 +41,32 @@ export default function PropertyRequestPage() {
   const requestsPerPage = 8;
   const router = useRouter();
 
-  // Fetch all property requests
-  useEffect(() => {
-    async function getAllRequests() {
-      try {
-        const response = await fetchAllRequests();
-        setPropertyRequests(response || []);
-        setFilteredRequests(response || []);
-      } catch (error) {
-        console.error("Error fetching all requests:", error);
-      }
-    }
-    getAllRequests();
-  }, []);
-
-  // Fetch filtered property requests
   useEffect(() => {
     async function getFilteredRequests() {
       try {
-        const queryString = buildQueryString(filters, searchQuery);
+        const queryString = buildQueryString(filters);
         const response = await fetchRequests(queryString);
-        console.log("response", response);
-        setFilteredRequests(response || []);
+
+        const uniqueRequests = Array.from(
+          new Set(response.map((request) => request.id))
+        ).map((id) => response.find((request) => request.id === id));
+
+        setFilteredRequests(uniqueRequests || []);
       } catch (error) {
         console.error("Error fetching filtered requests:", error);
       }
     }
     getFilteredRequests();
-  }, [searchQuery, filters]);
+  }, [filters]);
 
-  function buildQueryString(filters, searchQuery) {
+  function buildQueryString(filters) {
     const params = new URLSearchParams();
-
-    if (searchQuery) params.append("searchQuery", searchQuery);
+    if (filters.city) params.append("city", filters.city);
     if (filters.type) params.append("type", filters.type);
     if (filters.property) params.append("property", filters.property);
     if (filters.minBudget) params.append("minBudget", filters.minBudget);
     if (filters.maxBudget) params.append("maxBudget", filters.maxBudget);
-    if (filters.city) params.append("city", filters.city);
     if (filters.state) params.append("state", filters.state);
-
     return `?${params.toString()}`;
   }
 
@@ -111,6 +95,7 @@ export default function PropertyRequestPage() {
       city: city,
     }));
   };
+
   return (
     <div className="container mx-auto px-4 md:px-16 mt-20">
       <div className="p-6 flex justify-between items-center bg-gray-100 rounded-2xl mb-4">
@@ -123,15 +108,7 @@ export default function PropertyRequestPage() {
       </div>
 
       <div className="flex items-center space-x-4 mb-4">
-        <div className="relative flex-grow">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search requests"
-            className="pl-8"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+        <CityAutocomplete onCitySelect={handleCitySelect} />
         <Dialog open={isFilterDialogOpen} onOpenChange={setIsFilterDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline">
@@ -201,10 +178,7 @@ export default function PropertyRequestPage() {
                   }
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="filterCity">City</Label>
-                <CityAutocomplete onCitySelect={handleCitySelect} />
-              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="filterState">State</Label>
                 <Input
@@ -235,7 +209,7 @@ export default function PropertyRequestPage() {
               No property requests found
             </h2>
             <p className="text-sm text-muted-foreground">
-            Check back later or search for a different property.
+              Check back later or search for a different property.
             </p>
           </div>
         </div>
