@@ -17,7 +17,6 @@ import { HouseIcon, Loader2 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import AuthContext from "@/context/AuthContext";
-import AddressAutocomplete from "@/components/map/AddressAutoComplete";
 import { useRouter } from "next/navigation";
 import CityAutocomplete from "@/components/map/CityAutoComplete";
 
@@ -66,7 +65,7 @@ export default function CreateRequestPage() {
       comment: formData.comment || "",
       city: formData.city || "",
       state: formData.state || "",
-      bedroom: formData.bedroom || "",
+      bedroom: formData.bedroom ? parseInt(formData.bedroom, 10) : null,
     };
 
     const requestPayload = {
@@ -195,7 +194,7 @@ export default function CreateRequestPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="bedroom">Bedroom</Label>
+            <Label htmlFor="bedroom">Bedroom(Optional)</Label>
             <Input
               id="bedroom"
               type="number"

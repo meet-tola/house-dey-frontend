@@ -91,7 +91,7 @@ const SavedProperties = () => {
           </div>
           All Properties
         </div>
-        <Button>
+        <Button variant="outline">
           <Link href="/properties">View Properties</Link>
         </Button>
       </div>
@@ -101,7 +101,7 @@ const SavedProperties = () => {
           <div className="flex gap-6 overflow-x-auto scrollbar-none">
             {loading
               ? Array.from({ length: 5 }).map((_, index) => (
-                <PropertySkeleton key={index} />
+                  <PropertySkeleton key={index} />
                 ))
               : savedProperties.map((property, index) => (
                   <div
@@ -157,11 +157,11 @@ const SavedProperties = () => {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>
-                              Are you sure?
-                            </AlertDialogTitle>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              This action cannot be undone. This will permanently remove the property from your saved list.
+                              This action cannot be undone. This will
+                              permanently remove the property from your saved
+                              list.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

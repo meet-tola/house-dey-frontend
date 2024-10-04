@@ -142,7 +142,7 @@ export default function Messages() {
         {user.role !== "AGENT" && (
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button variant="outline">
                 <SearchIcon className="mr-2 h-4 w-4" />
                 Search Agents
               </Button>
