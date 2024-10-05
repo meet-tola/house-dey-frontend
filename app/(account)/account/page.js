@@ -48,7 +48,7 @@ const MyAccount = () => {
         router.push("/"); 
       } catch (error) {
         console.error("Error deleting account:", error);
-        alert("Failed to delete your account. Please try again.");
+        toast.error("Failed to delete your account. Please try again.");
       }
     }
   };

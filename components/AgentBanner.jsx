@@ -1,9 +1,14 @@
-import { ChevronRight } from "lucide-react";
-import React from "react";
+import React, { useContext } from "react"; 
 import { Button } from "./ui/button";
 import Link from "next/link";
+import AuthContext from "@/context/AuthContext";
 
 const AgentBanner = () => {
+  const { user } = useContext(AuthContext);
+  if (user) {
+    return null;
+  }
+
   return (
     <div className="w-full py-12 bg-muted">
       <div className="container px-4 md:px-16">

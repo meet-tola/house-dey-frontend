@@ -94,7 +94,7 @@ export default function CreateRequestPage() {
           comment: "",
         });
 
-        router.push("/my-requests");
+        router.refresh("/my-requests");
       } else {
         toast.error("Failed to create request.");
       }
