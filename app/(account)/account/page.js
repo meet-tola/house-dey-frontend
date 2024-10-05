@@ -7,7 +7,6 @@ import {
   Heart,
   Home,
   Bell,
-  Settings,
   MessageCircle,
   Trash,
   Search,
@@ -27,6 +26,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import toast from "react-hot-toast";
+import { Kelly_Slab } from "next/font/google";
 
 const MyAccount = () => {
   const { user, deleteAccount } = useContext(AuthContext);
@@ -44,8 +44,8 @@ const MyAccount = () => {
       try {
         await deleteAccount(user.id);
         toast.success("Your account has been deleted.");
-        window.location.reload(); 
-        router.push("/"); 
+        window.location.reload();
+        router.push("/");
       } catch (error) {
         console.error("Error deleting account:", error);
         toast.error("Failed to delete your account. Please try again.");
@@ -66,10 +66,10 @@ const MyAccount = () => {
           <Card
             title="Searches for Properties"
             description="Custom searches for properties"
-            icon={<Bell className="text-3xl" />}
+            icon={<Search className="text-3xl" />}
             link="/properties"
           />
-           <Card
+          <Card
             title="Request"
             description="Manage request, create and view request"
             icon={<Bell className="text-3xl" />}
@@ -84,7 +84,7 @@ const MyAccount = () => {
           <Card
             title="Notifications"
             description="Manage your notifications and alerts"
-            icon={<Search className="text-3xl" />}
+            icon={<Bell className="text-3xl" />}
             link="/notifications"
           />
           <Card
@@ -119,13 +119,13 @@ const MyAccount = () => {
           <Card
             title="My Saved Properties"
             description="Saved buy and rental properties"
-            icon={<Heart className="text-3xl" />}
+            icon={<Heart className="text-3xl" />} 
             link="/saved-properties"
           />
           <Card
             title="Searches for Request"
             description="Custom searches for request"
-            icon={<Bell className="text-3xl" />}
+            icon={<Bell className="text-3xl" />} 
             link="/requests"
           />
           <Card
@@ -137,7 +137,7 @@ const MyAccount = () => {
           <Card
             title="Password Settings"
             description="Change your password"
-            icon={<KeyIcon className="text-3xl" />}
+            icon={<Key className="text-3xl" />} 
             link="/password-settings"
           />
           <DeleteAccountCard
