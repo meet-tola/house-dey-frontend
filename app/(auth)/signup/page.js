@@ -327,6 +327,23 @@ const SignupPage = () => {
                   </button>
                 </div>
               </div>
+
+              <p>
+                By signing up for HouseDey, you agree to our{" "}
+                <Link
+                  href="/privacy-policy"
+                  className="text-blue-600 hover:underline"
+                >
+                  Privacy Policy
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="/terms-of-use"
+                  className="text-blue-600 hover:underline"
+                >
+                  Terms of Use.
+                </Link>{" "}
+              </p>
             </div>
 
             {/* Signup Button */}

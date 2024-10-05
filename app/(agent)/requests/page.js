@@ -17,12 +17,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Pagination } from "@/components/ui/pagination";
 import { Label } from "@/components/ui/label";
 import { Filter, HouseIcon, HomeIcon } from "lucide-react";
 import { fetchRequests } from "@/utils/request";
 import { useRouter } from "next/navigation";
 import CityAutocomplete from "@/components/map/CityAutoComplete";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PropertyRequestPage() {
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -35,14 +43,15 @@ export default function PropertyRequestPage() {
     city: "",
     state: "",
   });
-  const [propertyRequests, setPropertyRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const requestsPerPage = 8;
+  const requestsPerPage = 8; // Show 8 requests per page
   const router = useRouter();
 
   useEffect(() => {
     async function getFilteredRequests() {
+      setIsLoading(true);
       try {
         const queryString = buildQueryString(filters);
         const response = await fetchRequests(queryString);
@@ -54,6 +63,8 @@ export default function PropertyRequestPage() {
         setFilteredRequests(uniqueRequests || []);
       } catch (error) {
         console.error("Error fetching filtered requests:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
     getFilteredRequests();
@@ -96,6 +107,18 @@ export default function PropertyRequestPage() {
     }));
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="container mx-auto px-4 md:px-16 mt-20">
       <div className="p-6 flex justify-between items-center bg-gray-100 rounded-2xl mb-4">
@@ -120,6 +143,7 @@ export default function PropertyRequestPage() {
               <DialogTitle>Filter Requests</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
+              {/* Filter form fields */}
               <div className="space-y-2">
                 <Label htmlFor="filterType">Property Type</Label>
                 <Select
@@ -137,6 +161,8 @@ export default function PropertyRequestPage() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Request type and Budget filters */}
               <div className="space-y-2">
                 <Label htmlFor="filterRequestType">Request Type</Label>
                 <Select
@@ -199,7 +225,25 @@ export default function PropertyRequestPage() {
         </Dialog>
       </div>
 
-      {filteredRequests.length === 0 ? (
+      {/* No requests found */}
+      {isLoading ? (
+        // Skeleton loading state
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <Card key={index} className="flex flex-col">
+              <CardContent className="flex-grow">
+                <Skeleton className="h-4 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-1/2 mb-2" />
+                <Skeleton className="h-4 w-2/3 mb-2" />
+                <Skeleton className="h-4 w-1/3" />
+              </CardContent>
+              <CardFooter>
+                <Skeleton className="h-10 w-full" />
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      ) : filteredRequests.length === 0 ? (
         <div className="w-full max-w-md mx-auto h-[400px]">
           <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-4">
             <div className="rounded-full bg-muted p-3">
@@ -215,6 +259,7 @@ export default function PropertyRequestPage() {
         </div>
       ) : (
         <>
+          {/* Display current requests */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {currentRequests.map((request) => (
               <Card key={request.id} className="flex flex-col">
@@ -222,8 +267,8 @@ export default function PropertyRequestPage() {
                   <h3 className="font-semibold mt-4 mb-2">{request.title}</h3>
                   <p>Type: {request.type}</p>
                   <p>Request Type: {request.property}</p>
-                  <p>Budget: {request.budget}</p>
-                  <p>Location: {request.requestDetail.city}</p>
+                  <p>Budget: {formatPrice(request.budget)}</p>
+                  <p>Location: {request?.requestDetail?.city}</p>
                 </CardContent>
                 <CardFooter>
                   <Button
@@ -238,12 +283,37 @@ export default function PropertyRequestPage() {
             ))}
           </div>
 
+          {/* Pagination UI */}
           <div className="mt-6">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === index + 1}
+                      onClick={() => handlePageChange(index + 1)}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           </div>
         </>
       )}
@@ -265,10 +335,10 @@ export default function PropertyRequestPage() {
                 <strong>Bedrooms:</strong> {selectedRequest.bedroom}
               </p>
               <p>
-                <strong>Budget:</strong> {selectedRequest.budget}
+                <strong>Budget:</strong> {formatPrice(selectedRequest.budget)}
               </p>
               <p>
-                <strong>Other:</strong> {selectedRequest.requestDetail.city},{" "}
+                <strong>Other:</strong>
                 {selectedRequest.requestDetail.state}
               </p>
               <p>

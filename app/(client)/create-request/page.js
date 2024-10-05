@@ -49,7 +49,6 @@ export default function CreateRequestPage() {
     }));
   };
 
-
   const handleCitySelect = (city) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -70,7 +69,7 @@ export default function CreateRequestPage() {
 
     const requestPayload = {
       title: formData.property || "",
-      budget: parseInt(formData.budget, 10) || "",
+      budget: parseInt(formData.budget, 100000000) || null,
       type: formData.type || "",
       property: formData.property || "",
       userId: userId || "",
@@ -122,6 +121,10 @@ export default function CreateRequestPage() {
       </div>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
+        <h1 className="text-2xl font-bold">Request for a Property</h1>
+        <p className="text-muted-foreground text-md">
+          Fill out the form below to create your desire property.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="property">Property Title</Label>
