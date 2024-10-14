@@ -93,7 +93,7 @@ export default function Navbar() {
       label: "Properties",
       dropdown: propertyTypes,
     },
-    { href: "/request", label: "Request" },
+    { href: "/Requests", label: "Requests" },
     { href: "/blog", label: "Blogs" },
     { href: "/support", label: "Support" },
   ];

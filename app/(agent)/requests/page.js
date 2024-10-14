@@ -97,7 +97,7 @@ export default function PropertyRequestPage() {
   );
 
   const handleListProperty = () => {
-    router.push(`/create-post?requestId=${selectedRequest.id}`);
+    router.push(`/create-listing?requestId=${selectedRequest.id}`);
   };
 
   const handleCitySelect = (city) => {
