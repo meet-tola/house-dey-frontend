@@ -25,7 +25,7 @@ const Page = () => {
     <div>
       <InstallPrompt />
       <Hero />
-      <Services />
+      {/* <Services /> */}
       <FeaturedProperties />
       <Features />
       <Video />

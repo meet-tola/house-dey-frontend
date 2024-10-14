@@ -343,10 +343,7 @@ export default function AgentProfile() {
                       <div>
                         <div className="flex gap-2">
                           <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm truncate">
-                            {property.property}
-                          </div>
-                          <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm truncate">
-                            {property.type}
+                            {property.property} for {property.type}
                           </div>
                         </div>
                         <div className="text-lg font-semibold mt-2 truncate">
