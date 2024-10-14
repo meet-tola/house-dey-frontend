@@ -137,7 +137,7 @@ const MyAccount = () => {
           <Card
             title="Password Settings"
             description="Change your password"
-            icon={<Key className="text-3xl" />} 
+            icon={<KeyIcon className="text-3xl" />} 
             link="/password-settings"
           />
           <DeleteAccountCard
