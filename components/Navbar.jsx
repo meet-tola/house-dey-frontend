@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useState, useContext } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import {
   Sheet,
@@ -12,7 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -28,62 +28,96 @@ import { NotificationBell, MessageMore } from "./Notification";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isPropertiesOpen, setIsPropertiesOpen] = useState(false);
   const { user, logout } = useContext(AuthContext);
   const token = Cookies.get("token");
   const pathname = usePathname();
+  const dropdownRef = useRef(null);
 
-  const navLinks =
-    user?.role === "AGENT"
-      ? [
-          { href: "/properties", label: "Properties" },
-          { href: "/requests", label: "Request" },
-          { href: "/account", label: "Profile" },
-          { href: "/support", label: "Support" },
-        ]
-      : [
-          {
-            href: `/properties?${new URLSearchParams({
-              city: "lagos",
-              minPrice: "",
-              maxPrice: "",
-              bedrooms: "",
-              bathrooms: "",
-              type: "rent",
-              property: "house",
-            }).toString()}`,
-            label: "House",
-          },
-          {
-            href: `/properties?${new URLSearchParams({
-              city: "",
-              minPrice: "",
-              maxPrice: "",
-              bedrooms: "",
-              bathrooms: "",
-              type: "rent",
-              property: "shop",
-            }).toString()}`,
-            label: "Shop",
-          },
-          {
-            href: `/properties?${new URLSearchParams({
-              city: "",
-              minPrice: "",
-              maxPrice: "",
-              bedrooms: "",
-              bathrooms: "",
-              type: "rent",
-              property: "hostel",
-            }).toString()}`,
-            label: "Hostel",
-          },
-          { href: "/create-request", label: "Request" },
-          { href: "/blog", label: "Blogs" },
-        ];
+  const propertyTypes = [
+    {
+      href: `/properties?${new URLSearchParams({
+        city: "lagos",
+        minPrice: "",
+        maxPrice: "",
+        bedrooms: "",
+        bathrooms: "",
+        type: "rent",
+        property: "apartment",
+      }).toString()}`,
+      label: "Apartment",
+    },
+    {
+      href: `/properties?${new URLSearchParams({
+        city: "lagos",
+        minPrice: "",
+        maxPrice: "",
+        bedrooms: "",
+        bathrooms: "",
+        type: "rent",
+        property: "house",
+      }).toString()}`,
+      label: "House",
+      label: "House",
+    },
+    {
+      href: `/properties?${new URLSearchParams({
+        city: "lagos",
+        minPrice: "",
+        maxPrice: "",
+        bedrooms: "",
+        bathrooms: "",
+        type: "rent",
+        property: "shop",
+      }).toString()}`,
+      label: "Shop",
+    },
+    {
+      href: `/properties?${new URLSearchParams({
+        city: "lagos",
+        minPrice: "",
+        maxPrice: "",
+        bedrooms: "",
+        bathrooms: "",
+        type: "rent",
+        property: "hostel",
+      }).toString()}`,
+      label: "Hostel",
+    },
+  ];
+
+  const navLinks = [
+    { href: "/", label: "Home" },
+    {
+      href: "#",
+      label: "Properties",
+      dropdown: propertyTypes,
+    },
+    { href: "/request", label: "Request" },
+    { href: "/blog", label: "Blogs" },
+    { href: "/support", label: "Support" },
+  ];
 
   const handleNavLinkClick = () => {
     setIsOpen(false);
   };
+
+  const togglePropertiesDropdown = () => {
+    setIsPropertiesOpen(!isPropertiesOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsPropertiesOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="fixed top-0 z-50 w-full bg-white shadow-sm transition-all duration-300 data-[scrolled=true]:bg-background data-[scrolled=true]:shadow-lg">
@@ -115,19 +149,52 @@ export default function Navbar() {
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col mt-4">
-                  {navLinks.map((link, index) => (
-                    <Link
-                      key={index}
-                      href={link.href}
-                      className={`text-lg font-medium text-primary hover:bg-accent transition-colors py-4 px-5 border-b ${
-                        pathname === link.href ? "bg-accent" : ""
-                      }`}
-                      prefetch={false}
-                      onClick={handleNavLinkClick}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                  {navLinks.map((link, index) =>
+                    link.dropdown ? (
+                      <div>
+                        <button
+                          onClick={togglePropertiesDropdown}
+                          className="text-lg font-medium text-primary hover:bg-accent transition-colors py-4 px-5 border-b flex items-center justify-between w-full"
+                        >
+                          {link.label}
+                          <ChevronDown
+                            className={`h-4 w-4 ml-2 transition-transform duration-200 ${
+                              isPropertiesOpen ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+                        <div
+                          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                            isPropertiesOpen ? "max-h-48" : "max-h-0"
+                          }`}
+                        >
+                          {link.dropdown.map((subLink, subIndex) => (
+                            <Link
+                              key={subIndex}
+                              href={subLink.href}
+                              className="block py-2 px-8 text-primary hover:bg-accent"
+                              prefetch={false}
+                              onClick={handleNavLinkClick}
+                            >
+                              {subLink.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <Link
+                        key={index}
+                        href={link.href}
+                        className={`text-lg font-medium text-primary hover:bg-accent transition-colors py-4 px-5 border-b ${
+                          pathname === link.href ? "bg-accent" : ""
+                        }`}
+                        prefetch={false}
+                        onClick={handleNavLinkClick}
+                      >
+                        {link.label}
+                      </Link>
+                    )
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
@@ -150,21 +217,43 @@ export default function Navbar() {
           </Link>
         </div>
         <nav className="hidden items-center gap-6 md:flex">
-          {navLinks.map((link, index) => (
-            <Link
-              key={index}
-              href={link.href}
-              className={`text-lg font-medium text-primary hover:bg-accent px-4 py-2 hover:rounded-sm relative ${
-                pathname === link.href ? "active" : ""
-              }`}
-              prefetch={false}
-            >
-              {link.label}
-              {pathname === link.href && (
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></span>
-              )}
-            </Link>
-          ))}
+          {navLinks.map((link, index) =>
+            link.dropdown ? (
+              <DropdownMenu key={index}>
+                <DropdownMenuTrigger className="text-lg font-medium text-primary hover:bg-accent px-4 py-2 hover:rounded-sm flex items-center">
+                  {link.label}
+                  <ChevronDown className="h-4 w-4 ml-2" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {link.dropdown.map((subLink, subIndex) => (
+                    <DropdownMenuItem key={subIndex}>
+                      <Link
+                        href={subLink.href}
+                        className="w-full"
+                        prefetch={false}
+                      >
+                        {subLink.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                key={index}
+                href={link.href}
+                className={`text-lg font-medium text-primary hover:bg-accent px-4 py-2 hover:rounded-sm relative ${
+                  pathname === link.href ? "active" : ""
+                }`}
+                prefetch={false}
+              >
+                {link.label}
+                {pathname === link.href && (
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary"></span>
+                )}
+              </Link>
+            )
+          )}
         </nav>
         <div className="flex items-center gap-4">
           {user && token ? (
