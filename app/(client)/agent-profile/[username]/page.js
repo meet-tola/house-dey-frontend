@@ -45,7 +45,7 @@ export default function AgentProfile() {
   const [reviews, setReviews] = useState([]);
   const [reviewRating, setReviewRating] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
-  const router =useRouter();
+  const router = useRouter();
 
   useEffect(() => {
     const getAgentData = async () => {
@@ -219,19 +219,23 @@ export default function AgentProfile() {
           <Card className="mb-8">
             <CardContent className="p-6">
               <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
-              <div className="flex mb-4">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`w-6 h-6 cursor-pointer ${
-                      star <= rating
-                        ? "text-yellow-400 fill-current"
-                        : "text-gray-300"
-                    }`}
-                    onClick={() => setRating(star)} // Ensure rating is an integer
-                  />
-                ))}
+              <div className="flex flex-col gap-2">
+                <span className="text-gray-300 text-sm">Tap to Rate:</span>
+                <div className="flex mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-6 h-6 cursor-pointer ${
+                        star <= rating
+                          ? "text-yellow-400 fill-current"
+                          : "text-gray-300"
+                      }`}
+                      onClick={() => setRating(star)} // Ensure rating is an integer
+                    />
+                  ))}
+                </div>
               </div>
+
               <Textarea
                 placeholder="Write your review here..."
                 value={reviewText}
