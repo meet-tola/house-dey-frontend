@@ -131,8 +131,8 @@ export default function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="p-4">
-                <SheetHeader>
-                  <SheetTitle>
+                <div>
+                  <div>
                     <Link
                       href="/"
                       className="flex items-center gap-2"
@@ -146,9 +146,9 @@ export default function Navbar() {
                         className="md:hidden"
                       />
                     </Link>
-                  </SheetTitle>
-                </SheetHeader>
-                <nav className="flex flex-col mt-4">
+                  </div>
+                </div>
+                <div className="flex flex-col mt-4">
                   {navLinks.map((link, index) =>
                     link.dropdown ? (
                       <div>
@@ -195,7 +195,7 @@ export default function Navbar() {
                       </Link>
                     )
                   )}
-                </nav>
+                </div>
               </SheetContent>
             </Sheet>
           </div>

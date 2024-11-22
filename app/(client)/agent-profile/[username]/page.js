@@ -12,7 +12,7 @@ import {
   deleteReview,
 } from "@/utils/reviews";
 import { addChat } from "@/utils/message";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import PageLoader from "@/components/PageLoader";
 import NoPropertiesFound from "@/components/NoPropertiesFound";
 import Link from "next/link";
@@ -45,6 +45,7 @@ export default function AgentProfile() {
   const [reviews, setReviews] = useState([]);
   const [reviewRating, setReviewRating] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
+  const router =useRouter();
 
   useEffect(() => {
     const getAgentData = async () => {
@@ -103,8 +104,8 @@ export default function AgentProfile() {
 
   const handleSendMessage = async (userId) => {
     try {
-      await addChat(userId);
-      router.push("/messages");
+      const newChat = await addChat(userId);
+      router.push(`/messages?id=${newChat.id}`);
     } catch (error) {
       console.error("Error sending message:", error);
     }

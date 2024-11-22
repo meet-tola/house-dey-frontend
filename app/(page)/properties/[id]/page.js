@@ -156,15 +156,17 @@ export default function PropertiesDetails() {
     }).format(price);
   };
 
-  const handleSendMessage = async (userId) => {
+  const handleSendMessage = async (userId, postId) => {
     try {
-      await addChat(userId);
-      router.push("/messages");
+      const newChat = await addChat(userId);
+  
+      router.push(`/messages?id=${newChat.id}&postId=${postId}`);
+
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
-
+  
   return (
     <>
       <div className="mt-10 max-w-7xl mx-auto px-4 sm:px-6 py-8 md:py-12">
@@ -427,7 +429,7 @@ export default function PropertiesDetails() {
           <Button
             variant="outline"
             className="gap-2 text-primary"
-            onClick={() => handleSendMessage(post.user.id)}
+            onClick={() => handleSendMessage(post.user.id, post.id)}
           >
             <MailIcon />
             Send Message

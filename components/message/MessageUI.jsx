@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ArrowLeftIcon, SendIcon, UserIcon } from "lucide-react";
+import { ArrowLeftIcon, SendIcon, UserIcon } from 'lucide-react';
 import { SocketContext } from "@/context/SocketContext";
 import { fetchChat, addMessage, readChat } from "@/utils/message";
+import { format, isToday, isYesterday } from "date-fns";
 
 export default function MessageUI({
   chatId,
@@ -15,6 +16,7 @@ export default function MessageUI({
   chatReceiver,
   currentUser,
   onlineUsers,
+  postDetails,
 }) {
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState([]);
@@ -37,29 +39,30 @@ export default function MessageUI({
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
-
+  
     if (!chatReceiver?.id) {
       console.error("Cannot send message, chatReceiver is not set.");
       return;
     }
-
+  
     const messageData = {
       chatId,
       userId: currentUser.id,
       text: messageText,
       createdAt: new Date().toISOString(),
+      postId: postDetails?.id || null,
     };
-
+  
     socket.emit("sendMessage", {
       receiverId: chatReceiver?.id,
       message: messageData,
     });
-
-    const newMessage = await addMessage(chatId, messageText);
-
+  
+    const newMessage = await addMessage(chatId, messageText, postDetails?.id || null);
+  
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setMessageText("");
-  };
+  };  
 
   useEffect(() => {
     if (socket && chatId) {
@@ -77,10 +80,31 @@ export default function MessageUI({
   const isOnline =
     chatReceiver && onlineUsers.some((user) => user.userId === chatReceiver.id);
 
+  const getDateDisplay = (date) => {
+    if (isToday(date)) return "Today";
+    if (isYesterday(date)) return "Yesterday";
+    return format(date, "EEEE, MMMM d");
+  };
+
+  const groupMessagesByDate = (messages) => {
+    const groups = {};
+    messages.forEach((message) => {
+      const date = new Date(message.createdAt);
+      const dateKey = getDateDisplay(date);
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(message);
+    });
+    return groups;
+  };
+
+  const groupedMessages = groupMessagesByDate(messages);
+
   return (
-    <div className="flex flex-col h-full md:h-[600px] border-[1.5px] rounded-lg border-gray-200">
+    <div className="flex flex-col h-full md:h-[600px] border-[1.5px] rounded-lg border-gray-200 bg-gray-50 overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b flex items-center space-x-4">
+      <div className="p-4 border-b bg-white flex items-center space-x-4">
         <Button
           variant="ghost"
           size="icon"
@@ -96,7 +120,9 @@ export default function MessageUI({
           chatReceiver && (
             <Avatar>
               <AvatarImage
-                src={chatReceiver.avatar || ""}
+                src={
+                  chatReceiver.avatar || "https://via.placeholder.com/200x200"
+                }
                 alt={chatReceiver.username || "User"}
               />
               <AvatarFallback>
@@ -119,85 +145,128 @@ export default function MessageUI({
         </h2>
       </div>
 
+      {/* Display post details if available */}
+      {postDetails && (
+        <div className="border-b p-4 bg-white flex items-center space-x-4">
+          <img
+            src={postDetails.images[0] || "/placeholder.jpg"}
+            alt="Post"
+            className="w-[3rem] h-[3rem] object-cover rounded-md"
+          />
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold">{postDetails.title}</h3>
+            <p className="text-sm text-gray-600 line-clamp-2">
+              {postDetails.postDetail.desc}
+            </p>
+          </div>
+          <div className="text-lg font-bold text-primary">
+            ${postDetails.price}
+          </div>
+        </div>
+      )}
+
       {/* Message List (Scroll Area) */}
-      <ScrollArea className="flex-1 p-4 overflow-auto">
-        {isLoading ? (
-          <div className="space-y-4">
-            {[...Array(3)].map((_, index) => (
-              <div key={index} className="flex flex-col items-start mb-6">
-                <div className="flex flex-row items-end">
-                  <Skeleton className="h-10 w-10 rounded-full mr-2" />
-                  <div className="flex flex-col gap-2">
-                    <Skeleton className="h-16 w-64 rounded-lg" />
-                    <Skeleton className="h-4 w-24" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : messages && messages.length > 0 ? (
-          messages.map((message) => {
-            const isSender = message.userId === currentUser.id;
-            return (
-              <div
-                key={message.id}
-                className={`flex flex-col ${
-                  isSender ? "items-end" : "items-start"
-                } mb-6`}
-              >
-                <div
-                  className={`flex ${
-                    isSender ? "flex-row-reverse" : "flex-row"
-                  } items-end`}
-                >
-                  {!isSender && (
-                    <Avatar className="mr-2">
-                      <AvatarImage
-                        src={chatReceiver?.avatar || ""}
-                        alt={chatReceiver?.username || "User"}
-                      />
-                      <AvatarFallback>
-                        <UserIcon />
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
-                  <div className="flex flex-col gap-2 ">
-                    <div
-                      className={`p-3 rounded-lg ${
-                        isSender
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-accent"
-                      }`}
-                    >
-                      {!isSender && (
-                        <p className="font-semibold text-sm mb-1">
-                          {chatReceiver?.username}
-                        </p>
-                      )}
-                      <p className="text-sm">{message.text}</p>
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {isLoading ? (
+            <div className="space-y-4">
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className="flex flex-col items-start mb-6">
+                  <div className="flex flex-row items-end">
+                    <Skeleton className="h-10 w-10 rounded-full mr-2" />
+                    <div className="flex flex-col gap-2">
+                      <Skeleton className="h-16 w-64 rounded-lg" />
+                      <Skeleton className="h-4 w-24" />
                     </div>
-                    <span className="text-xs text-muted-foreground mb-1">
-                      {new Date(message.createdAt).toLocaleString()}
-                    </span>
                   </div>
                 </div>
+              ))}
+            </div>
+          ) : messages && messages.length > 0 ? (
+            Object.entries(groupedMessages).map(([date, dateMessages]) => (
+              <div key={date}>
+                <div className="flex justify-center my-4">
+                  <span className="px-2 py-1 text-xs font-semibold bg-gray-200 rounded-full">
+                    {date}
+                  </span>
+                </div>
+                {dateMessages.map((message) => {
+                  const isSender = message?.userId === currentUser?.id;
+                
+                  return (
+                    <div
+                      key={message?.id}
+                      className={`flex ${
+                        isSender ? "justify-end" : "justify-start"
+                      } mb-4`}
+                    >
+                      <div className={`flex items-end ${isSender ? "flex-row-reverse" : "flex-row"} max-w-[70%]`}>
+                        {!isSender && (
+                          <Avatar className={`${isSender ? 'ml-2' : 'mr-2'} flex-shrink-0`}>
+                            <AvatarImage
+                              src={chatReceiver?.avatar || ""}
+                              alt={chatReceiver?.username || "User"}
+                            />
+                            <AvatarFallback>
+                              <UserIcon />
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                        <div className="flex flex-col">
+                          <div
+                            className={`p-3 rounded-lg ${
+                              isSender
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-white shadow"
+                            }`}
+                          >
+                            {!isSender && (
+                              <p className="font-semibold text-sm mb-1">
+                                {chatReceiver?.username}
+                              </p>
+                            )}
+                            <p className="text-sm break-words">{message?.text}</p>
+                            {message?.postId && (
+                              <div className="mt-2 pt-2 border-t border-primary-foreground/20 flex items-center">
+                                <a
+                                  href={`/properties/${message?.postId}`}
+                                  className="text-xs text-blue-600 hover:underline"
+                                >
+                                  View related post
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                          <span className="text-xs text-muted-foreground mt-1 self-end">
+                            {format(new Date(message?.createdAt), "h:mm a")}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })
-        ) : (
-          <div className="h-full flex items-center justify-center text-center">
-            No messages available.
-          </div>
-        )}
+            ))
+          ) : (
+            <div className="h-full flex items-center justify-center text-center">
+              No messages available.
+            </div>
+          )}
+        </div>
       </ScrollArea>
 
       {/* Input Area */}
-      <div className="p-4 border-t flex space-x-2">
+      <div className="p-4 border-t bg-white flex space-x-2">
         <Input
           className="flex-1"
           placeholder="Type a message..."
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              handleSendMessage();
+            }
+          }}
         />
         <Button size="icon" onClick={handleSendMessage}>
           <SendIcon className="h-4 w-4" />
@@ -207,3 +276,4 @@ export default function MessageUI({
     </div>
   );
 }
+

@@ -25,13 +25,14 @@ import {
   fetchChats,
   fetchChat,
   addChat,
-  addMessage,
   readChat,
 } from "@/utils/message";
 import AuthContext from "@/context/AuthContext";
 import { SocketContext } from "@/context/SocketContext";
 import ChatList from "@/components/message/ChatList";
 import MessageUI from "@/components/message/MessageUI";
+import { useParams, useSearchParams } from "next/navigation";
+import { fetchPost } from "@/utils/post";
 
 export default function Messages() {
   const { user } = useContext(AuthContext);
@@ -45,6 +46,41 @@ export default function Messages() {
   const [chatReceiver, setChatReceiver] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { id } = useParams();
+
+  const searchParams = useSearchParams();
+  const queryId = searchParams.get('id');
+  const postId = searchParams.get('postId');
+  const [postDetails, setPostDetails] = useState(null);
+
+  useEffect(() => {
+    const chatId = queryId;
+    if (chatId) {
+      setSelectedChatId(chatId);
+      handleSelectChat(chatId);
+    }
+  }, [queryId]);
+
+  if (id) {
+    setSelectedChatId(id);
+    handleSelectChat(id);
+  }
+
+  useEffect(() => {
+    if (postId) {
+      const getPost = async () => {
+        const data = await fetchPost(postId);
+        if (data) {
+          setPostDetails(data);
+        } else {
+          setError("Failed to fetch post");
+        }
+      };
+
+      getPost();
+    }
+  }, [id]);
 
   useEffect(() => {
     const fetchAgentsAndChats = async () => {
@@ -215,6 +251,7 @@ export default function Messages() {
               chatReceiver={chatReceiver}
               currentUser={user}
               onlineUsers={onlineUsers}
+              postDetails={postDetails}
             />
           ) : (
             <div className="h-[600px] flex items-center justify-center border-[1.5px] rounded-lg px-5 border-gray-200">

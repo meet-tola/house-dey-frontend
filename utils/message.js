@@ -31,9 +31,9 @@ export const fetchChat = async (chatId) => {
   }
 };
 
-export const addChat = async (receiverId) => {
+export const addChat = async (receiverId, postId) => {
   try {
-    const response = await axios.post(`${API_URL}/api/chats`, { receiverId });
+    const response = await axios.post(`${API_URL}/api/chats`, { receiverId, postId });
     if (response.status === 200) {
       return response.data;
     }
@@ -44,10 +44,11 @@ export const addChat = async (receiverId) => {
   }
 };
 
-export const addMessage = async (chatId, text) => {
+export const addMessage = async (chatId, text, postId) => {
   try {
     const response = await axios.post(`${API_URL}/api/messages/${chatId}`, {
       text,
+      postId,
     });
     if (response.status === 200) {
       return response.data;
