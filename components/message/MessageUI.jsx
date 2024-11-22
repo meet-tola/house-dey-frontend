@@ -21,6 +21,7 @@ export default function MessageUI({
   const [messageText, setMessageText] = useState("");
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPostDetailsLoading, setIsPostDetailsLoading] = useState(true);
   const { socket } = useContext(SocketContext);
 
   useEffect(() => {
@@ -36,6 +37,15 @@ export default function MessageUI({
 
     fetchChatMessages();
   }, [chatId]);
+
+  useEffect(() => {
+    if (postDetails) {
+      setMessageText("Is this property still available? If it is, let's talk about it.");
+      setIsPostDetailsLoading(false);
+    } else {
+      setIsPostDetailsLoading(false);
+    }
+  }, [postDetails]);
 
   const handleSendMessage = async () => {
     if (!messageText.trim()) return;
@@ -146,7 +156,16 @@ export default function MessageUI({
       </div>
 
       {/* Display post details if available */}
-      {postDetails && (
+      {isPostDetailsLoading ? (
+        <div className="border-b p-4 bg-white flex items-center space-x-4">
+          <Skeleton className="w-[3rem] h-[3rem] rounded-md" />
+          <div className="flex-1">
+            <Skeleton className="h-6 w-3/4 mb-2" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+          <Skeleton className="h-6 w-16" />
+        </div>
+      ) : postDetails ? (
         <div className="border-b p-4 bg-white flex items-center space-x-4">
           <img
             src={postDetails.images[0] || "/placeholder.jpg"}
@@ -163,7 +182,7 @@ export default function MessageUI({
             ${postDetails.price}
           </div>
         </div>
-      )}
+      ) : null}
 
       {/* Message List (Scroll Area) */}
       <ScrollArea className="flex-1 p-4">
@@ -276,4 +295,3 @@ export default function MessageUI({
     </div>
   );
 }
-
