@@ -14,11 +14,11 @@ import Image from 'next/image'
 const blogPosts = [
   {
     id: 1,
-    title: "10 Essential Tips for First-Time Home Buyers in Today's Competitive Market",
-    excerpt: "Navigating the real estate market as a first-time buyer can be daunting. Here are 10 essential tips to help you make informed decisions and secure your dream home.",
-    image: "https://via.placeholder.com/200x300",
-    date: "2024-02-15",
-    author: "Jane Doe"
+    title: "Average Price of Apartments for Rent in Lagos, Nigeria.",
+    excerpt: "Lagos being the commercial hub of Nigeria and a former Federal Capital of Nigeria has one of the most active working populations in the country. By having lots of people in the working class range, it is thus inevitable that these people would have houses, often dependent on their respective earning capacities.",
+    image: "https://cdn.businessday.ng/2022/11/housing-2.png",
+    date: "20-11-2024",
+    author: "Ofonagoro Joseph"
   },
   {
     id: 2,
